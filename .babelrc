@@ -1,0 +1,24 @@
+{
+  "plugins": [
+    ["inline-import", { "extensions": [".css"] }],
+    ["import", {
+      "libraryName": "antd",
+      // "style": true,   // causing compile bugs
+    }, "antd"],
+    ["import", {
+      "libraryName": "lodash",
+      "libraryDirectory": "",
+      "camel2DashComponentName": false,  // default: true
+    }, "lodash"]
+  ],
+  "presets": [
+    [
+      "next/babel",
+      {
+        "preset-env": {
+          "useBuiltIns": "usage"
+        }
+      }
+    ]
+  ]
+}
