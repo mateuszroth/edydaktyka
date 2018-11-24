@@ -48,9 +48,9 @@ export default class MyApp extends App {
                     </a>
                   </Link>
                 </Menu.Item>
-                <SubMenu key="1" title={<Link href="/help"><a><Icon type="question-circle" />Pomoc</a></Link>}>
-                  <Menu.Item key="1-1"><Link href="/help">Funkcjonalność strony</Link></Menu.Item>
-                  <Menu.Item key="1-2">FAQ - Najczęściej zadawane pytania</Menu.Item>
+                <SubMenu key="1" title={<Link href="/help"><a><Icon type="question-circle" />Pomoc <Icon type="down" /></a></Link>}>
+                  <Menu.Item key="1-1"><Link href="/help"><a>Funkcjonalność strony</a></Link></Menu.Item>
+                  <Menu.Item key="1-2"><Link href="/help/faq"><a>FAQ - Najczęściej zadawane pytania</a></Link></Menu.Item>
                   <Menu.Item key="1-3">Rezerwacja konsultacji</Menu.Item>
                   <Menu.Item key="1-4">Przesłania sprawozdania</Menu.Item>
                 </SubMenu>
@@ -73,10 +73,18 @@ export default class MyApp extends App {
                 </SubMenu>
 
                 <Menu.Item key="4"><Icon type="folder-open" />Popularyzatorskie</Menu.Item>
-                <Menu.Item key="5"><Icon type="trophy" />Autor</Menu.Item>
+                <SubMenu key="5" title={<Link href="/author"><a><Icon type="trophy" />Autor</a></Link>}>
+                  <Menu.Item key="5-1"><a target="_blank" href="http://www.goldenline.pl/andrzej-urbanski">Profil na GoldenLine.pl</a></Menu.Item>
+                  <Menu.Item key="5-2"><a target="_blank" href="http://pl.linkedin.com/in/urbanski">Profil na Linkedin.com</a></Menu.Item>
+                  <Menu.Item key="5-3"><a target="_blank" href="http://www.xing.com/profile/AndrzejP_Urbanski">Profil na Xing.com</a></Menu.Item>
+                  <Menu.Item key="5-4"><a target="_blank" href="http://www.eioba.pl/apu">Eioba.pl</a></Menu.Item>
+                  <Menu.Item key="5-5"><a target="_blank" href="http://andrzeju.pl/">Profil na Andrzeju.pl</a></Menu.Item>
+                  <Menu.Item key="5-6"><a target="_blank" href="http://alanbit.pl/">Profil na AlanBit.pl</a></Menu.Item>
+                  <Menu.Item key="5-7"><a target="_blank" href="https://www.facebook.com/andrzej.urbanski.5015">Profil na Facebooku</a></Menu.Item>
+                </SubMenu>
 
                 {/* tylko dla niezalogowanych */}
-                <Menu.Item key="6"><Icon type="book" />Ankieta</Menu.Item>
+                <Menu.Item key="6"><Link href="/questionnaire"><a><Icon type="book" />Ankieta</a></Link></Menu.Item>
                 <Menu.Item key="7"><Icon type="user-add" />Rejestracja</Menu.Item>
                 <Menu.Item key="8"><Icon type="login" />Logowanie</Menu.Item>
                 {/* tylko dla niezalogowanych */}

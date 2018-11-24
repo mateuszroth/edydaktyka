@@ -11,6 +11,6 @@ const styles = {
 export default () => (
   <Breadcrumb style={styles.root}>
     <Breadcrumb.Item><Link href="/"><a>Strona główna</a></Link></Breadcrumb.Item>
-    <Breadcrumb.Item><Link href="/help"><a>Pomoc</a></Link></Breadcrumb.Item>
+    <Breadcrumb.Item><Link href="/author"><a>Autor</a></Link></Breadcrumb.Item>
   </Breadcrumb>
 )

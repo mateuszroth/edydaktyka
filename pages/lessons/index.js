@@ -1,7 +1,7 @@
 import React from 'react'
 import { Layout, Menu } from 'antd'
-import Sider from '../components/pages/lessons/Sider'
-import Breadcrumb from '../components/pages/lessons/Breadcrumb'
+import Sider from '../../components/pages/lessons/Sider'
+import Breadcrumb from '../../components/pages/lessons/Breadcrumb'
 
 const PAGE_NAME = 'Zajęcia'
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Layout } from 'antd'
-import Sider from '../components/pages/help/Sider'
-import Breadcrumb from '../components/pages/help/Breadcrumb'
+import Sider from '../../components/pages/help/Sider'
+import Breadcrumb from '../../components/pages/help/Breadcrumb'
 
 const PAGE_NAME = 'FAQ - Najczęściej zadawane pytania'
 
