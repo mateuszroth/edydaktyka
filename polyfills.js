@@ -1,2 +1,2 @@
-// wsparcie starszych wersji IE
+// polyfills for olders IEs
 import 'babel-polyfill'
