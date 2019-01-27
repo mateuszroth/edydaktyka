@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout } from 'antd'
+import { Layout, Divider } from 'antd'
 import Sider from '../../components/pages/help/Sider'
 import Breadcrumb from '../../components/pages/help/Breadcrumb'
 
@@ -33,6 +33,7 @@ export default class extends React.Component {
                 <li>Umożliwia studentom wypełnianie anonimowej ankiety dotyczących odbytych zajęć.</li>
                 <li>Umożliwia studentom wybór zadań semestralnych na zasadzie kto pierwszy.</li>
               </ul>
+              <Divider />
               <img src="http://www.cs.put.poznan.pl/aurbanski/przewodnik.jpg" alt="Przewodnik po stronie" />
             </div>
           </Layout.Content>

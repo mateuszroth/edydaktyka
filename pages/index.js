@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import { Layout, Menu, Breadcrumb, Icon } from 'antd'
+import { Layout, Menu, Breadcrumb, Divider } from 'antd'
 
 const { SubMenu } = Menu
 const { Header, Content, Footer, Sider } = Layout
@@ -27,13 +27,16 @@ export default class extends React.Component {
             <div>
               <div style={{ textAlign: 'center' }}>
                 <img src="http://www.cs.put.poznan.pl/aurbanski/cw.jpg" alt="Centrum Wykładowe" width="100%" />
+                <Divider />
                 <img src="http://www.cs.put.poznan.pl/aurbanski/sam-na_dachu.jpg" alt="Andrzej Urbański" width="100" />
                 <img src="http://www.cs.put.poznan.pl/aurbanski/praca.jpg" alt="Pokój konsultacji" />
                 <img src="http://www.cs.put.poznan.pl/aurbanski/Plan-CW5.png" alt="Dojście" />
               </div>
+              <Divider />
               <h1>
                 Serwis wykładowcy informatyki Edu.Andrzeju.pl. Nie tylko dla moich studentów.
               </h1>
+              <Divider />
               <h2>Zapraszam na konsultacje</h2>
               <h3>osobiste - w środy od 15:00 do 16:40 w pok.105 Centrum Wykładowe</h3>
               <h3>zdalne - w każdym czasie na adres e-mail: <a href="mailto:andrzej.urbanski@cs.put.poznan.pl">andrzej.urbanski@cs.put.poznan.pl</a></h3>

@@ -12,13 +12,13 @@ export default () => (
       defaultOpenKeys={['sub1']}
       style={{ height: '100%' }}
     >
-      <Menu.SubMenu key="sub1" title={<Link href="/help"><span><Icon type="snippets" />Prace dyplomowe</span></Link>}>
-        <Menu.Item key="3-1">Obronione</Menu.Item>
-        <Menu.Item key="3-2">Realizowane</Menu.Item>
-        <Menu.Item key="3-3">Proponowane</Menu.Item>
-        <Menu.Item key="3-4">Przygotowane</Menu.Item>
-        <Menu.Item key="3-5">Najciekawsze</Menu.Item>
-        <Menu.Item key="3-6">Promotorstwo</Menu.Item>
+      <Menu.SubMenu key="sub1" title={<Link href="/diplomas"><span><Icon type="snippets" />Prace dyplomowe</span></Link>}>
+        <Menu.Item key="3-1"><Link href="/diplomas/done">Obronione</Link></Menu.Item>
+        <Menu.Item key="3-2"><Link href="/diplomas/inprogress">Realizowane</Link></Menu.Item>
+        <Menu.Item key="3-3"><Link href="/diplomas/proposed">Proponowane</Link></Menu.Item>
+        <Menu.Item key="3-4"><Link href="/diplomas/topresent">Przygotowane</Link></Menu.Item>
+        <Menu.Item key="3-5"><Link href="/diplomas/favourites">Najciekawsze</Link></Menu.Item>
+        <Menu.Item key="3-6"><Link href="/diplomas/about">Promotorstwo</Link></Menu.Item>
       </Menu.SubMenu>
     </Menu>
   </Sider>

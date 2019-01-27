@@ -1,10 +1,10 @@
 import React from 'react'
-import { Layout, Menu } from 'antd'
-import Breadcrumb from '../../components/pages/questionnaire/Breadcrumb'
-import QuestionnaireForm from '../../components/pages/questionnaire/QuestionnaireForm'
+import { Layout } from 'antd'
+import LoginForm from '../../components/pages/login/LoginForm'
+import Breadcrumb from '../../components/pages/login/Breadcrumb'
 import styles from './index.module.scss'
 
-const PAGE_NAME = 'Ankieta'
+const PAGE_NAME = 'Logowanie'
 
 export default class extends React.Component {
   static async getInitialProps(props) {
@@ -17,9 +17,8 @@ export default class extends React.Component {
         <Layout style={{ padding: '0 24px 24px' }}>
           <Breadcrumb />
           <Layout.Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
-          <h1 className={styles.header}>{PAGE_NAME}</h1>
-          <div className={styles.content}>
-              <QuestionnaireForm />
+            <div className={styles.content}>
+              <LoginForm />
             </div>
           </Layout.Content>
         </Layout>
