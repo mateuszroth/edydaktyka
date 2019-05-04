@@ -1,3 +1,4 @@
+# TODO parallel builds: https://blog.fossasia.org/parallelizing-builds-in-travis-ci/
 language: node_js
 node_js:
   - "10"
