@@ -4,7 +4,8 @@
   "description": "A backend for the eduandrzeju system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No test specified for frontend\""
+    "test": "echo \"No test specified for frontend\"",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
