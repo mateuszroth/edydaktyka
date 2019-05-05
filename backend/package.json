@@ -1,0 +1,25 @@
+{
+  "name": "eduandrzeju-backend",
+  "version": "1.0.0",
+  "description": "A backend for the eduandrzeju system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateuszroth/eduandrzeju.git"
+  },
+  "author": "Mateusz Roth <mateusz.roth@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mateuszroth/eduandrzeju/issues"
+  },
+  "homepage": "https://github.com/mateuszroth/eduandrzeju#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-graphql": "^0.8.0",
+    "graphql": "^14.2.1",
+    "graphql-yoga": "^1.17.4"
+  }
+}
