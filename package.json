@@ -1,0 +1,25 @@
+{
+  "name": "eduandrzeju",
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "concurrently \"cd backend && npm install\" \"cd frontend && npm install\"",
+    "dev-backend": "cd backend && npm start",
+    "dev-frontend": "cd frontend && npm run dev",
+    "build-frontend": "cd frontend && npm run build",
+    "start": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateuszroth/eduandrzeju.git"
+  },
+  "author": "Mateusz Roth <mateusz.roth@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mateuszroth/eduandrzeju/issues"
+  },
+  "homepage": "https://github.com/mateuszroth/eduandrzeju#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^4.1.0"
+  }
+}

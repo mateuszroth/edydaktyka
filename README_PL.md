@@ -6,19 +6,24 @@ Do projektu wymagany jest Node.js w wersji 10+.
 
 Konieczne jest zainstalowanie zależności:
 ```
-npm install && npm run start
+npm run setup
 ```
 
 ## Skrypty
 
 1. Uruchamianie projektu - development:
 ```
-npm run dev
+npm start
+```
+Lub osobno frontend i backend:
+```
+npm run dev-backend
+npm run dev-frontend
 ```
 
-2. Budowanie projektu:
+2. Budowanie projektu frontend:
 ```
-npm run build
+npm run build-frontend
 ```
 
 ## Dokumentacja
