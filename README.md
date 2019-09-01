@@ -3,7 +3,7 @@ System stworzony na podstawie aplikacji edu.andrzeju.pl.
 
 ## Wymagania
 
-Do projektu wymagany jest Node.js w wersji 10+.
+Do projektu wymagany jest Node.js w wersji 12+.
 
 Konieczne jest zainstalowanie zależności:
 ```
@@ -21,6 +21,8 @@ Lub osobno frontend i backend:
 npm run dev-backend
 npm run dev-frontend
 ```
+
+Strona będzie dostępna pod adresem http://localhost:3000/ a API serwerowe pod adresem http://localhost:4000/.
 
 2. Budowanie projektu frontend:
 ```
