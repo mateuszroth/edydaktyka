@@ -2,13 +2,18 @@
 # https://hub.docker.com/_/mysql
 # https://hub.docker.com/_/adminer/
 # Use root/example as user/password credentials
-version: '3.1'
+version: "3.1"
 
 services:
-
   db:
     image: mysql:5.7.27
-    command: --default-authentication-plugin=mysql_native_password
+    command:
+      [
+        "--default-authentication-plugin=mysql_native_password",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+        'mysqld --init-file="/tmp/database/init_schema.sql"',
+      ]
     restart: always
     environment:
       MYSQL_DATABASE: edydaktyka
