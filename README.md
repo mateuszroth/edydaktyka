@@ -10,11 +10,23 @@ Konieczne jest zainstalowanie zależności:
 npm run setup
 ```
 
+Jeśli chcemy działać na lokalnej maszynie, konieczna jest konfiguracja bazy danych. Do tego celu instalujemy oprogramowanie Docker i uruchamiamy polecenie, które uruchomi bazę danych:
+```
+docker-compose up
+// lub
+docker-compose -f docker-compose.yml up
+```
+Domyślnie baza danych utworzy konto o loginie `admin` i haśle `password`. Aby się zalogować, odwiedź http://localhost:5000/ dla systemu zarządzania bazą danych Adminer. Baza danych dostępna jest pod portem 3306.
+
 ## Skrypty
 
 1. Uruchamianie projektu - development:
 ```
 npm start
+```
+Lub od razu z bazą danych:
+```
+npm run start-with-db
 ```
 Lub osobno frontend i backend:
 ```
