@@ -2,11 +2,11 @@
   "name": "eduandrzeju",
   "version": "1.0.0",
   "scripts": {
-    "setup": "concurrently \"cd backend && npm install\" \"cd frontend && npm install\"",
+    "setup": "npx concurrently \"cd backend && npm install\" \"cd frontend && npm install\"",
     "dev-backend": "cd backend && npm start",
     "dev-frontend": "cd frontend && npm run dev",
     "build-frontend": "cd frontend && npm run build",
-    "start": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\""
+    "start": "npx concurrently \"npm run dev-backend\" \"npm run dev-frontend\""
   },
   "repository": {
     "type": "git",

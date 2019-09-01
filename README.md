@@ -1,4 +1,5 @@
-# System eDydaktyka - edu.andrzeju.pl
+# System eDydaktyka
+System stworzony na podstawie aplikacji edu.andrzeju.pl.
 
 ## Wymagania
 
