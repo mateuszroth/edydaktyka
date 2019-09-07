@@ -18,6 +18,12 @@ docker-compose -f docker-compose.yml up
 ```
 Domyślnie baza danych utworzy konto o loginie `admin` i haśle `password`. Aby się zalogować, odwiedź http://localhost:5000/ dla systemu zarządzania bazą danych Adminer. Baza danych dostępna jest pod portem 3306.
 
+Zapytania SQL inicjalizujące bazę znajdują się w pliku `./database/init_schema.sql`. Te query można uruchomić na przykład poprzez system Adminer czy z poziomu kontenera Docker:
+```
+docker exec -it <CONTAINER_ID> /bin/bash
+mysql -u admin -ppassword edydaktyka < /tmp/database/init_schema.sql
+```
+
 ## Skrypty
 
 1. Uruchamianie projektu - development:

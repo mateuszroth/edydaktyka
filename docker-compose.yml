@@ -1,18 +1,20 @@
 # to run use `docker-compose up` or `docker-compose -f docker-compose.yml up`
 # https://hub.docker.com/_/mysql
 # https://hub.docker.com/_/adminer/
-# Use root/example as user/password credentials
+# Use root/ROOT@password as user/password credentials
 version: "3.1"
 
 services:
   db:
     image: mysql:5.7.27
+    volumes:
+      - ./database:/tmp/database
     command:
       [
         "--default-authentication-plugin=mysql_native_password",
         "--character-set-server=utf8mb4",
-        "--collation-server=utf8mb4_unicode_ci",
-        'mysqld --init-file="/tmp/database/init_schema.sql"',
+        "--collation-server=utf8mb4_unicode_ci"
+        # "--init-file=/tmp/database/init_schema.sql" # after using this command, the database doesn't create user specified in "environment" below
       ]
     restart: always
     environment:
