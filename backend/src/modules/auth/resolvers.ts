@@ -6,7 +6,6 @@ import User from 'entities/User';
 export default {
     currentUser: async (_, { album }, { auth }) => {
         if (!auth || album !== auth.album) {
-            console.log(auth, album);
             return new Error('Brak uprawnień do danych konta użytkownika');
         }
 
