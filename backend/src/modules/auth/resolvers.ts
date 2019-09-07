@@ -1,9 +1,21 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import encryptPassword from 'modules/auth/utils/encryptPassword';
 import User from 'entities/User';
 
 export default {
+    currentUser: async (_, { album }, { auth }) => {
+        if (!auth || album !== auth.album) {
+            console.log(auth, album);
+            return new Error('Brak uprawnień do danych konta użytkownika');
+        }
+
+        const user = await getRepository(User).findOne(album);
+        user.password = '';
+        user.passwordSalt = '';
+
+        return user;
+    },
     register: async (_, { album, firstName, lastName, password, email, photo }) => {
         const { hash, salt } = encryptPassword(password);
         const user = new User();
