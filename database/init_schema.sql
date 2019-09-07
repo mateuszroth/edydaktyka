@@ -1,10 +1,11 @@
 USE edydaktyka;
 
-CREATE TABLE Students ( # student
+CREATE TABLE Users ( # student
     Album INT NOT NULL,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
     Password VARCHAR(128) NOT NULL,
+    PasswordSalt VARCHAR (256) NOT NULL,
     Email VARCHAR(320) NOT NULL,
     Photo TEXT,
     IsAdmin BOOL DEFAULT FALSE,
@@ -13,12 +14,12 @@ CREATE TABLE Students ( # student
     UNIQUE (Email)
 );
 
-INSERT INTO Students VALUES (0, "Admin", "Admin", "", "mateusz.roth+admin@gmail.com", NULL, TRUE, NULL);
-INSERT INTO Students VALUES (117328, "Mateusz", "Roth", "", "mateusz.roth@gmail.com", NULL, FALSE, NULL);
-INSERT INTO Students VALUES (117111, "Adam", "Nowak", "", "adam.nowak@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Students VALUES (117112, "Barbara", "Bogacka", "", "barbara.bogacka@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Students VALUES (117113, "Cecylia", "Ciągnik", "", "cecylia.ciagnik@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Students VALUES (117114, "Damian", "Dąbrowski", "", "damian.dabrowski@student.put.poznan.pl", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (0, "Admin", "Admin", "", "", "mateusz.roth+admin@gmail.com", NULL, TRUE, NULL);
+INSERT INTO Users VALUES (117328, "Mateusz", "Roth", "", "", "mateusz.roth@gmail.com", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (117111, "Adam", "Nowak", "", "", "adam.nowak@student.put.poznan.pl", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (117112, "Barbara", "Bogacka", "",  "", "barbara.bogacka@student.put.poznan.pl", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (117113, "Cecylia", "Ciągnik", "", "", "cecylia.ciagnik@student.put.poznan.pl", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (117114, "Damian", "Dąbrowski", "", "", "damian.dabrowski@student.put.poznan.pl", NULL, FALSE, NULL);
 
 CREATE TABLE Groups ( # grupa
     ID INT NOT NULL AUTO_INCREMENT,
@@ -42,7 +43,7 @@ CREATE TABLE GroupAssignments ( # new table
     GroupID INT NOT NULL,
     PRIMARY KEY (ID),
     FOREIGN KEY (StudentID)
-        REFERENCES Students (Album),
+        REFERENCES Users (Album),
     FOREIGN KEY (GroupID)
         REFERENCES Groups (ID)
 );
@@ -87,7 +88,7 @@ CREATE TABLE ClassAttendances ( # obecnosc
     ReportAddedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (ID),
     FOREIGN KEY (StudentID)
-        REFERENCES Students (Album),
+        REFERENCES Users (Album),
     FOREIGN KEY (GroupID)
         REFERENCES Groups (ID),
     FOREIGN KEY (ClassID)
@@ -113,7 +114,7 @@ CREATE TABLE Theses ( # dyplom
     Link TEXT,
     PRIMARY KEY (ID),
     FOREIGN KEY (GraduateID)
-        REFERENCES Students (Album)
+        REFERENCES Users (Album)
 );
 
 INSERT INTO Theses VALUES (NULL, 'realizowany', 2019, 'Mateusz Roth', 117328, 'Analiza serwisu edu.andrzeju.pl organizującego współpracę ze studentami w zakresie zajęć oraz prac dyplomowych pod kątem jego użyteczności i ponowna implementacja', 'Node.js React', 'Wykrycie słabych punktów w użyteczności serwisu edu.andrzeju.pl i zaproponowanie ich eliminacji', NULL, NULL);
@@ -126,7 +127,7 @@ CREATE TABLE ThesisVolunteers ( # kandydat
 	StudentID INT NOT NULL,
     CreatedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (ID),
-	FOREIGN KEY (StudentID) REFERENCES Students(Album),
+	FOREIGN KEY (StudentID) REFERENCES Users(Album),
 	FOREIGN KEY (ThesisID) REFERENCES Theses(ID)
 );
 
@@ -139,7 +140,7 @@ CREATE TABLE Consultations ( # rezerwacje
 	StudentID INT NOT NULL,
     ReservationOn DATETIME NOT NULL,
 	PRIMARY KEY (ID),
-	FOREIGN KEY (StudentID) REFERENCES Students(Album)
+	FOREIGN KEY (StudentID) REFERENCES Users(Album)
 );
 
 INSERT INTO Consultations VALUES (NULL, 117328, '2019-10-01 00:00:00');
