@@ -5,21 +5,22 @@ CREATE TABLE Users ( # student
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
     Password VARCHAR(128) NOT NULL,
-    PasswordSalt VARCHAR (256) NOT NULL,
+    PasswordSalt VARCHAR (8) NOT NULL,
     Email VARCHAR(320) NOT NULL,
     Photo TEXT,
     IsAdmin BOOL DEFAULT FALSE,
+    IsActive BOOL DEFAULT TRUE,
     CreatedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (Album),
     UNIQUE (Email)
 );
 
-INSERT INTO Users VALUES (0, "Admin", "Admin", "", "", "mateusz.roth+admin@gmail.com", NULL, TRUE, NULL);
-INSERT INTO Users VALUES (117328, "Mateusz", "Roth", "", "", "mateusz.roth@gmail.com", NULL, FALSE, NULL);
-INSERT INTO Users VALUES (117111, "Adam", "Nowak", "", "", "adam.nowak@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Users VALUES (117112, "Barbara", "Bogacka", "",  "", "barbara.bogacka@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Users VALUES (117113, "Cecylia", "Ciągnik", "", "", "cecylia.ciagnik@student.put.poznan.pl", NULL, FALSE, NULL);
-INSERT INTO Users VALUES (117114, "Damian", "Dąbrowski", "", "", "damian.dabrowski@student.put.poznan.pl", NULL, FALSE, NULL);
+INSERT INTO Users VALUES (0, "Admin", "Admin", "", "", "mateusz.roth+admin@gmail.com", NULL, TRUE, TRUE, NULL);
+INSERT INTO Users VALUES (117328, "Mateusz", "Roth", "", "", "mateusz.roth@gmail.com", NULL, FALSE, TRUE, NULL);
+INSERT INTO Users VALUES (117111, "Adam", "Nowak", "", "", "adam.nowak@student.put.poznan.pl", NULL, FALSE, TRUE, NULL);
+INSERT INTO Users VALUES (117112, "Barbara", "Bogacka", "",  "", "barbara.bogacka@student.put.poznan.pl", NULL, FALSE, TRUE, NULL);
+INSERT INTO Users VALUES (117113, "Cecylia", "Ciągnik", "", "", "cecylia.ciagnik@student.put.poznan.pl", NULL, FALSE, TRUE, NULL);
+INSERT INTO Users VALUES (117114, "Damian", "Dąbrowski", "", "", "damian.dabrowski@student.put.poznan.pl", NULL, FALSE, TRUE, NULL);
 
 CREATE TABLE Groups ( # grupa
     ID INT NOT NULL AUTO_INCREMENT,
