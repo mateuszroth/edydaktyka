@@ -15,7 +15,13 @@ export default {
 
         return user;
     },
-    register: async (_, { album, firstName, lastName, password, email, photo }): Promise<string> => {
+    register: async (_, { album, firstName, lastName, password, email, photo }): Promise<string | Error> => {
+        const existingUser = await getRepository(User).findOne(album);
+        const existingEmailUser = await getRepository(User).findOne(email);
+        if (existingUser || existingEmailUser) {
+            return new Error('Istnieje już użytkownik o podanych danych');
+        }
+
         const { hash, salt } = encryptPassword(password);
         const user = new User();
         user.album = album;
