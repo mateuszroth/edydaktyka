@@ -1,8 +1,16 @@
 import authResolvers from 'modules/auth/resolvers';
 import groupsResolvers from 'modules/groups/resolvers';
+import classResolvers from 'modules/classes/resolvers';
 
 const typeDefs = `
-input NewGroup {
+scalar Date
+input InputClass {
+  groupId: ID!
+  classNumber: Int!
+  takenOn: Date
+  title: String!
+}
+input InputGroup {
   modeOfStudy: String!
   fieldOfStudy: String!
   groupNumber: String!
@@ -10,6 +18,13 @@ input NewGroup {
   courseName: String!
   link: String
   description: String
+}
+type Class {
+  id: ID!
+  groupId: Int!
+  classNumber: Int!
+  takenOn: Date
+  title: String!
 }
 type Group {
   id: ID!
@@ -22,6 +37,7 @@ type Group {
   description: String
   isActive: Boolean!
   users: [User]!
+  classes: [Class]!
 }
 type User {
   album: Int!
@@ -43,7 +59,8 @@ type Mutation {
   resetPassword(album: Int!): String!,
   login(album: Int!, password: String!): String!
   assignUserToGroup(id: ID!): String!
-  addGroup(group: NewGroup): String!
+  addGroup(group: InputGroup): String!
+  addClass(classData: InputClass): String!
 }
 `;
 
@@ -59,6 +76,7 @@ const resolvers = {
         login: authResolvers.login,
         assignUserToGroup: groupsResolvers.assignUserToGroup,
         addGroup: groupsResolvers.addGroup,
+        addClass: classResolvers.addClass,
     },
 };
 
