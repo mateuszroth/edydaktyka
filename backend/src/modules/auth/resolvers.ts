@@ -29,10 +29,16 @@ export default {
         }
         const newUser = await getRepository(User).save(user);
 
-        newUser.password = '';
-        newUser.passwordSalt = '';
-
-        return jwt.sign(newUser, salt, { expiresIn: '30d' });
+        return jwt.sign(
+            {
+                album: newUser.album,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+            },
+            salt,
+            { expiresIn: '30d' },
+        );
     },
     resetPassword: async (_, { album }) => {
         const user = await getRepository(User).findOne(album);
