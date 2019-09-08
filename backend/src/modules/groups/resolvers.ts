@@ -24,11 +24,7 @@ export default {
         user.groups = user.groups || [];
         user.groups.push(group);
 
-        group.users = group.users || [];
-        group.users.push(user);
-
         await getRepository(User).save(user);
-        await getRepository(Group).save(group);
 
         return 'Zapisano przydział do grupy';
     },

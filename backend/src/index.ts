@@ -9,7 +9,7 @@ dotenv.config();
 
 const server = new GraphQLServer({
     ...schema,
-    context: req => ({ ...req }),
+    context: (req: Request): Request => ({ ...req }),
     middlewares: [authenticate],
 });
 

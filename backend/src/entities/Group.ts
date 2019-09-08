@@ -58,6 +58,6 @@ export default class Group extends BaseEntity {
     @Column({ type: 'boolean', default: true })
     isActive: boolean;
 
-    @ManyToMany(type => User, user => user.groups)
-    users: User[];
+    @ManyToMany(() => User, user => user.groups)
+    users: Promise<User[]>;
 }

@@ -33,13 +33,13 @@ export default class User extends BaseEntity {
     @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP', nullable: true })
     createdOn: Date;
 
-    @ManyToMany(type => Group, group => group.users, {
-        eager: true
+    @ManyToMany(() => Group, group => group.users, {
+        eager: true,
     })
     @JoinTable({
         name: 'user_group',
-        joinColumn: { name: 'user_id', referencedColumnName: 'album'},
-        inverseJoinColumn: { name: 'group_id', referencedColumnName: 'id'},
+        joinColumn: { name: 'user_id', referencedColumnName: 'album' },
+        inverseJoinColumn: { name: 'group_id', referencedColumnName: 'id' },
     })
     groups: Group[];
 }

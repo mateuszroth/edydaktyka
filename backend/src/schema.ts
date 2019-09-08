@@ -12,6 +12,7 @@ type Group {
   link: String
   description: String
   isActive: Boolean!
+  users: [User]!
 }
 type User {
   album: Int!
@@ -21,7 +22,7 @@ type User {
   photo: String
   isActive: Boolean!
   isAdmin: Boolean!
-  groups: [Group]
+  groups: [Group]!
 }
 type Query {
   hello(name: String): String!
@@ -38,7 +39,7 @@ type Mutation {
 
 const resolvers = {
     Query: {
-        hello: (_, { name }) => `Hello ${name || 'World'}`,
+        hello: (_, { name }): string => `Hello ${name || 'World'}`,
         currentUser: authResolvers.currentUser,
         groups: groupsResolvers.groups,
     },
