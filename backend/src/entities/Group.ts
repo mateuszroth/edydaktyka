@@ -1,5 +1,15 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import User from 'entities/User';
+
+export interface GroupType {
+    modeOfStudy: ModeOfStudy;
+    fieldOfStudy: string;
+    groupNumber: GroupNumber;
+    groupHalf: string;
+    courseName: string;
+    link: string;
+    description: string;
+}
 
 export enum ModeOfStudy {
     BLANK = '',
