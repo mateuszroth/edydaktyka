@@ -9,6 +9,10 @@ export default {
         return groups;
     },
     assignUserToGroup: async (_, { id }, { auth }): Promise<string | Error> => {
+        if (!auth) {
+            return new Error('Brak uprawnień.');
+        }
+
         const group = await getRepository(Group).findOne({ id: id });
 
         if (!group) {
