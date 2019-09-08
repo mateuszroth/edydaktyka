@@ -1,7 +1,7 @@
 {
-    "name": "eduandrzeju-backend",
+    "name": "edydaktyka-backend",
     "version": "1.0.0",
-    "description": "A backend for the eduandrzeju system",
+    "description": "Backend for the edydaktyka system",
     "main": "index.js",
     "scripts": {
         "test": "echo \"No test specified for frontend\"",
@@ -9,14 +9,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/mateuszroth/eduandrzeju.git"
+        "url": "git+https://github.com/mateuszroth/edydaktyka.git"
     },
     "author": "Mateusz Roth <mateusz.roth@gmail.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/mateuszroth/eduandrzeju/issues"
+        "url": "https://github.com/mateuszroth/edydaktyka/issues"
     },
-    "homepage": "https://github.com/mateuszroth/eduandrzeju#readme",
+    "homepage": "https://github.com/mateuszroth/edydaktyka#readme",
     "dependencies": {
         "apollo-server": "^2.9.3",
         "dotenv": "^8.1.0",

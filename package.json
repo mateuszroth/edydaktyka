@@ -1,5 +1,5 @@
 {
-  "name": "eduandrzeju",
+  "name": "edydaktyka",
   "version": "1.0.0",
   "scripts": {
     "setup": "npx concurrently \"cd backend && npm install\" \"cd frontend && npm install\"",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mateuszroth/eduandrzeju.git"
+    "url": "git+https://github.com/mateuszroth/edydaktyka.git"
   },
   "author": "Mateusz Roth <mateusz.roth@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mateuszroth/eduandrzeju/issues"
+    "url": "https://github.com/mateuszroth/edydaktyka/issues"
   },
-  "homepage": "https://github.com/mateuszroth/eduandrzeju#readme",
+  "homepage": "https://github.com/mateuszroth/edydaktyka#readme",
   "dependencies": {},
   "devDependencies": {
     "concurrently": "^4.1.0"

@@ -1,5 +1,5 @@
 {
-  "name": "eduandrzeju",
+  "name": "eduandrzeedydaktykaju",
   "version": "1.0.0",
   "description": "System eDydaktyka",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mateuszroth/eduandrzeju.git"
+    "url": "git+https://github.com/mateuszroth/edydaktyka.git"
   },
   "author": "Mateusz Roth <mateusz.roth@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mateuszroth/eduandrzeju/issues"
+    "url": "https://github.com/mateuszroth/edydaktyka/issues"
   },
-  "homepage": "https://github.com/mateuszroth/eduandrzeju#readme",
+  "homepage": "https://github.com/mateuszroth/edydaktyka#readme",
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "antd": "^3.10.7",
