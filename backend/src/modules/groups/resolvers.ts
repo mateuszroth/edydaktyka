@@ -3,8 +3,20 @@ import Group, { GroupType } from 'entities/Group';
 import User from 'entities/User';
 
 export default {
-    groups: async (_, { isActive = true }): Promise<Group[]> => {
+    groups: async (_, { isActive = true }, { auth }): Promise<Group[]> => {
         const groups = await getRepository(Group).find({ isActive });
+
+        if (auth) {
+            const user = await getRepository(User).findOne({ album: auth.album });
+
+            if (user.isAdmin) {
+                return groups;
+            }
+        }
+
+        groups.forEach(async group => {
+            group.users = Promise.resolve([]);
+        });
 
         return groups;
     },
