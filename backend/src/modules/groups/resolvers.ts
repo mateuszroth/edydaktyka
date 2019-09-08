@@ -3,12 +3,12 @@ import Group from 'entities/Group';
 import User from 'entities/User';
 
 export default {
-    groups: async (_, { isActive = true }) => {
+    groups: async (_, { isActive = true }): Promise<Group[]> => {
         const groups = await getRepository(Group).find({ isActive });
 
         return groups;
     },
-    assignUserToGroup: async (_, { id }, { auth }) => {
+    assignUserToGroup: async (_, { id }, { auth }): Promise<string | Error> => {
         const group = await getRepository(Group).findOne({ id: id });
 
         if (!group) {

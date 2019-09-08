@@ -4,7 +4,7 @@ import encryptPassword from 'modules/auth/utils/encryptPassword';
 import User from 'entities/User';
 
 export default {
-    currentUser: async (_, { album }, { auth }) => {
+    currentUser: async (_, { album }, { auth }): Promise<User | Error> => {
         if (!auth || album !== auth.album) {
             return new Error('Brak uprawnień do danych konta użytkownika');
         }
@@ -15,7 +15,7 @@ export default {
 
         return user;
     },
-    register: async (_, { album, firstName, lastName, password, email, photo }) => {
+    register: async (_, { album, firstName, lastName, password, email, photo }): Promise<string> => {
         const { hash, salt } = encryptPassword(password);
         const user = new User();
         user.album = album;
@@ -40,7 +40,7 @@ export default {
             { expiresIn: '30d' },
         );
     },
-    resetPassword: async (_, { album }) => {
+    resetPassword: async (_, { album }): Promise<string | Error> => {
         const user = await getRepository(User).findOne(album);
 
         if (!user) {
@@ -49,7 +49,7 @@ export default {
 
         // TODO send email
     },
-    login: async (_, { album, password }) => {
+    login: async (_, { album, password }): Promise<string | Error> => {
         const user = await getRepository(User).findOne(album);
 
         if (!user) {

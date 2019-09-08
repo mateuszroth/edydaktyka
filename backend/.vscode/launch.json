@@ -8,7 +8,7 @@
             "name": "Current TS File",
             "type": "node",
             "request": "launch",
-            "args": ["${relativeFile}"],
+            "args": ["${relativeFile}", "--watch"],
             "program": "${workspaceFolder}/src/debug.js",
             "runtimeArgs": ["--nolazy", "-r", "ts-node"],
             "sourceMaps": true,
