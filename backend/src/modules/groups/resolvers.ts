@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import Group, { GroupType } from 'entities/Group';
 import User from 'entities/User';
+import ClassAttendance from 'entities/ClassAttendance';
 
 export default {
     groups: async (_, { isActive = true }, { auth }): Promise<Group[]> => {
@@ -19,6 +20,23 @@ export default {
         });
 
         return groups;
+    },
+    groupAttendances: async (_, { id }, { auth }): Promise<ClassAttendance[] | Error> => {
+        const group = await getRepository(Group).findOne({ id });
+
+        if (!group) {
+            return new Error('Grupa nie istnieje.');
+        }
+
+        if (auth) {
+            const user = await getRepository(User).findOne({ album: auth.album });
+
+            if (user.isAdmin) {
+                return group.attendances;
+            }
+        }
+
+        return new Error('Brak uprawnień.');
     },
     assignUserToGroup: async (_, { id }, { auth }): Promise<string | Error> => {
         if (!auth) {

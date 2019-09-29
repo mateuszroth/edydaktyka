@@ -19,6 +19,17 @@ input InputGroup {
   link: String
   description: String
 }
+type ClassAttendance {
+  id: ID!
+  classId: Int!
+  groupId: Int!
+  userId: Int!
+  isPresent: Boolean!
+  isReportRequired: Boolean!
+  reportFile: String
+  reportGrade: Int
+  reportAddedOn: Date
+}
 type Class {
   id: ID!
   groupId: Int!
@@ -53,6 +64,8 @@ type Query {
   hello(name: String): String!
   currentUser(album: Int!): User!
   groups(isActive: Boolean): [Group]!
+  groupAttendances(id: ID!): [ClassAttendance]!
+  classAttendances(id: ID!): [ClassAttendance]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String): String!,
@@ -69,6 +82,8 @@ const resolvers = {
         hello: (_, { name }): string => `Hello ${name || 'World'}`,
         currentUser: authResolvers.currentUser,
         groups: groupsResolvers.groups,
+        groupAttendances: groupsResolvers.groupAttendances,
+        classAttendances: classResolvers.classAttendances,
     },
     Mutation: {
         register: authResolvers.register,
