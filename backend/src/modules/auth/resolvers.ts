@@ -2,6 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import encryptPassword from 'modules/auth/utils/encryptPassword';
 import User from 'entities/User';
+import Group from 'entities/Group';
 
 export default {
     currentUser: async (_, { album }, { auth }): Promise<User | Error> => {
@@ -15,7 +16,7 @@ export default {
 
         return user;
     },
-    register: async (_, { album, firstName, lastName, password, email, photo }): Promise<string | Error> => {
+    register: async (_, { album, firstName, lastName, password, email, photo, groupIds }): Promise<string | Error> => {
         const existingUser = await getRepository(User).findOne(album);
         const existingEmailUser = await getRepository(User).findOne(email);
         if (existingUser || existingEmailUser) {
@@ -30,6 +31,7 @@ export default {
         user.email = email;
         user.password = hash;
         user.passwordSalt = salt;
+        user.groups = await getRepository(Group).findByIds(groupIds);
         if (photo) {
             user.photo = photo;
         }

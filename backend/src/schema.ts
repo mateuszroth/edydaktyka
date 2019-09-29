@@ -68,7 +68,7 @@ type Query {
   classAttendances(id: ID!): [ClassAttendance]!
 }
 type Mutation {
-  register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String): String!,
+  register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
   resetPassword(album: Int!): String!,
   login(album: Int!, password: String!): String!
   assignUserToGroup(id: ID!): String!
