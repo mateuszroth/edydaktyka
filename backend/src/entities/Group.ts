@@ -1,6 +1,7 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
 import User from 'entities/User';
 import Class from './Class';
+import ClassAttendance from './ClassAttendance';
 
 export interface GroupType {
     modeOfStudy: ModeOfStudy;
@@ -74,4 +75,7 @@ export default class Group extends BaseEntity {
 
     @OneToMany(() => Class, classEntity => classEntity.group)
     classes: Promise<Class[]>;
+
+    @OneToMany(() => ClassAttendance, ClassAttendance => ClassAttendance.group)
+    attendances: Promise<ClassAttendance[]>;
 }

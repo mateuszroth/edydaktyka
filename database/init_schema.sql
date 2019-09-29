@@ -81,14 +81,14 @@ CREATE TABLE ClassAttendances ( # obecnosc
     ID INT NOT NULL AUTO_INCREMENT,
     ClassID INT NOT NULL,
     GroupID INT NOT NULL,
-    StudentID INT NOT NULL,
-    IsPresent BOOL NOT NULL DEFAULT TRUE,
+    UserID INT NOT NULL,
+    IsPresent BOOL NOT NULL DEFAULT FALSE,
     IsReportRequired BOOL NOT NULL DEFAULT TRUE,
-    ReportFile VARCHAR(255),
+    ReportFile TEXT,
     ReportGrade INT,
-    ReportAddedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
+    ReportAddedOn DATETIME,
     PRIMARY KEY (ID),
-    FOREIGN KEY (StudentID)
+    FOREIGN KEY (UserID)
         REFERENCES Users (Album),
     FOREIGN KEY (GroupID)
         REFERENCES Groups (ID),

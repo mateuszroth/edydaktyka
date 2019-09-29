@@ -1,5 +1,6 @@
-import { Entity, PrimaryColumn, Column, BaseEntity, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryColumn, Column, BaseEntity, ManyToMany, OneToMany, JoinTable } from 'typeorm';
 import Group from 'entities/Group';
+import ClassAttendance from './ClassAttendance';
 
 @Entity()
 export default class User extends BaseEntity {
@@ -42,4 +43,7 @@ export default class User extends BaseEntity {
         inverseJoinColumn: { name: 'group_id', referencedColumnName: 'id' },
     })
     groups: Group[];
+
+    @OneToMany(() => ClassAttendance, classAttendance => classAttendance.user)
+    attendances: Promise<ClassAttendance[]>;
 }

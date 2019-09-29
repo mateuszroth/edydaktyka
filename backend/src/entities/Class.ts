@@ -1,5 +1,6 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
 import Group from './Group';
+import ClassAttendance from './ClassAttendance';
 
 export interface ClassType {
     groupId: number;
@@ -27,4 +28,7 @@ export default class Class extends BaseEntity {
 
     @ManyToOne(() => Group, group => group.classes)
     group: Group;
+
+    @OneToMany(() => ClassAttendance, ClassAttendance => ClassAttendance.class)
+    attendances: Promise<ClassAttendance[]>;
 }
