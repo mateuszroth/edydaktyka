@@ -13,11 +13,14 @@ const server = new GraphQLServer({
     middlewares: [authenticate],
 });
 
-createConnection()
-    .then(() => {
+async function startServer() {
+    try {
+        const dbConnection = await createConnection();
         server.start(() => console.log('Server is running on localhost:4000'));
-    })
-    .catch(err => {
+    } catch (err) {
         console.log(err);
         console.log("Couldn't connect to the database.");
-    });
+    }
+}
+
+startServer();
