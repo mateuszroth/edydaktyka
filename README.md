@@ -1,6 +1,7 @@
 # System eDydaktyka
 System stworzony na podstawie aplikacji edu.andrzeju.pl.
 
+
 ## Wymagania
 
 Do projektu wymagany jest Node.js w wersji 12+.
