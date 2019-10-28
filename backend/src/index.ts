@@ -13,10 +13,18 @@ const server = new GraphQLServer({
     middlewares: [authenticate],
 });
 
+const opts = {
+    port: 4000,
+    cors: {
+        credentials: true,
+        origin: ['http://localhost:3000'], // TODO: get from env
+    },
+};
+
 async function startServer() {
     try {
         const dbConnection = await createConnection();
-        server.start(() => console.log('Server is running on localhost:4000'));
+        server.start(opts, () => console.log('Server is running on localhost:4000'));
     } catch (err) {
         console.log(err);
         console.log("Couldn't connect to the database.");
