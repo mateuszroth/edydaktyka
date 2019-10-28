@@ -9,7 +9,7 @@ export enum Grades {
     THREEPLUS = 35,
     FOUR = 40,
     FOURPLUS = 45,
-    FIVE = 5
+    FIVE = 5,
 }
 
 @Entity()

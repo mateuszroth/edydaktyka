@@ -77,7 +77,11 @@ export default {
 
         return jwt.sign(returnUser, salt, { expiresIn: '30d' });
     },
-    editAccount: async (_, { album, firstName, lastName, email, photo, groupIds }, { auth }): Promise<string | Error> => {
+    editAccount: async (
+        _,
+        { album, firstName, lastName, email, photo, groupIds },
+        { auth },
+    ): Promise<string | Error> => {
         if (!auth || album !== auth.album) {
             return new Error('Brak uprawnień do danych konta użytkownika');
         }
@@ -105,7 +109,7 @@ export default {
 
         await getRepository(User).save(existingUser);
 
-        return "Zmieniono dane użytkownika";
+        return 'Zmieniono dane użytkownika';
     },
     changePassword: async (_, { album, password }, { auth }): Promise<string | Error> => {
         if (!auth || album !== auth.album) {
