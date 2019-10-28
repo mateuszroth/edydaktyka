@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
-const AuthContext = React.createContext()
+const AuthContext = React.createContext();
 
 class AuthProvider extends Component {
   state = {
@@ -23,17 +23,17 @@ class AuthProvider extends Component {
             this.setState({
               loggedIn: false,
               userId: null,
-              user: null,
+              user: null
             })
         }}
       >
         {this.props.children}
       </AuthContext.Provider>
-    )
+    );
   }
 }
 
-const AuthConsumer = AuthContext.Consumer
+const AuthConsumer = AuthContext.Consumer;
 
-export default AuthProvider
-export { AuthConsumer }
+export default AuthProvider;
+export { AuthConsumer };

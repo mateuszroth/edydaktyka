@@ -1,24 +1,29 @@
 .app {
-	font-family: Helvetica, Arial, sans-serif;
-	min-height: 100vh;
+  font-family: Helvetica, Arial, sans-serif;
+  min-height: 100vh;
 
-	h1, h2, h3, h4, h5, h6 {
-		font-family: Helvetica, Arial, sans-serif;
-	}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: Helvetica, Arial, sans-serif;
+  }
 }
 
 .header {
-	font-size: 11px;
+  font-size: 11px;
 }
 
 .logo {
-	display: inline;
+  display: inline;
 }
 
 .footer {
-	text-align: center;
+  text-align: center;
 }
 
 .footerAnnotation {
-	font-size: 10px;
+  font-size: 10px;
 }
