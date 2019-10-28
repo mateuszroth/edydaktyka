@@ -77,4 +77,61 @@ export default {
 
         return jwt.sign(returnUser, salt, { expiresIn: '30d' });
     },
+    editAccount: async (_, { album, firstName, lastName, email, photo, groupIds }, { auth }): Promise<string | Error> => {
+        if (!auth || album !== auth.album) {
+            return new Error('Brak uprawnień do danych konta użytkownika');
+        }
+
+        const existingUser = await getRepository(User).findOne(album);
+        if (!existingUser) {
+            return new Error('Nie istnieje użytkownik o podanych danych');
+        }
+
+        if (firstName) {
+            existingUser.firstName = firstName;
+        }
+        if (lastName) {
+            existingUser.lastName = lastName;
+        }
+        if (email) {
+            existingUser.email = email;
+        }
+        if (groupIds) {
+            existingUser.groups = await getRepository(Group).findByIds(groupIds);
+        }
+        if (photo) {
+            existingUser.photo = photo;
+        }
+
+        await getRepository(User).save(existingUser);
+
+        return "Zmieniono dane użytkownika";
+    },
+    changePassword: async (_, { album, password }, { auth }): Promise<string | Error> => {
+        if (!auth || album !== auth.album) {
+            return new Error('Brak uprawnień do danych konta użytkownika');
+        }
+
+        const existingUser = await getRepository(User).findOne(album);
+        if (!existingUser || !password) {
+            return new Error('Nie istnieje użytkownik o podanych danych');
+        }
+
+        const { hash, salt } = encryptPassword(password);
+        existingUser.password = hash;
+        existingUser.passwordSalt = salt;
+
+        await getRepository(User).save(existingUser);
+
+        return jwt.sign(
+            {
+                album: existingUser.album,
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email,
+            },
+            salt,
+            { expiresIn: '30d' },
+        );
+    },
 };

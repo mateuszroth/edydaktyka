@@ -71,6 +71,8 @@ type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
   resetPassword(album: Int!): String!,
   login(album: Int!, password: String!): String!
+  editAccount(album: Int!, firstName: String, lastName: String, email: String, photo: String, groupIds: [Int]): String!
+  changePassword(album: Int!, password: String!): String!
   assignUserToGroup(id: ID!): String!
   addGroup(group: InputGroup): String!
   addClass(classData: InputClass): String!
@@ -89,6 +91,8 @@ const resolvers = {
         register: authResolvers.register,
         resetPassword: authResolvers.resetPassword,
         login: authResolvers.login,
+        editAccount: authResolvers.editAccount,
+        changePassword: authResolvers.changePassword,
         assignUserToGroup: groupsResolvers.assignUserToGroup,
         addGroup: groupsResolvers.addGroup,
         addClass: classResolvers.addClass,
