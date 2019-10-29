@@ -4,7 +4,7 @@ import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import withApollo from "next-with-apollo";
 
-const GRAPHQL_URL = "http://localhost:4000"; // TODO: get from env
+const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const httpLink = createHttpLink({ uri: GRAPHQL_URL });
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists

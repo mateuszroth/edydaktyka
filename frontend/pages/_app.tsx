@@ -15,7 +15,11 @@ import stylesheet from "antd/dist/antd.min.css";
 const { SubMenu } = Menu;
 const { Header, Footer } = Layout;
 
-class MyApp extends App {
+interface AppProps {
+  apollo: any
+}
+
+class MyApp extends App<AppProps> {
   static async getInitialProps({ Component, router, ctx }) {
     let pageProps = {};
 

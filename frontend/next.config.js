@@ -6,6 +6,9 @@ module.exports = withSass({
     importLoaders: 1,
     localIdentName: "[local]__[hash:base64:5]"
   },
+  env: {
+    GRAPHQL_URL: "http://localhost:4000" // TODO: set for production
+  },
   webpack: (config, { dev }) => {
     // Unshift polyfills in main entrypoint.
     // https://github.com/zeit/next.js/issues/2060
