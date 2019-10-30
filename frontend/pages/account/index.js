@@ -2,7 +2,7 @@ import React from "react";
 import { Alert, Button, Layout, notification } from "antd";
 import Router from "next/router";
 import Breadcrumb from "../../components/pages/questionnaire/Breadcrumb";
-import { AuthConsumer } from "../../components/providers/AuthProvider";
+import { AuthConsumer } from "../../components/stores/AuthContext";
 import styles from "./index.module.scss";
 
 const PAGE_NAME = "Twoje konto";

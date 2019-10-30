@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Icon, Input, Button, notification } from "antd";
 import Router from "next/router";
 import Link from "next/link";
-import { AuthConsumer } from "../../providers/AuthProvider";
+import { AuthConsumer } from "../../stores/AuthContext";
 import styles from "./LoginForm.module.scss";
 
 class NormalLoginForm extends React.Component {

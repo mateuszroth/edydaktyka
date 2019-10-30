@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
+import { ForbiddenError } from 'apollo-server';
 import encryptPassword from 'modules/auth/utils/encryptPassword';
 import User from 'entities/User';
 import Group from 'entities/Group';
@@ -18,9 +19,9 @@ export default {
     },
     register: async (_, { album, firstName, lastName, password, email, photo, groupIds }): Promise<string | Error> => {
         const existingUser = await getRepository(User).findOne(album);
-        const existingEmailUser = await getRepository(User).findOne(email);
+        const existingEmailUser = await getRepository(User).findOne({ email: email });
         if (existingUser || existingEmailUser) {
-            return new Error('Istnieje już użytkownik o podanych danych');
+            return new ForbiddenError('Istnieje już użytkownik o podanych danych');
         }
 
         const { hash, salt } = encryptPassword(password);

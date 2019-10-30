@@ -17,7 +17,7 @@ const opts = {
     port: 4000,
     cors: {
         credentials: true,
-        origin: ['http://localhost:3000'], // TODO: get from env
+        origin: ['http://localhost:3000', 'https://localhost:3000'], // TODO: get from env
     },
 };
 

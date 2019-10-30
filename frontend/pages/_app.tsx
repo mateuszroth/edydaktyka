@@ -4,11 +4,12 @@ import Link from "next/link";
 import Head from "next/head";
 import { Layout, Menu, Icon, LocaleProvider, BackTop } from "antd";
 import plPL from "antd/lib/locale-provider/pl_PL";
-import AuthProvider, {
+import {
+  AuthProvider,
   AuthConsumer
-} from "../components/providers/AuthProvider";
+} from "../components/stores/AuthContext";
 import { ApolloProvider } from "react-apollo";
-import withApolloClient from "../components/providers/withApolloClient";
+import withApolloClient from "../components/hocs/withApolloClient";
 import styles from "./_app.module.scss";
 import stylesheet from "antd/dist/antd.min.css";
 
@@ -16,7 +17,7 @@ const { SubMenu } = Menu;
 const { Header, Footer } = Layout;
 
 interface AppProps {
-  apollo: any
+  apollo: any;
 }
 
 class MyApp extends App<AppProps> {
@@ -232,7 +233,7 @@ class MyApp extends App<AppProps> {
                         </SubMenu>
 
                         {/* tylko dla niezalogowanych */}
-                        {!auth.loggedIn && (
+                        {!auth.isLoggedIn && (
                           <Menu.Item key="6">
                             <Link href="/questionnaire">
                               <a>
@@ -242,7 +243,7 @@ class MyApp extends App<AppProps> {
                             </Link>
                           </Menu.Item>
                         )}
-                        {!auth.loggedIn && (
+                        {!auth.isLoggedIn && (
                           <Menu.Item key="7">
                             <Link href="/register">
                               <a>
@@ -252,7 +253,7 @@ class MyApp extends App<AppProps> {
                             </Link>
                           </Menu.Item>
                         )}
-                        {!auth.loggedIn && (
+                        {!auth.isLoggedIn && (
                           <Menu.Item key="8">
                             <Link href="/login">
                               <a>
@@ -265,7 +266,7 @@ class MyApp extends App<AppProps> {
                         {/* tylko dla niezalogowanych */}
 
                         {/* tylko dla zalogowanych */}
-                        {auth.loggedIn && (
+                        {auth.isLoggedIn && (
                           <Menu.Item key="9">
                             <Link href="/schedule">
                               <a>
@@ -275,7 +276,7 @@ class MyApp extends App<AppProps> {
                             </Link>
                           </Menu.Item>
                         )}
-                        {auth.loggedIn && (
+                        {auth.isLoggedIn && (
                           <Menu.Item key="10">
                             <Link href="/team">
                               <a>
@@ -285,7 +286,7 @@ class MyApp extends App<AppProps> {
                             </Link>
                           </Menu.Item>
                         )}
-                        {auth.loggedIn && (
+                        {auth.isLoggedIn && (
                           <Menu.Item key="11">
                             <Link href="/account">
                               <a>
