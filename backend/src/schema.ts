@@ -62,7 +62,7 @@ type User {
 }
 type Query {
   hello(name: String): String!
-  currentUser(album: Int!): User!
+  currentUser(album: Int): User!
   groups(isActive: Boolean): [Group]!
   groupAttendances(id: ID!): [ClassAttendance]!
   classAttendances(id: ID!): [ClassAttendance]!

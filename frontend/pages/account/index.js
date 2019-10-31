@@ -3,6 +3,7 @@ import { Alert, Button, Layout, notification } from "antd";
 import Router from "next/router";
 import Breadcrumb from "../../components/pages/questionnaire/Breadcrumb";
 import { AuthConsumer } from "../../components/stores/AuthContext";
+import { getLongGroupName } from "../../helpers/groups";
 import styles from "./index.module.scss";
 
 const PAGE_NAME = "Twoje konto";
@@ -45,9 +46,14 @@ export default class extends React.Component {
                 <div className={styles.content}>
                   Twoje dane:
                   <ul>
-                    <li>Numer indeksu {user && user.id}</li>
-                    <li>Imię {user && user.name}</li>
-                    <li>Nazwisko {user && user.surname}</li>
+                    <li>Numer indeksu {user && user.album}</li>
+                    <li>Imię {user && user.firstName}</li>
+                    <li>Nazwisko {user && user.lastName}</li>
+                    <li>Grupy
+                      <ul>
+                        {user && user.groups && user.groups.map(group => <li>{getLongGroupName(group)}</li>)}
+                      </ul>
+                    </li>
                   </ul>
                   <Button
                     type="primary"

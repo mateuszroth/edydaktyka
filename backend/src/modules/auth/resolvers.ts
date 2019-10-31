@@ -7,11 +7,11 @@ import Group from 'entities/Group';
 
 export default {
     currentUser: async (_, { album }, { auth }): Promise<User | Error> => {
-        if (!auth || album !== auth.album) {
+        if (!auth || (album && album !== auth.album)) {
             return new Error('Brak uprawnień do danych konta użytkownika');
         }
 
-        const user = await getRepository(User).findOne(album);
+        const user = await getRepository(User).findOne(album || auth.album);
         user.password = '';
         user.passwordSalt = '';
 
