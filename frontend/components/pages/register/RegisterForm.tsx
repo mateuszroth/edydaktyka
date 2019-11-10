@@ -9,14 +9,15 @@ import {
   Checkbox,
   Row,
   Spin,
-  Result
+  Result,
+  notification
 } from "antd";
 import gql from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { FormComponentProps } from "antd/lib/form/Form";
 import sortBy from "lodash/sortBy";
 import { AuthContext } from "../../stores/AuthContext";
-import useAlreadyLoggedInProtection from "../../hocs/useAlreadyLoggedInProtection";
+import useLoggedInRedirection from "../../hocs/useLoggedInRedirection";
 import { getLongGroupName } from "../../../helpers/groups";
 import styles from "./RegisterForm.module.scss";
 
@@ -58,7 +59,7 @@ interface RegisterFormProps extends FormComponentProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ form }) => {
-  useAlreadyLoggedInProtection();
+  useLoggedInRedirection();
   const {
     loading: groupsLoading,
     error: groupsError,
@@ -68,12 +69,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ form }) => {
   const [register, { data, error }] = useMutation(REGISTER);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
   const [isRepeatPasswordDirty, setIsRepeatPasswordDirty] = useState(false);
-  const { setAuthToken } = useContext(AuthContext);
+  const { setAuthToken, state: authState } = useContext(AuthContext);
 
   useEffect(() => {
     if (data) {
       setAuthToken(data.register);
       Router.push("/account");
+      notification.success({
+        message: `Witaj ${
+          authState && authState.user ? authState.user.firstName : ""
+        }`,
+        description: "Pomyślnie zalogowano"
+      });
     }
   }, [data]);
 
@@ -112,7 +119,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ form }) => {
     setIsSubmitDisabled(true);
     validateFields((err, values) => {
       if (!err) {
-        console.log("Przesłano wartości: ", values);
         register({
           variables: {
             album: parseInt(values.userName, 10),
@@ -120,7 +126,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ form }) => {
             lastName: values.surname,
             password: values.password,
             email: values.email,
-            groupIds: (values.groupIds || []).map(v => parseInt(v, 10)) || [0]
+            groupIds: (values.groups || []).map(v => parseInt(v, 10)) || [0]
           }
         });
       }

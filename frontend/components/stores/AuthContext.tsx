@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 
-const AuthContext = React.createContext({
+interface ContextValues {
+  state: State;
+  setAuthToken: (token: string) => void;
+  logIn: () => void;
+  logOut: () => void;
+}
+
+const AuthContext = React.createContext<ContextValues>({
   state: null,
-  setAuthToken: null,
-  logIn: null,
-  logOut: null
+  setAuthToken: () => null,
+  logIn: () => null,
+  logOut: () => null
 });
 
 const CURRENT_USER = gql`
@@ -30,8 +37,27 @@ const CURRENT_USER = gql`
   }
 `;
 
-const AuthProvider: React.FC<{}> = ({ children }) => {
-  const initState = {
+interface User {
+  firstName: string;
+  lastName: string;
+  album: number;
+  groups: any[];
+}
+
+interface State {
+  isLoggedIn: boolean;
+  album?: number;
+  user?: User;
+  token?: string;
+}
+
+interface AuthProviderProps {
+  onLogout: () => void,
+  onLogin: () => void,
+}
+
+const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin }) => {
+  const initState: State = {
     isLoggedIn: false,
     album: null,
     user: null,
@@ -48,9 +74,14 @@ const AuthProvider: React.FC<{}> = ({ children }) => {
         token: token,
         isLoggedIn: true
       });
-      getCurrentUser();
     }
   }, []);
+
+  useEffect(() => {
+    if (state && state.token && state.isLoggedIn && !state.user) {
+      getCurrentUser();
+    }
+  }, [state]);
 
   useEffect(() => {
     if (data && data.currentUser) {
@@ -67,6 +98,7 @@ const AuthProvider: React.FC<{}> = ({ children }) => {
       value={{
         state,
         setAuthToken: token => {
+          onLogin();
           localStorage.setItem("token", token);
           setState({
             ...state,
@@ -74,12 +106,13 @@ const AuthProvider: React.FC<{}> = ({ children }) => {
             token: token
           });
         },
-        logIn: user =>
+        logIn: () =>
           setState({
             ...state,
             isLoggedIn: true
           }),
         logOut: () => {
+          onLogout();
           localStorage.setItem("token", "");
           setState({
             ...state,

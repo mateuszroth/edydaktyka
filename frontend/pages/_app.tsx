@@ -37,7 +37,7 @@ class MyApp extends App<AppProps> {
     return (
       <ApolloProvider client={apollo}>
         <LocaleProvider locale={plPL}>
-          <AuthProvider>
+          <AuthProvider onLogout={apollo.clearStore.bind(apollo)} onLogin={apollo.resetStore.bind(apollo)}>
             <Container className={styles.app}>
               <style dangerouslySetInnerHTML={{ __html: stylesheet }} />
               <Head>
@@ -316,14 +316,6 @@ class MyApp extends App<AppProps> {
                     Bez nich strona nie będzie działała poprawnie. W każdym
                     momencie możesz dokonać zmiany ustawień dotyczących ich
                     zapisu.
-                    <br />
-                    <br />
-                    W Poznaniu mamy teraz godzinę XX:XX. Słońce wzeszlo o XX:XX,
-                    a zajdzie o XX:XX, co odpowiednio zaktualizuje tapetę.
-                    Następna zmiana o XX:XX.
-                    <br />
-                    Poza tym od 1 grudnia do 31 stycznia obowiązuje tapeta
-                    świąteczna z choinką.
                   </p>
                 </Footer>
                 <BackTop />

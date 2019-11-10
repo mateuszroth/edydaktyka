@@ -36,6 +36,7 @@ export default {
         if (photo) {
             user.photo = photo;
         }
+
         const newUser = await getRepository(User).save(user);
 
         return jwt.sign(

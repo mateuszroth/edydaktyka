@@ -1,0 +1,115 @@
+import React, { useEffect, useContext, useState } from "react";
+import { Form, Icon, Input, Button, notification, Alert, Spin } from "antd";
+import Router from "next/router";
+import Link from "next/link";
+import { FormComponentProps } from "antd/lib/form/Form";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
+import { AuthContext } from "../../stores/AuthContext";
+import useLoggedInRedirection from "../../hocs/useLoggedInRedirection";
+import styles from "./LoginForm.module.scss";
+
+const LOGIN = gql`
+  mutation Login($album: Int!, $password: String!) {
+    login(album: $album, password: $password)
+  }
+`;
+
+interface LoginFormProps extends FormComponentProps {
+  name: string;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
+  useLoggedInRedirection();
+  const { getFieldDecorator, validateFields } = form;
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
+  const [login, { loading, data, error }] = useMutation(LOGIN);
+  const { setAuthToken, state: authState } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (data) {
+      setAuthToken(data.login);
+      Router.push("/account");
+      notification.success({
+        message: `Witaj ${
+          authState && authState.user ? authState.user.firstName : ""
+        }`,
+        description: "Pomyślnie zalogowano"
+      });
+    }
+  }, [data]);
+
+  if (loading || data) return <Spin tip="Logowanie..." />;
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    setIsSubmitDisabled(true);
+    validateFields((err, values) => {
+      if (!err) {
+        login({
+          variables: {
+            album: parseInt(values.userName, 10),
+            password: values.password
+          }
+        });
+      }
+      return setIsSubmitDisabled(false);
+    });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit} className={styles.root}>
+      {error && (
+        <Alert
+          message="Nieudane logowanie"
+          description={error.message.replace("GraphQL error: ", "")}
+          closable
+          type="error"
+          showIcon
+        />
+      )}
+      <Form.Item>
+        {getFieldDecorator("userName", {
+          rules: [{ required: true, message: "Podaj numer albumu" }]
+        })(
+          <Input
+            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+            placeholder="Numer albumu"
+          />
+        )}
+      </Form.Item>
+      <Form.Item>
+        {getFieldDecorator("password", {
+          rules: [{ required: true, message: "Podaj hasło" }]
+        })(
+          <Input
+            prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+            type="password"
+            placeholder="Hasło"
+          />
+        )}
+      </Form.Item>
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className={styles.formButton}
+          disabled={isSubmitDisabled}
+        >
+          Zaloguj się
+        </Button>
+        <a className={styles.formForgot} href="/forgotpassword">
+          Przypomnij hasło
+        </a>{" "}
+        lub{" "}
+        <Link href="/register">
+          <a>zarejestruj się!</a>
+        </Link>
+      </Form.Item>
+    </Form>
+  );
+};
+
+const WrappedLoginForm = Form.create<LoginFormProps>()(LoginForm);
+
+export default WrappedLoginForm;

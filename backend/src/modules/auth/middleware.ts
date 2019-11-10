@@ -4,7 +4,7 @@ import { getRepository } from 'typeorm';
 
 export default async function authenticate(resolve, root, args, context, info) {
     let auth;
-    const token = context.request.get('Authorization');
+    const token: string = (context.request.get('Authorization') || '').replace('Bearer ', '');
     try {
         const decodedPayload = jwt.decode(token);
         const user = await getRepository(User).findOne(decodedPayload.album);
