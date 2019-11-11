@@ -69,7 +69,7 @@ type Query {
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
-  resetPassword(album: Int!): String!,
+  resetPassword(email: String!): String!,
   login(album: Int!, password: String!): String!
   editAccount(album: Int!, firstName: String, lastName: String, email: String, photo: String, groupIds: [Int]): String!
   changePassword(album: Int!, password: String!): String!

@@ -58,7 +58,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className={styles.root}>
+    <Form onSubmit={handleSubmit} className={styles.root} style={{ margin: "0 auto", maxWidth: 300 }}>
       {error && (
         <Alert
           message="Nieudane logowanie"
@@ -98,7 +98,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
         >
           Zaloguj się
         </Button>
-        <a className={styles.formForgot} href="/forgotpassword">
+        <a className={styles.formForgot} href="/reset-password">
           Przypomnij hasło
         </a>{" "}
         lub{" "}

@@ -135,7 +135,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ form }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className={styles.root}>
+    <Form onSubmit={handleSubmit} className={styles.root} style={{ margin: "0 auto", maxWidth: 600 }}>
       {error && (
         <Alert
           message="Nieudana rejestracja"

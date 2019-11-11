@@ -1,6 +1,9 @@
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { ForbiddenError } from 'apollo-server';
+import { generate as generatePassword } from 'generate-password';
+import { createTransport } from 'nodemailer';
+import mailConfig from 'config/mail';
 import encryptPassword from 'modules/auth/utils/encryptPassword';
 import User from 'entities/User';
 import Group from 'entities/Group';
@@ -50,14 +53,40 @@ export default {
             { expiresIn: '30d' },
         );
     },
-    resetPassword: async (_, { album }): Promise<string | Error> => {
-        const user = await getRepository(User).findOne(album);
+    resetPassword: async (_, { email }): Promise<string | Error> => {
+        const user = await getRepository(User).findOne({ email: email });
+        const resultMessage =
+            'Jeśli istnieje użytkownik z podanym adresem email, na jego skrzynkę odbiorcą zostaną wysłane nowe dane logowania.';
 
         if (!user) {
-            return new Error('Użytkownik nie istnieje');
+            return resultMessage;
         }
 
-        // TODO send email
+        const newPassword = generatePassword({
+            length: 8,
+            numbers: true,
+            symbols: false,
+            uppercase: false,
+            excludeSimilarCharacters: true,
+        });
+
+        const { hash, salt } = encryptPassword(newPassword);
+        user.password = hash;
+        user.passwordSalt = salt;
+
+        await getRepository(User).save(user);
+
+        const transporter = createTransport(mailConfig.smtpConfig);
+        const mailOptions = {
+            from: mailConfig.from,
+            to: email,
+            subject: mailConfig.resetPasswordSubject,
+            text: mailConfig.resetPasswordText(user.firstName, newPassword),
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return resultMessage;
     },
     login: async (_, { album, password }): Promise<string | Error> => {
         const user = await getRepository(User).findOne(album);
