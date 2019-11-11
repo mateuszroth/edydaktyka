@@ -56,7 +56,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ form }) => {
       {data && (
         <Alert
           message="Resetowanie hasła"
-          description="Jeśli istnieje konto powiązane z danym adresem email, przesłaliśmy na nie Twoje nowe hasło. Sprawdź swoją skrzynkę odbiorczą, a po zalogowaniu do naszego systemu zmień hasło."
+          description="Jeśli istnieje konto powiązane z danym adresem email, prześlemy na nie Twoje nowe hasło. Sprawdź swoją skrzynkę odbiorczą, a po zalogowaniu do naszego systemu zmień hasło."
           type="info"
         />
       )}

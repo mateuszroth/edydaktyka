@@ -49,6 +49,7 @@ interface State {
   album?: number;
   user?: User;
   token?: string;
+  isInitialized: boolean;
 }
 
 interface AuthProviderProps {
@@ -61,7 +62,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
     isLoggedIn: false,
     album: null,
     user: null,
-    token: null
+    token: null,
+    isInitialized: false
   };
   const [state, setState] = useState(initState);
   const [getCurrentUser, { data }] = useLazyQuery(CURRENT_USER);
@@ -69,12 +71,18 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
     const token = localStorage.getItem("token");
 
     if (token) {
-      setState({
+      return setState({
         ...state,
         token: token,
-        isLoggedIn: true
+        isLoggedIn: true,
+        isInitialized: true
       });
     }
+
+    setState({
+      ...state,
+      isInitialized: true
+    })
   }, []);
 
   useEffect(() => {

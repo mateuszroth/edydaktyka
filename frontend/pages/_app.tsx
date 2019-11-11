@@ -271,17 +271,17 @@ class MyApp extends App<AppProps> {
                             <Link href="/schedule">
                               <a>
                                 <Icon type="schedule" />
-                                Plan
+                                Obecności
                               </a>
                             </Link>
                           </Menu.Item>
                         )}
                         {auth.isLoggedIn && (
                           <Menu.Item key="10">
-                            <Link href="/team">
+                            <Link href="/reports">
                               <a>
-                                <Icon type="team" />
-                                Zespół
+                                <Icon type="file-text" />
+                                Sprawozdania
                               </a>
                             </Link>
                           </Menu.Item>

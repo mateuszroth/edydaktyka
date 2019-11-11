@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Alert, Button, Layout, notification, Spin } from "antd";
 import Router from "next/router";
-import Breadcrumb from "../../components/pages/questionnaire/Breadcrumb";
+import Breadcrumb from "../../components/pages/account/Breadcrumb";
 import { AuthContext } from "../../components/stores/AuthContext";
 import { getLongGroupName } from "../../helpers/groups";
 import useNotLoggedInRedirection from "../../components/hocs/useNotLoggedInRedirection";
@@ -64,7 +64,18 @@ const AccountPage: React.FC<AccountPageProps> = () => {
               </ul>
               <Button
                 type="primary"
-                htmlType="submit"
+                onClick={() => Router.push("/group-register")}
+              >
+                Dopisz się do grupy
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => Router.push("/change-password")}
+              >
+                Zmień hasło
+              </Button>
+              <Button
+                type="primary"
                 onClick={handleLogOut}
               >
                 Wyloguj się

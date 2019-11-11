@@ -148,8 +148,12 @@ export default {
         }
 
         const existingUser = await getRepository(User).findOne(album);
-        if (!existingUser || !password) {
+        if (!existingUser) {
             return new Error('Nie istnieje użytkownik o podanych danych');
+        }
+
+        if (!password) {
+            return new Error('Nie podano nowego hasła');
         }
 
         const { hash, salt } = encryptPassword(password);

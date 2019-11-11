@@ -4,14 +4,14 @@ import { AuthContext } from "../stores/AuthContext";
 
 const useNotLoggedInRedirection = () => {
   const {
-    state: { isLoggedIn }
+    state: { isInitialized, isLoggedIn }
   } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (isInitialized && !isLoggedIn) {
       Router.push("/login");
     }
-  }, []);
+  }, [isLoggedIn]);
 };
 
 export default useNotLoggedInRedirection;

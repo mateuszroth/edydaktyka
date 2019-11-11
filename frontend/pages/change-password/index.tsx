@@ -1,14 +1,14 @@
 import React from "react";
 import { Alert, Layout } from "antd";
-import Breadcrumb from "../../components/pages/reset-password/Breadcrumb";
-import ResetPasswordForm from "../../components/pages/reset-password/ResetPasswordForm";
+import Breadcrumb from "../../components/pages/change-password/Breadcrumb";
+import ChangePasswordForm from "../../components/pages/change-password/ChangePasswordForm";
 import styles from "./index.module.scss";
 
-const PAGE_NAME = "Zresetuj hasło";
+const PAGE_NAME = "Zmień swoje hasło";
 
-interface ResetPasswordPageProps {}
+interface ChangePasswordPageProps {}
 
-const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
+const ChangePasswordPage: React.FC<ChangePasswordPageProps> = () => {
   return (
     <Layout className={styles.root}>
       <Layout style={{ padding: "0 24px 24px" }}>
@@ -25,11 +25,11 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
           }}
         >
           <h1>{PAGE_NAME}</h1>
-          <ResetPasswordForm />
+          <ChangePasswordForm />
         </Layout.Content>
       </Layout>
     </Layout>
   );
 };
 
-export default ResetPasswordPage;
+export default ChangePasswordPage;
