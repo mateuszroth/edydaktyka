@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "antd";
+import { PageHeader, Layout } from "antd";
 import RegisterForm from "../../components/pages/register/RegisterForm";
 import Breadcrumb from "../../components/pages/register/Breadcrumb";
 import styles from "./index.module.scss";
@@ -26,6 +26,10 @@ export default class extends React.Component {
               maxWidth: 1150
             }}
           >
+            <PageHeader
+              ghost={false}
+              title={PAGE_NAME}
+            />
             <RegisterForm />
           </Layout.Content>
         </Layout>

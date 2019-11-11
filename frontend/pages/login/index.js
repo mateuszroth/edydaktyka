@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "antd";
+import { PageHeader, Layout } from "antd";
 import LoginForm from "../../components/pages/login/LoginForm";
 import Breadcrumb from "../../components/pages/login/Breadcrumb";
 import styles from "./index.module.scss";
@@ -24,6 +24,10 @@ export default class extends React.Component {
               minHeight: 280
             }}
           >
+            <PageHeader
+              ghost={false}
+              title={PAGE_NAME}
+            />
             <div className={styles.content}>
               <LoginForm />
             </div>

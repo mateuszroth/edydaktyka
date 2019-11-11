@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Layout } from "antd";
+import { PageHeader, Layout } from "antd";
 import Breadcrumb from "../../components/pages/reset-password/Breadcrumb";
 import ResetPasswordForm from "../../components/pages/reset-password/ResetPasswordForm";
 import styles from "./index.module.scss";
@@ -24,7 +24,11 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
             textAlign: "center"
           }}
         >
-          <h1>{PAGE_NAME}</h1>
+          <PageHeader
+            onBack={() => window.history.back()}
+            ghost={false}
+            title={PAGE_NAME}
+          />
           <ResetPasswordForm />
         </Layout.Content>
       </Layout>

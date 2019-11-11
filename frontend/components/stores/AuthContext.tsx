@@ -2,10 +2,17 @@ import React, { useState, useEffect } from "react";
 import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 
+interface Group {
+  id: string;
+  courseName: string;
+}
+
 interface ContextValues {
   state: State;
   setAuthToken: (token: string) => void;
   getCurrentUser: () => void;
+  currentGroup?: Group;
+  setCurrentGroup: (group: Group) => void;
   logIn: () => void;
   logOut: () => void;
 }
@@ -14,6 +21,7 @@ const AuthContext = React.createContext<ContextValues>({
   state: null,
   setAuthToken: () => null,
   getCurrentUser: () => null,
+  setCurrentGroup: group => null,
   logIn: () => null,
   logOut: () => null
 });
@@ -24,6 +32,9 @@ const CURRENT_USER = gql`
       album
       firstName
       lastName
+      email
+      isAdmin
+      photo
       groups {
         id
         modeOfStudy
@@ -44,6 +55,9 @@ interface User {
   lastName: string;
   album: number;
   groups: any[];
+  email: string;
+  isAdmin: boolean;
+  photo: string;
 }
 
 interface State {
@@ -68,11 +82,22 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
     isInitialized: false
   };
   const [state, setState] = useState(initState);
+  const [currentGroup, setCurrentGroup] = useState(null);
   const [getCurrentUser, { data }] = useLazyQuery(CURRENT_USER, { fetchPolicy: 'network-only' });
+
+  const handleSetCurrentGroup = (group: Group) => {
+    localStorage.setItem("currentGroup", JSON.stringify(group));
+    setCurrentGroup(group);
+  }
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (token) {
+      const currentGroup = localStorage.getItem("currentGroup");
+      if (currentGroup) {
+        setCurrentGroup(JSON.parse(currentGroup));
+      }
       return setState({
         ...state,
         token: token,
@@ -108,6 +133,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
       value={{
         state,
         getCurrentUser,
+        currentGroup,
+        setCurrentGroup: handleSetCurrentGroup,
         setAuthToken: token => {
           onLogin();
           localStorage.setItem("token", token);
@@ -125,6 +152,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
         logOut: () => {
           onLogout();
           localStorage.setItem("token", "");
+          localStorage.setItem("currentGroup", "");
           setState({
             ...state,
             isLoggedIn: false,

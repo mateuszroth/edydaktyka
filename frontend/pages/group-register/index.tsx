@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Layout } from "antd";
+import { PageHeader, Layout } from "antd";
 import Breadcrumb from "../../components/pages/group-register/Breadcrumb";
 import GroupRegisterForm from "../../components/pages/group-register/GroupRegisterForm";
 import styles from "./index.module.scss";
@@ -24,7 +24,12 @@ const GroupRegisterPage: React.FC<GroupRegisterPageProps> = () => {
             textAlign: "center"
           }}
         >
-          <h1>{PAGE_NAME}</h1>
+          <PageHeader
+            ghost={false}
+            onBack={() => window.history.back()}
+            title={PAGE_NAME}
+            subTitle="Wybierz grupy zajęciowe, do których chcesz się dopisać"
+          />
           <GroupRegisterForm />
         </Layout.Content>
       </Layout>

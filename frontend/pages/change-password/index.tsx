@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Layout } from "antd";
+import { PageHeader, Layout } from "antd";
 import Breadcrumb from "../../components/pages/change-password/Breadcrumb";
 import ChangePasswordForm from "../../components/pages/change-password/ChangePasswordForm";
 import styles from "./index.module.scss";
@@ -24,7 +24,11 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = () => {
             textAlign: "center"
           }}
         >
-          <h1>{PAGE_NAME}</h1>
+          <PageHeader
+            ghost={false}
+            onBack={() => window.history.back()}
+            title={PAGE_NAME}
+          />
           <ChangePasswordForm />
         </Layout.Content>
       </Layout>

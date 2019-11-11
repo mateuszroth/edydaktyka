@@ -3,3 +3,15 @@
 .header {
   text-align: center;
 }
+
+.group {
+  cursor: pointer;
+}
+
+.group:hover {
+  color: #1890ff;
+}
+
+.selectedGroup {
+  font-weight: bold;
+}
