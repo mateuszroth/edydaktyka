@@ -1,24 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import Router from "next/router";
-import {
-  Form,
-  Icon,
-  Input,
-  Button,
-  Alert,
-  Checkbox,
-  Row,
-  Spin,
-  Result,
-  notification
-} from "antd";
+import { Form, Icon, Input, Button, Alert, Result, notification } from "antd";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { FormComponentProps } from "antd/lib/form/Form";
-import sortBy from "lodash/sortBy";
 import { AuthContext } from "../../stores/AuthContext";
 import useNotLoggedInRedirection from "../../hocs/useNotLoggedInRedirection";
-import { getLongGroupName } from "../../../helpers/groups";
 import styles from "./ChangePasswordForm.module.scss";
 
 const CHANGE_PASSWORD = gql`
@@ -42,7 +29,7 @@ const RegisterForm: React.FC<ChangePasswordFormProps> = ({ form }) => {
   useEffect(() => {
     if (data) {
       setAuthToken(data.changePassword);
-      setTimeout(() => Router.push("/account"), 3000)
+      setTimeout(() => Router.push("/account"), 3000);
       notification.success({
         message: "Zmieniono hasło"
       });
@@ -101,11 +88,15 @@ const RegisterForm: React.FC<ChangePasswordFormProps> = ({ form }) => {
         />
       )}
       {data && (
-        <Alert
-          message="Zmieniono hasło"
-          description="Pomyślnie zmieniono hasło"
-          type="success"
-          showIcon
+        <Result
+          title="Zmieniono hasło"
+          subTitle="Pomyślnie zmieniono hasło"
+          status="success"
+          extra={
+            <Button type="primary" onClick={() => Router.push("/account")}>
+              Wróc do Twojego konta
+            </Button>
+          }
         />
       )}
       {!data && (
