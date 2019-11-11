@@ -43,7 +43,7 @@ class MyApp extends App<AppProps> {
               <Head>
                 <title>eDydaktyka</title>
               </Head>
-              <Layout>
+              <Layout style={{ height: "100%" }}>
                 <Header className={styles.header}>
                   <AuthConsumer>
                     {({ state: auth }) => (

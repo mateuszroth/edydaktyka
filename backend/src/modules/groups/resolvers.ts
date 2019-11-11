@@ -38,14 +38,14 @@ export default {
 
         return new Error('Brak uprawnień.');
     },
-    assignUserToGroup: async (_, { id }, { auth }): Promise<string | Error> => {
+    assignUserToGroups: async (_, { groupIds }, { auth }): Promise<string | Error> => {
         if (!auth) {
             return new Error('Brak uprawnień.');
         }
 
-        const group = await getRepository(Group).findOne({ id: id });
+        const groups = await getRepository(Group).findByIds(groupIds);
 
-        if (!group) {
+        if (!groups) {
             return new Error('Wybrana grupa nie istnieje.');
         }
 
@@ -56,7 +56,9 @@ export default {
         }
 
         user.groups = user.groups || [];
-        user.groups.push(group);
+        groups.forEach(group => {
+            user.groups.push(group);
+        });
 
         await getRepository(User).save(user);
 

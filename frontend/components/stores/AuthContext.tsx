@@ -5,6 +5,7 @@ import { useLazyQuery } from "@apollo/react-hooks";
 interface ContextValues {
   state: State;
   setAuthToken: (token: string) => void;
+  getCurrentUser: () => void;
   logIn: () => void;
   logOut: () => void;
 }
@@ -12,6 +13,7 @@ interface ContextValues {
 const AuthContext = React.createContext<ContextValues>({
   state: null,
   setAuthToken: () => null,
+  getCurrentUser: () => null,
   logIn: () => null,
   logOut: () => null
 });
@@ -66,7 +68,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
     isInitialized: false
   };
   const [state, setState] = useState(initState);
-  const [getCurrentUser, { data }] = useLazyQuery(CURRENT_USER);
+  const [getCurrentUser, { data }] = useLazyQuery(CURRENT_USER, { fetchPolicy: 'network-only' });
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -105,6 +107,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
     <AuthContext.Provider
       value={{
         state,
+        getCurrentUser,
         setAuthToken: token => {
           onLogin();
           localStorage.setItem("token", token);
