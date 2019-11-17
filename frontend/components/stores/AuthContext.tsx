@@ -120,6 +120,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
 
   useEffect(() => {
     if (data && data.currentUser) {
+      if (data.currentUser.groups && !localStorage.getItem("currentGroup")) {
+        handleSetCurrentGroup(data.currentUser.groups[0]);
+      }
       setState({
         ...state,
         user: data.currentUser,

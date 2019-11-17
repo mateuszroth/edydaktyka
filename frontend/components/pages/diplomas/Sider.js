@@ -5,7 +5,7 @@ import Link from "next/link";
 const { Sider } = Layout;
 
 export default () => (
-  <Sider width={250} style={{ background: "#fff" }}>
+  <Sider width={300} collapsedWidth="0" breakpoint="lg" style={{ background: "#fff" }}>
     <Menu
       mode="inline"
       defaultSelectedKeys={["1"]}

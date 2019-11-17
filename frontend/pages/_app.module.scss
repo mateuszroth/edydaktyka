@@ -29,3 +29,13 @@
 .logo {
   display: inline;
 }
+
+@media (max-width: 600px) {
+  .header {
+    padding: 0 70px 0 !important;
+  }
+
+  .mobileHide {
+    display: none;
+  }
+}

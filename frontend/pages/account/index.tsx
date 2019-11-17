@@ -13,8 +13,8 @@ import {
 } from "antd";
 import Router from "next/router";
 import Breadcrumb from "../../components/pages/account/Breadcrumb";
+import ChangeGroup from "../../components/pages/account/ChangeGroup";
 import { AuthContext } from "../../components/stores/AuthContext";
-import { getLongGroupName } from "../../helpers/groups";
 import useNotLoggedInRedirection from "../../components/hocs/useNotLoggedInRedirection";
 import styles from "./index.module.scss";
 const { Title } = Typography;
@@ -25,12 +25,7 @@ interface AccountPageProps {}
 
 const AccountPage: React.FC<AccountPageProps> = () => {
   useNotLoggedInRedirection();
-  const {
-    logOut,
-    currentGroup,
-    setCurrentGroup,
-    state: authState
-  } = useContext(AuthContext);
+  const { logOut, state: authState } = useContext(AuthContext);
   const { user } = authState;
   const [avatarUrl, setAvatarUrl] = useState();
 
@@ -174,26 +169,7 @@ const AccountPage: React.FC<AccountPageProps> = () => {
                       <Icon type="flag" theme="twoTone" /> Grupy zajęciowe{" "}
                     </>
                   </Title>
-                  <ul>
-                    {user &&
-                      user.groups &&
-                      user.groups.map(group => {
-                        const isCurrentGroup =
-                          currentGroup && currentGroup.id === group.id;
-                        const className = isCurrentGroup
-                          ? styles.selectedGroup
-                          : styles.group;
-                        return (
-                          <li
-                            className={className}
-                            onClick={() => setCurrentGroup(group)}
-                          >
-                            {getLongGroupName(group)}{" "}
-                            {isCurrentGroup ? " - obecnie przeglądana" : null}
-                          </li>
-                        );
-                      })}
-                  </ul>
+                  <ChangeGroup />
                   <Button
                     type="primary"
                     onClick={() => Router.push("/group-register")}

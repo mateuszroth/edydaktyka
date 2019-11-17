@@ -23,6 +23,7 @@ import withApolloClient from "../components/hocs/withApolloClient";
 import styles from "./_app.module.scss";
 import stylesheet from "antd/dist/antd.css";
 import WrappedLoginForm from "../components/pages/login/LoginForm";
+import ChangeGroup from "../components/pages/account/ChangeGroup";
 
 const { SubMenu } = Menu;
 const { Header } = Layout;
@@ -43,7 +44,8 @@ class MyApp extends App<AppProps> {
   }
 
   state = {
-    isLoginModalVisible: false
+    isLoginModalVisible: false,
+    isChangeGroupModalVisible: false
   };
 
   handleLogOut = handler => {
@@ -65,9 +67,21 @@ class MyApp extends App<AppProps> {
     });
   };
 
+  showChangeGroupModal = () => {
+    this.setState({
+      isChangeGroupModalVisible: true
+    });
+  };
+
+  closeChangeGroupModal = () => {
+    this.setState({
+      isChangeGroupModalVisible: false
+    });
+  };
+
   render() {
     const { Component, pageProps, apollo } = this.props;
-    const { isLoginModalVisible } = this.state;
+    const { isLoginModalVisible, isChangeGroupModalVisible } = this.state;
 
     return (
       <ApolloProvider client={apollo}>
@@ -89,15 +103,15 @@ class MyApp extends App<AppProps> {
                         <Menu
                           theme="dark"
                           mode="horizontal"
-                          // defaultSelectedKeys={['0']}
                           style={{ lineHeight: "64px" }}
                           selectedKeys={[]}
+                          overflowedIndicator={<Icon type="menu" />}
                         >
                           <Menu.Item key="0" className={styles.logo}>
                             <Link href="/">
                               <a>
                                 <Icon type="home" />
-                                <strong>A. Urbański</strong>
+                                <strong className={styles.mobileHide}>A. Urbański</strong>
                               </a>
                             </Link>
                           </Menu.Item>
@@ -107,10 +121,11 @@ class MyApp extends App<AppProps> {
                               <Link href="/help">
                                 <a>
                                   <Icon type="question-circle" />
-                                  Pomoc <Icon type="down" />
+                                  Pomoc
                                 </a>
                               </Link>
                             }
+                            disabled={process.browser && window.innerWidth < 1000}
                           >
                             <Menu.Item key="1-1">
                               <Link href="/help">
@@ -128,7 +143,9 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="1-4">
-                              <Link href="/help/faq"><a>Przesłania sprawozdania</a></Link>
+                              <Link href="/help/faq">
+                                <a>Przesłania sprawozdania</a>
+                              </Link>
                             </Menu.Item>
                           </SubMenu>
                           <SubMenu
@@ -141,6 +158,7 @@ class MyApp extends App<AppProps> {
                                 </a>
                               </Link>
                             }
+                            disabled={process.browser && window.innerWidth < 1000}
                           >
                             <Menu.Item key="2-1">
                               <Link href="/lessons/oukwi">
@@ -205,6 +223,7 @@ class MyApp extends App<AppProps> {
                                 </a>
                               </Link>
                             }
+                            disabled={process.browser && window.innerWidth < 1000}
                           >
                             <Menu.Item key="3-1">
                               <Link href="/diplomas/done">
@@ -251,6 +270,7 @@ class MyApp extends App<AppProps> {
                                 </a>
                               </Link>
                             }
+                            disabled={process.browser && window.innerWidth < 1000}
                           >
                             <Menu.Item key="5-1">
                               <a
@@ -374,16 +394,35 @@ class MyApp extends App<AppProps> {
                             <Col sm={20}>
                               {auth.isLoggedIn && auth.user && (
                                 <span>
-                                  Cześć {auth.user.firstName} (
-                                  <strong>{auth.user.album}</strong>)!{" "}
+                                  <span className={styles.mobileHide}>
+                                    Cześć {auth.user.firstName} (
+                                    <strong>{auth.user.album}</strong>)!{" "}
+                                  </span>
                                   {currentGroup && (
-                                    <>
-                                      Przeglądasz kurs{" "}
+                                    <div
+                                      onClick={this.showChangeGroupModal}
+                                      style={{
+                                        cursor: "pointer",
+                                        display: "inline-block"
+                                      }}
+                                    >
+                                      <span className={styles.mobileHide}>Przeglądasz kurs{" "}</span>
                                       <strong>{currentGroup.courseName}</strong>
-                                    </>
+                                      <Button type="primary" className={styles.mobileHide}>(zmień)</Button>
+                                    </div>
                                   )}
                                 </span>
                               )}
+                              <Modal
+                                visible={isChangeGroupModalVisible}
+                                title="Zmień przeglądaną grupę zajęciową"
+                                onCancel={this.closeChangeGroupModal}
+                                footer={[]}
+                              >
+                                <ChangeGroup
+                                  onChange={this.closeChangeGroupModal}
+                                />
+                              </Modal>
                             </Col>
                             <Col sm={4} style={{ textAlign: "right" }}>
                               {auth.isLoggedIn && auth.user && (
