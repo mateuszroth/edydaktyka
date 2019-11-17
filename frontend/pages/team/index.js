@@ -20,8 +20,10 @@ export default class extends React.Component {
             style={{
               background: "#fff",
               padding: 24,
-              margin: 0,
-              minHeight: 280
+              margin: "0 auto",
+              minHeight: 280,
+              width: "100%",
+              maxWidth: 1150
             }}
           >
             <div />

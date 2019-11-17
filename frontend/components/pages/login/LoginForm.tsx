@@ -17,9 +17,10 @@ const LOGIN = gql`
 
 interface LoginFormProps extends FormComponentProps {
   name: string;
+  onRedirect?: () => void
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ form, onRedirect }) => {
   useLoggedInRedirection();
   const { getFieldDecorator, validateFields } = form;
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
@@ -30,6 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
     if (data) {
       setAuthToken(data.login);
       Router.push("/account");
+      onRedirect();
       notification.success({
         message: `Witaj ${
           authState && authState.user ? authState.user.firstName : ""
@@ -98,12 +100,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
         >
           Zaloguj się
         </Button>
-        <a className={styles.formForgot} href="/reset-password">
-          Przypomnij hasło
-        </a>{" "}
+        <Link href="/reset-password" >
+          <a onClick={onRedirect} className={styles.formForgot}>Przypomnij hasło</a>
+        </Link>{" "}
         lub{" "}
         <Link href="/register">
-          <a>zarejestruj się!</a>
+          <a onClick={onRedirect}>zarejestruj się!</a>
         </Link>
       </Form.Item>
     </Form>

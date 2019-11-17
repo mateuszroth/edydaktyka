@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { Layout, PageHeader } from "antd";
 import Sider from "../../components/pages/author/Sider";
 import Breadcrumb from "../../components/pages/author/Breadcrumb";
 
@@ -25,7 +25,10 @@ export default class extends React.Component {
             }}
           >
             <div>
-              <h1>Kilka zdań o autorze</h1>
+              <PageHeader
+                ghost={false}
+                title="Kilka zdań o autorze"
+              />
               <p>
                 Ukończył V Liceum Ogólnokształcące w Poznaniu{" "}
                 <a href="http://www.vlo.poznan.pl/sites/default/files/wywiadAU.pdf">
@@ -92,8 +95,8 @@ export default class extends React.Component {
                 "Cywilizacja internetu". W 2003 zaproponował uniwersalny i
                 elastyczny system zdematerializowanej recepty. Opublikował
                 kilkadziesiąt artykułów naukowych, dziesięć książek,{" "}
-                <a href="tata.php">opowiadanie</a> i{" "}
-                <a href="komputer.php">wierszyk</a> do elementarza.
+                <a href="http://www.cs.put.poznan.pl/aurbanski/tata.php">opowiadanie</a> i{" "}
+                <a href="http://www.cs.put.poznan.pl/aurbanski/komputer.php">wierszyk</a> do elementarza.
               </p>
               <p>
                 W zakresie wdrożeń były też: edukacyjny system programowania
@@ -127,7 +130,7 @@ export default class extends React.Component {
                 .
               </p>
               <p>
-                <a href="dcm.php">(dcm)</a> Poprowadził{" "}
+                <a href="http://www.cs.put.poznan.pl/aurbanski/dcm.php">(dcm)</a> Poprowadził{" "}
                 <a href="http://www.cs.put.poznan.pl/aurbanski/tematy.php">
                   ponad setkę prac dyplomowych
                 </a>{" "}
@@ -187,7 +190,7 @@ export default class extends React.Component {
                 <a href="https://polakpotrafi.pl/projekt/naukowa-gwiazdka-w-domu-dziecka">
                   Naukowa Gwiazdka w Domu Dziecka
                 </a>
-                W lutym 2016 powstało na Politechnice Poznańskiej z jego
+                . W lutym 2016 powstało na Politechnice Poznańskiej z jego
                 inicjatywy Koło Upowszechniania Programowania, które zajmuje się
                 prowadzeniem zajęć z programowania robotów i korepetycji z
                 przedmiotów ścisłych oraz języka angielskiego w Domach Dziecka.

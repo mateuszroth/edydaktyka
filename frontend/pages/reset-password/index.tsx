@@ -3,6 +3,7 @@ import { PageHeader, Layout } from "antd";
 import Breadcrumb from "../../components/pages/reset-password/Breadcrumb";
 import ResetPasswordForm from "../../components/pages/reset-password/ResetPasswordForm";
 import styles from "./index.module.scss";
+import Router from "next/router";
 
 const PAGE_NAME = "Zresetuj hasło";
 
@@ -25,7 +26,7 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
           }}
         >
           <PageHeader
-            onBack={() => window.history.back()}
+            onBack={() => Router.push("/login")}
             ghost={false}
             title={PAGE_NAME}
           />

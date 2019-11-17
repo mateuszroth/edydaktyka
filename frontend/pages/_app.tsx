@@ -7,21 +7,25 @@ import {
   Layout,
   Menu,
   Icon,
-  LocaleProvider,
   BackTop,
   Col,
   Button,
-  notification
+  notification,
+  ConfigProvider,
+  Affix,
+  Modal
 } from "antd";
 import plPL from "antd/lib/locale-provider/pl_PL";
 import { AuthProvider, AuthConsumer } from "../components/stores/AuthContext";
+import Footer from "../components/layout/footer";
 import { ApolloProvider } from "react-apollo";
 import withApolloClient from "../components/hocs/withApolloClient";
 import styles from "./_app.module.scss";
-import stylesheet from "antd/dist/antd.min.css";
+import stylesheet from "antd/dist/antd.css";
+import WrappedLoginForm from "../components/pages/login/LoginForm";
 
 const { SubMenu } = Menu;
-const { Header, Footer } = Layout;
+const { Header } = Layout;
 
 interface AppProps {
   apollo: any;
@@ -38,29 +42,46 @@ class MyApp extends App<AppProps> {
     return { pageProps };
   }
 
+  state = {
+    isLoginModalVisible: false
+  }
+
   handleLogOut = handler => {
     handler();
     notification.success({
       message: "Pomyślnie wylogowano"
     });
-  }
+  };
+
+  showLoginModal = () => {
+    this.setState({
+      isLoginModalVisible: true
+    })
+  };
+
+  closeLoginModal = () => {
+    this.setState({
+      isLoginModalVisible: false
+    })
+  };
 
   render() {
     const { Component, pageProps, apollo } = this.props;
+    const { isLoginModalVisible } = this.state;
 
     return (
       <ApolloProvider client={apollo}>
-        <LocaleProvider locale={plPL}>
+        <ConfigProvider locale={plPL}>
           <AuthProvider
             onLogout={apollo.clearStore.bind(apollo)}
             onLogin={apollo.resetStore.bind(apollo)}
           >
-            <Container className={styles.app}>
+            <div className={styles.app}>
               <style dangerouslySetInnerHTML={{ __html: stylesheet }} />
               <Head>
-                <title>eDydaktyka</title>
+                <title>Andrzej P. Urbański | eDydaktyka</title>
               </Head>
-              <Layout style={{ height: "100%" }}>
+              <Layout style={{ minHeight: "100vh" }}>
                 <AuthConsumer>
                   {({ state: auth, logOut, currentGroup }) => (
                     <>
@@ -70,12 +91,13 @@ class MyApp extends App<AppProps> {
                           mode="horizontal"
                           // defaultSelectedKeys={['0']}
                           style={{ lineHeight: "64px" }}
+                          selectedKeys={[]}
                         >
                           <Menu.Item key="0" className={styles.logo}>
                             <Link href="/">
                               <a>
                                 <Icon type="home" />
-                                <strong>eDydaktyka | A. Urbański</strong>
+                                <strong>A. Urbański</strong>
                               </a>
                             </Link>
                           </Menu.Item>
@@ -120,32 +142,34 @@ class MyApp extends App<AppProps> {
                           >
                             <Menu.Item key="2-1">
                               <Link href="/lessons/oukwi">
-                                Organizacja Usług Komercyjnych w Internecie
+                                <a>
+                                  Organizacja Usług Komercyjnych w Internecie
+                                </a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-2">
                               <Link href="/lessons/bai">
-                                Bogate Aplikacje Internetowe
+                                <a>Bogate Aplikacje Internetowe</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-3">
                               <Link href="/lessons/pw">
-                                Programowanie wizualne
+                                <a>Programowanie wizualne</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-4">
                               <Link href="/lessons/aisd">
-                                Algorytmy i struktury danych
+                                <a>Algorytmy i struktury danych</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-5">
                               <Link href="/lessons/pn">
-                                Programowanie niskopoziomowe
+                                <a>Programowanie niskopoziomowe</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-6">
                               <Link href="/lessons/pp">
-                                Podstawy programowania
+                                <a>Podstawy programowania</a>
                               </Link>
                             </Menu.Item>
                           </SubMenu>
@@ -161,28 +185,34 @@ class MyApp extends App<AppProps> {
                             }
                           >
                             <Menu.Item key="3-1">
-                              <Link href="/diplomas/done">Obronione</Link>
+                              <Link href="/diplomas/done">
+                                <a>Obronione</a>
+                              </Link>
                             </Menu.Item>
                             <Menu.Item key="3-2">
                               <Link href="/diplomas/inprogress">
-                                Realizowane
+                                <a>Realizowane</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="3-3">
-                              <Link href="/diplomas/proposed">Proponowane</Link>
+                              <Link href="/diplomas/proposed">
+                                <a>Proponowane</a>
+                              </Link>
                             </Menu.Item>
                             <Menu.Item key="3-4">
                               <Link href="/diplomas/topresent">
-                                Przygotowane
+                                <a>Przygotowane</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="3-5">
                               <Link href="/diplomas/favourites">
-                                Najciekawsze
+                                <a>Najciekawsze</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="3-6">
-                              <Link href="/diplomas/about">Promotorstwo</Link>
+                              <Link href="/diplomas/about">
+                                <a>Promotorstwo</a>
+                              </Link>
                             </Menu.Item>
                           </SubMenu>
 
@@ -321,54 +351,64 @@ class MyApp extends App<AppProps> {
                           {/* tylko dla zalogowanych */}
                         </Menu>
                       </Header>
-                      {auth.isLoggedIn && auth.user && (
+                      <Affix>
                         <div className={styles.loggedInHeader}>
                           <Row>
-                            <Col md={20}>
-                              <span>
-                                Cześć {auth.user.firstName} (
-                                <strong>{auth.user.album}</strong>)!{" "}
-                                {currentGroup && (
-                                  <>
-                                    Przeglądasz kurs{" "}
-                                    <strong>{currentGroup.courseName}</strong>
-                                  </>
-                                )}
-                              </span>
+                            <Col sm={20}>
+                              {auth.isLoggedIn && auth.user && (
+                                <span>
+                                  Cześć {auth.user.firstName} (
+                                  <strong>{auth.user.album}</strong>)!{" "}
+                                  {currentGroup && (
+                                    <>
+                                      Przeglądasz kurs{" "}
+                                      <strong>{currentGroup.courseName}</strong>
+                                    </>
+                                  )}
+                                </span>
+                              )}
                             </Col>
-                            <Col md={4}>
-                              <Button type="danger" onClick={() => this.handleLogOut(logOut)}>
-                                Wyloguj się
-                              </Button>
+                            <Col sm={4} style={{ textAlign: "right" }}>
+                              {auth.isLoggedIn && auth.user && (
+                                <Button
+                                  type="danger"
+                                  onClick={() => this.handleLogOut(logOut)}
+                                >
+                                  Wyloguj się
+                                </Button>
+                              )}
+                              {auth.isInitialized && !auth.isLoggedIn && !auth.user && (
+                                <>
+                                  <Button
+                                    type="default"
+                                    onClick={this.showLoginModal}
+                                  >
+                                    Zaloguj się
+                                  </Button>
+                                  <Modal
+                                    visible={isLoginModalVisible}
+                                    title="Zaloguj się"
+                                    onCancel={this.closeLoginModal}
+                                    footer={[]}
+                                  >
+                                    <WrappedLoginForm name="login" onRedirect={this.closeLoginModal} />
+                                  </Modal>
+                                </>
+                              )}
                             </Col>
                           </Row>
                         </div>
-                      )}
+                      </Affix>
                     </>
                   )}
                 </AuthConsumer>
                 <Component {...pageProps} />
-                <Footer className={styles.footer}>
-                  <p>
-                    Copyright © by Andrzej P. Urbański |{" "}
-                    <a href="mailto:andrzej.urbanski@cs.put.poznan.pl">
-                      andrzej.urbanski@cs.put.poznan.pl
-                    </a>
-                  </p>
-                  <p className={styles.footerAnnotation}>
-                    Ta witryna wykorzystuje pliki cookies i dane przeglądarki do
-                    przechowywania informacji na Twoim komputerze.
-                    <br />
-                    Bez nich strona nie będzie działała poprawnie. W każdym
-                    momencie możesz dokonać zmiany ustawień dotyczących ich
-                    zapisu.
-                  </p>
-                </Footer>
+                <Footer />
                 <BackTop />
               </Layout>
-            </Container>
+            </div>
           </AuthProvider>
-        </LocaleProvider>
+        </ConfigProvider>
       </ApolloProvider>
     );
   }
