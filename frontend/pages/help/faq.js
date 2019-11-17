@@ -38,7 +38,7 @@ export default class extends React.Component {
                   z dodatkowymi ocenami końcowymi).
                 </li>
                 <li>
-                  <b>Jak rejestrować się w większej liczbie grup ?</b>
+                  <b>Jak rejestrować się w większej liczbie grup?</b>
                   <br />
                   Przy rejestracji klikać w okienku w kilka grup po kolei przy
                   czym przy wyborze każdej następnej przytrzymywać klawisz CTRL.

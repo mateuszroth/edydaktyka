@@ -202,16 +202,11 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="3-4">
-                              <Link href="/diplomas/topresent">
-                                <a>Przygotowane</a>
-                              </Link>
-                            </Menu.Item>
-                            <Menu.Item key="3-5">
                               <Link href="/diplomas/favourites">
                                 <a>Najciekawsze</a>
                               </Link>
                             </Menu.Item>
-                            <Menu.Item key="3-6">
+                            <Menu.Item key="3-5">
                               <Link href="/diplomas/about">
                                 <a>Promotorstwo</a>
                               </Link>

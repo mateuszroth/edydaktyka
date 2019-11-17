@@ -1,7 +1,9 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { Layout, PageHeader, Table } from "antd";
 import Sider from "../../components/pages/diplomas/Sider";
 import Breadcrumb from "../../components/pages/diplomas/Breadcrumb";
+import Diplomas from "../../components/pages/diplomas/Diplomas";
+import Router from "next/router";
 
 const PAGE_NAME = "Dyplomy obronione";
 
@@ -24,32 +26,12 @@ export default class extends React.Component {
               minHeight: 280
             }}
           >
-            <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>2018</td>
-                    <td>Bartosz Gehrke, Rafał Pyrkosz</td>
-                    <td> Gra o wydarzeniach Poznańskiego Czerwca '56</td>
-                  </tr>
-                  <tr>
-                    <td>2018</td>
-                    <td>Bartosz Gehrke, Rafał Pyrkosz</td>
-                    <td> Gra o wydarzeniach Poznańskiego Czerwca '56</td>
-                  </tr>
-                  <tr>
-                    <td>2018</td>
-                    <td>Bartosz Gehrke, Rafał Pyrkosz</td>
-                    <td> Gra o wydarzeniach Poznańskiego Czerwca '56</td>
-                  </tr>
-                  <tr>
-                    <td>2018</td>
-                    <td>Bartosz Gehrke, Rafał Pyrkosz</td>
-                    <td> Gra o wydarzeniach Poznańskiego Czerwca '56</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <PageHeader
+              onBack={() => Router.push("/diplomas")}
+              ghost={false}
+              title={PAGE_NAME}
+            />
+            <Diplomas />
           </Layout.Content>
         </Layout>
       </Layout>

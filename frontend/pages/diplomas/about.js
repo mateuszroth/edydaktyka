@@ -1,7 +1,9 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { Layout, PageHeader, Typography } from "antd";
 import Sider from "../../components/pages/diplomas/Sider";
 import Breadcrumb from "../../components/pages/diplomas/Breadcrumb";
+import Link from "next/link";
+import Router from "next/router";
 
 const PAGE_NAME = "Promotorstwo";
 
@@ -24,14 +26,19 @@ export default class extends React.Component {
               minHeight: 280
             }}
           >
+            <PageHeader
+              onBack={() => Router.push("/diplomas")}
+              ghost={false}
+              title={PAGE_NAME}
+            />
             <div>
-              <p>
-                Promotorstwo Poprowadził prawie półtorej setki prac dyplomowych
+              <Typography.Paragraph style={{ maxWidth: 800 }}>
+                Poprowadził prawie półtorej setki prac dyplomowych
                 promując często świetnych dyplomantów. Te prace to w większości
                 autorskie zastosowania internetu. Ciągle zresztą pojawiaja się
                 nowe pomysły.
-              </p>
-              <p>
+              </Typography.Paragraph>
+              <Typography.Paragraph style={{ maxWidth: 800 }}>
                 Jestem wykładowcą informatyki na politechnice gdzie moją
                 ulubioną aktywnością jest zajmowanie się pracami dyplomowymi
                 studentów zarówno inżynierskimi jak magisterskimi. Oferowane
@@ -45,14 +52,14 @@ export default class extends React.Component {
                 aplikacjami mobilnymi i wspierane konstruowanym indywidualnie
                 przez studentów sprzętem. Są też gry komputerowe, o przeróżnej
                 tematyce i w różnych technologiach. Kilka najciekawszych prac
-                spośród prawie półtorej setki znajduje się na liście:
-                Najciekawsze dyplomy Od dawna kusi mnie crowdfunding takich
+                spośród prawie półtorej setki znajduje się na liście: <Link href="/diplomas/favourites"><a>Najciekawsze dyplomy</a></Link>.{' '}
+                Od dawna kusi mnie crowdfunding takich
                 tematów. Czy to na etapie konstruowania pracy, kiedy można by
                 wesprzeć studentów by ich prototyp był bliższy praktyce np.
-                finansując zakupy sprzętowe czy graficzne modele 3D(np. dla
+                finansując zakupy sprzętowe czy graficzne modele 3D (np. dla
                 gry), czy też już po obronie dla uczynienia z niej produktu
                 rynkowego.
-              </p>
+              </Typography.Paragraph>
             </div>
           </Layout.Content>
         </Layout>

@@ -33,12 +33,9 @@ export default () => (
           <Link href="/diplomas/proposed">Proponowane</Link>
         </Menu.Item>
         <Menu.Item key="3-4">
-          <Link href="/diplomas/topresent">Przygotowane</Link>
-        </Menu.Item>
-        <Menu.Item key="3-5">
           <Link href="/diplomas/favourites">Najciekawsze</Link>
         </Menu.Item>
-        <Menu.Item key="3-6">
+        <Menu.Item key="3-5">
           <Link href="/diplomas/about">Promotorstwo</Link>
         </Menu.Item>
       </Menu.SubMenu>
