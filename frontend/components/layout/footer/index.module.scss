@@ -3,6 +3,7 @@
 }
 
 .footerAnnotation {
+  position: relative;
   font-size: 10px;
 }
 
@@ -16,4 +17,10 @@
   // Icon made by Freepik from www.flaticon.com
   background: url('/static/images/sunny.png') no-repeat left top !important;
   background-size: 15% !important;
+}
+.christmas {
+  // Icon made by Freepik from www.flaticon.com
+  // Icon made by Smashicons from www.flaticon.com
+  background: url('/static/images/snowman.png') no-repeat 20% top, url('/static/images/christmas-tree.png') no-repeat 80% top !important;
+  background-size: contain !important;
 }

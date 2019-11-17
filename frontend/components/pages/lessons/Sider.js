@@ -24,7 +24,7 @@ export default () => (
         }
       >
         <Menu.Item key="2-1">
-          <Link href="/lessons/oukwi">
+          <Link href="/lessons/oukwi" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
             Organizacja Usług Komercyjnych w Internecie
           </Link>
         </Menu.Item>
