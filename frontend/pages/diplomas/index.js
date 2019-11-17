@@ -35,19 +35,19 @@ export default class extends React.Component {
             <div>
               <Menu>
                 <Menu.Item key="3-1">
-                  <Link href="/diplomas/done">Obronione</Link>
+                  <Link href="/diplomas/done"><a>Obronione</a></Link>
                 </Menu.Item>
                 <Menu.Item key="3-2">
-                  <Link href="/diplomas/inprogress">Realizowane</Link>
+                  <Link href="/diplomas/inprogress"><a>Realizowane</a></Link>
                 </Menu.Item>
                 <Menu.Item key="3-3">
-                  <Link href="/diplomas/proposed">Proponowane</Link>
+                  <Link href="/diplomas/proposed"><a>Proponowane</a></Link>
                 </Menu.Item>
                 <Menu.Item key="3-4">
-                  <Link href="/diplomas/favourites">Najciekawsze</Link>
+                  <Link href="/diplomas/favourites"><a>Najciekawsze</a></Link>
                 </Menu.Item>
                 <Menu.Item key="3-5">
-                  <Link href="/diplomas/about">Promotorstwo</Link>
+                  <Link href="/diplomas/about"><a>Promotorstwo</a></Link>
                 </Menu.Item>
               </Menu>
             </div>

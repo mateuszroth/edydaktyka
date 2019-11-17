@@ -44,7 +44,7 @@ class MyApp extends App<AppProps> {
 
   state = {
     isLoginModalVisible: false
-  }
+  };
 
   handleLogOut = handler => {
     handler();
@@ -56,13 +56,13 @@ class MyApp extends App<AppProps> {
   showLoginModal = () => {
     this.setState({
       isLoginModalVisible: true
-    })
+    });
   };
 
   closeLoginModal = () => {
     this.setState({
       isLoginModalVisible: false
-    })
+    });
   };
 
   render() {
@@ -123,7 +123,7 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="1-3">
-                            <Link href="/consultations">
+                              <Link href="/consultations">
                                 <a>Zarezerwuj konsultacje</a>
                               </Link>
                             </Menu.Item>
@@ -155,24 +155,44 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="2-3">
-                              <Link href="/lessons/pw">
-                                <a>Programowanie wizualne</a>
-                              </Link>
+                              <a
+                                href="http://www.cs.put.poznan.pl/jkniat/MatDydakt.html"
+                                target="blank"
+                              >
+                                Programowanie wizualne
+                              </a>
                             </Menu.Item>
                             <Menu.Item key="2-4">
-                              <Link href="/lessons/aisd">
-                                <a>Algorytmy i struktury danych</a>
-                              </Link>
+                              <a
+                                href="http://www.cs.put.poznan.pl/mmachowiak/aisd.php"
+                                target="blank"
+                              >
+                                Algorytmy i struktury danych
+                              </a>
                             </Menu.Item>
                             <Menu.Item key="2-5">
-                              <Link href="/lessons/pn">
-                                <a>Programowanie niskopoziomowe</a>
-                              </Link>
+                              <a
+                                href="http://www.cs.put.poznan.pl/arybarczyk/PNS.php"
+                                target="blank"
+                              >
+                                Programowanie niskopoziomowe
+                              </a>
                             </Menu.Item>
                             <Menu.Item key="2-6">
-                              <Link href="/lessons/pp">
-                                <a>Podstawy programowania</a>
-                              </Link>
+                              <a
+                                href="http://www.cs.put.poznan.pl/aurbanski/lista-zadan.pdf"
+                                target="blank"
+                              >
+                                Podstawy programowania
+                              </a>
+                            </Menu.Item>
+                            <Menu.Item key="2-7">
+                              <a
+                                href="http://www.cs.put.poznan.pl/arybarczyk/JiPPS.php#"
+                                target="blank"
+                              >
+                                Programowanie obiektowe - teleinformatyka
+                              </a>
                             </Menu.Item>
                           </SubMenu>
                           <SubMenu
@@ -374,24 +394,29 @@ class MyApp extends App<AppProps> {
                                   Wyloguj się
                                 </Button>
                               )}
-                              {auth.isInitialized && !auth.isLoggedIn && !auth.user && (
-                                <>
-                                  <Button
-                                    type="default"
-                                    onClick={this.showLoginModal}
-                                  >
-                                    Zaloguj się
-                                  </Button>
-                                  <Modal
-                                    visible={isLoginModalVisible}
-                                    title="Zaloguj się"
-                                    onCancel={this.closeLoginModal}
-                                    footer={[]}
-                                  >
-                                    <WrappedLoginForm name="login" onRedirect={this.closeLoginModal} />
-                                  </Modal>
-                                </>
-                              )}
+                              {auth.isInitialized &&
+                                !auth.isLoggedIn &&
+                                !auth.user && (
+                                  <>
+                                    <Button
+                                      type="default"
+                                      onClick={this.showLoginModal}
+                                    >
+                                      Zaloguj się
+                                    </Button>
+                                    <Modal
+                                      visible={isLoginModalVisible}
+                                      title="Zaloguj się"
+                                      onCancel={this.closeLoginModal}
+                                      footer={[]}
+                                    >
+                                      <WrappedLoginForm
+                                        name="login"
+                                        onRedirect={this.closeLoginModal}
+                                      />
+                                    </Modal>
+                                  </>
+                                )}
                             </Col>
                           </Row>
                         </div>

@@ -1,9 +1,10 @@
 import React from "react";
-import { Layout } from "antd";
+import { Layout, PageHeader } from "antd";
 import Sider from "../../components/pages/lessons/Sider";
 import Breadcrumb from "../../components/pages/lessons/Breadcrumb";
+import Router from "next/router";
 
-const PAGE_NAME = "Podsttawy programowania";
+const PAGE_NAME = "Podstawy Programowania";
 
 export default class extends React.Component {
   static async getInitialProps(props) {
@@ -24,28 +25,13 @@ export default class extends React.Component {
               minHeight: 280
             }}
           >
-            <h1>{PAGE_NAME}</h1>
+            <PageHeader
+              onBack={() => Router.push("/lessons")}
+              ghost={false}
+              title={PAGE_NAME}
+            />
             <div>
-              <ul>
-                <li>
-                  <a href="">Początki Gospodarki Elektronicznej</a>
-                </li>
-                <li>
-                  <a href="">Bankowość internetowa</a>
-                </li>
-                <li>
-                  <a href="">Sklepy internetowe</a>
-                </li>
-                <li>
-                  <a href="">Aukcje i giełdy internetowe</a>
-                </li>
-                <li>
-                  <a href="">Inne usługi przez internet</a>
-                </li>
-                <li>
-                  <a href="">BitCoin</a>
-                </li>
-              </ul>
+              <a href="http://www.cs.put.poznan.pl/aurbanski/lista-zadan.pdf" target="blank">Podstawy programowania</a>
             </div>
           </Layout.Content>
         </Layout>

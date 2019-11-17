@@ -18,30 +18,60 @@ export default () => (
           <Link href="/help">
             <span>
               <Icon type="highlight" />
-              Zajęcia
+              Zajęcia i wykłady
             </span>
           </Link>
         }
       >
         <Menu.Item key="2-1">
-          <Link href="/lessons/oukwi" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-            Organizacja Usług Komercyjnych w Internecie
+          <Link href="/lessons/oukwi">
+            <a>Organizacja Usług Komercyjnych w Internecie</a>
           </Link>
         </Menu.Item>
         <Menu.Item key="2-2">
-          <Link href="/lessons/bai">Bogate Aplikacje Internetowe</Link>
+          <Link href="/lessons/bai">
+            <a>Bogate Aplikacje Internetowe</a>
+          </Link>
         </Menu.Item>
         <Menu.Item key="2-3">
-          <Link href="/lessons/pw">Programowanie wizualne</Link>
+          <a
+            href="http://www.cs.put.poznan.pl/jkniat/MatDydakt.html"
+            target="blank"
+          >
+            Programowanie wizualne
+          </a>
         </Menu.Item>
         <Menu.Item key="2-4">
-          <Link href="/lessons/aisd">Algorytmy i struktury danych</Link>
+          <a
+            href="http://www.cs.put.poznan.pl/mmachowiak/aisd.php"
+            target="blank"
+          >
+            Algorytmy i struktury danych
+          </a>
         </Menu.Item>
         <Menu.Item key="2-5">
-          <Link href="/lessons/pn">Programowanie niskopoziomowe</Link>
+          <a
+            href="http://www.cs.put.poznan.pl/arybarczyk/PNS.php"
+            target="blank"
+          >
+            Programowanie niskopoziomowe
+          </a>
         </Menu.Item>
         <Menu.Item key="2-6">
-          <Link href="/lessons/pp">Podstawy programowania</Link>
+          <a
+            href="http://www.cs.put.poznan.pl/aurbanski/lista-zadan.pdf"
+            target="blank"
+          >
+            Podstawy programowania
+          </a>
+        </Menu.Item>
+        <Menu.Item key="2-7">
+          <a
+            href="http://www.cs.put.poznan.pl/arybarczyk/JiPPS.php#"
+            target="blank"
+          >
+            Programowanie obiektowe - teleinformatyka
+          </a>
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>

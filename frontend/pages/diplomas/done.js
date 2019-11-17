@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, PageHeader, Table } from "antd";
+import { Layout, PageHeader } from "antd";
 import Sider from "../../components/pages/diplomas/Sider";
 import Breadcrumb from "../../components/pages/diplomas/Breadcrumb";
 import Diplomas from "../../components/pages/diplomas/Diplomas";
