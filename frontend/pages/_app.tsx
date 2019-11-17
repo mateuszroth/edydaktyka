@@ -114,7 +114,7 @@ class MyApp extends App<AppProps> {
                           >
                             <Menu.Item key="1-1">
                               <Link href="/help">
-                                <a>Funkcjonalność strony</a>
+                                <a>Funkcjonalność serwisu</a>
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="1-2">
@@ -128,7 +128,7 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="1-4">
-                              Przesłania sprawozdania
+                              <Link href="/help/faq"><a>Przesłania sprawozdania</a></Link>
                             </Menu.Item>
                           </SubMenu>
                           <SubMenu

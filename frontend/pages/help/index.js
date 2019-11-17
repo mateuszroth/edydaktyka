@@ -1,9 +1,9 @@
 import React from "react";
-import { Layout, Divider } from "antd";
+import { Layout, PageHeader, Typography } from "antd";
 import Sider from "../../components/pages/help/Sider";
 import Breadcrumb from "../../components/pages/help/Breadcrumb";
 
-const PAGE_NAME = "Pomoc";
+const PAGE_NAME = "Funkcjonalność serwisu";
 
 export default class extends React.Component {
   static async getInitialProps(props) {
@@ -25,7 +25,8 @@ export default class extends React.Component {
             }}
           >
             <div>
-              <h2>Serwis edu.andrzeju.pl spełnia następujące funkcje:</h2>
+              <PageHeader ghost={false} title={PAGE_NAME} />
+              <Typography.Paragraph><strong>Serwis edu.andrzeju.pl spełnia następujące funkcje:</strong></Typography.Paragraph>
               <ul>
                 <li>
                   Informuje o prowadzonych zajęciach ze studentami i zawiera
@@ -41,10 +42,6 @@ export default class extends React.Component {
                 </li>
                 <li>
                   Umożliwia organizowanie grup studenckich z planowaniem zajęć.
-                </li>
-                <li>
-                  Umożliwia na przewidzianych do tego zajęciach organizowanie
-                  się studentów w kilkuosobowe wspólnie oceniane zespoły.
                 </li>
                 <li>
                   Umożliwia prowadzącemu kontrolę obecności na zajęciach, a
@@ -72,16 +69,7 @@ export default class extends React.Component {
                   Umożliwia studentom wypełnianie anonimowej ankiety dotyczących
                   odbytych zajęć.
                 </li>
-                <li>
-                  Umożliwia studentom wybór zadań semestralnych na zasadzie kto
-                  pierwszy.
-                </li>
               </ul>
-              <Divider />
-              <img
-                src="http://www.cs.put.poznan.pl/aurbanski/przewodnik.jpg"
-                alt="Przewodnik po stronie"
-              />
             </div>
           </Layout.Content>
         </Layout>

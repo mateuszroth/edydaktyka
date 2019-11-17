@@ -32,7 +32,7 @@ const AccountPage: React.FC<AccountPageProps> = () => {
     state: authState
   } = useContext(AuthContext);
   const { user } = authState;
-  const [ avatarUrl, setAvatarUrl ] = useState();
+  const [avatarUrl, setAvatarUrl] = useState();
 
   const handleLogOut = () => {
     Router.push("/");
@@ -44,23 +44,23 @@ const AccountPage: React.FC<AccountPageProps> = () => {
   };
 
   const uploadProps = {
-    name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', // TODO
+    name: "file",
+    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76", // TODO
     multiple: false,
     headers: {
-      authorization: 'authorization-text', // TODO
+      authorization: "authorization-text" // TODO
     },
     onChange(info) {
-      if (info.file.status !== 'uploading') {
+      if (info.file.status !== "uploading") {
         console.log(info.file, info.fileList);
       }
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         notification.success({ message: "Pomyślnie wgrano zdjęcie" });
         setAvatarUrl(info.file.response.url);
-      } else if (info.file.status === 'error') {
+      } else if (info.file.status === "error") {
         notification.error({ message: "Błąd podczas wgrywania zdjęcia" });
       }
-    },
+    }
   };
 
   return (
@@ -80,10 +80,11 @@ const AccountPage: React.FC<AccountPageProps> = () => {
           <Row>
             <Col md={20}>
               <Title level={1}>
-                <Icon type="setting" /> {PAGE_NAME} {user && user.isAdmin && '(administrator)'}
+                <Icon type="setting" /> {PAGE_NAME}{" "}
+                {user && user.isAdmin && "(administrator)"}
               </Title>
             </Col>
-            <Col md={4}>
+            <Col md={4} style={{ textAlign: "right" }}>
               <Button type="danger" size="large" onClick={handleLogOut}>
                 Wyloguj się
               </Button>
@@ -94,14 +95,18 @@ const AccountPage: React.FC<AccountPageProps> = () => {
             <div className={styles.content}>
               <Row justify="start" type="flex" style={{ marginBottom: 30 }}>
                 <Col md={4}>
-                  <Avatar size={128} icon="user" src={avatarUrl || user && user.photo} />
+                  <Avatar
+                    size={128}
+                    icon="user"
+                    src={avatarUrl || (user && user.photo)}
+                  />
                 </Col>
                 <Col md={4}>
                   <Upload {...uploadProps}>
-                      <Button>
-                        <Icon type="upload" /> Wgraj zdjęcie
-                      </Button>
-                    </Upload>
+                    <Button>
+                      <Icon type="upload" /> Wgraj zdjęcie
+                    </Button>
+                  </Upload>
                 </Col>
               </Row>
               <Row style={{ marginBottom: 20 }}>

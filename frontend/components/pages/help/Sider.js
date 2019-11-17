@@ -24,15 +24,15 @@ export default () => (
         }
       >
         <Menu.Item key="1-1">
-          <Link href="/help">Funkcjonalność strony</Link>
+          <Link href="/help"><a>Funkcjonalność serwisu</a></Link>
         </Menu.Item>
         <Menu.Item key="1-2">
           <Link href="/help/faq">
             <a>FAQ - Najczęściej zadawane pytania</a>
           </Link>
         </Menu.Item>
-        <Menu.Item key="1-3">Rezerwacja konsultacji</Menu.Item>
-        <Menu.Item key="1-4">Przesłania sprawozdania</Menu.Item>
+        <Menu.Item key="1-3"><Link href="/consultations"><a>Rezerwacja konsultacji</a></Link></Menu.Item>
+        <Menu.Item key="1-4"><Link href="/help/faq#sprawozdania"><a>Przesłania sprawozdania</a></Link></Menu.Item>
       </Menu.SubMenu>
     </Menu>
   </Sider>
