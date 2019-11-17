@@ -16,8 +16,8 @@ export default () => (
       </Link>
     </Breadcrumb.Item>
     <Breadcrumb.Item>
-      <Link href="/schedule">
-        <a>Obecności na zajęciach</a>
+      <Link href="/reports">
+        <a>Sprawozdania</a>
       </Link>
     </Breadcrumb.Item>
   </Breadcrumb>
