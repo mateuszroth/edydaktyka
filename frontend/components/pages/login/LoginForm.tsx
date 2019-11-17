@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Form, Icon, Input, Button, notification, Alert, Spin } from "antd";
+import noop from "lodash/noop";
 import Router from "next/router";
 import Link from "next/link";
 import { FormComponentProps } from "antd/lib/form/Form";
@@ -20,7 +21,7 @@ interface LoginFormProps extends FormComponentProps {
   onRedirect?: () => void
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ form, onRedirect }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ form, onRedirect = noop }) => {
   useLoggedInRedirection();
   const { getFieldDecorator, validateFields } = form;
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);

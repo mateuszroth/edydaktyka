@@ -7,34 +7,31 @@ import styles from "./index.module.scss";
 const Footer: React.FC<{}> = () => {
     const [location, setLocation] = useState(null);
 
-    const getLocation = async () => {
-        return await new Promise(resolve => {
-          if (navigator && navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(getSunTimes(resolve));
-          } else {
-            getSunTimes(resolve)({
-              coords: {
-                latitude: 52.386, // Poznan
-                longitude: 16.988
-              }
-            });
+    const getLocation = () => {
+      if (navigator && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(getSunTimes);
+      } else {
+        getSunTimes({
+          coords: {
+            latitude: 52.386, // Poznan
+            longitude: 16.988
           }
         });
-      };
+      }
+    };
       
-      const getSunTimes = resolve => position => {
-        const { latitude, longitude } = position.coords;
-        const times = suncalc.getTimes(new Date(), latitude, longitude);
-        const { sunrise, sunset } = times;
-        resolve();
-        setLocation({
-          latitude,
-          longitude,
-          sunrise,
-          sunset,
-          currentDate: new Date()
-        });
-      };
+    const getSunTimes = position => {
+      const { latitude, longitude } = position.coords;
+      const times = suncalc.getTimes(new Date(), latitude, longitude);
+      const { sunrise, sunset } = times;
+      setLocation({
+        latitude,
+        longitude,
+        sunrise,
+        sunset,
+        currentDate: new Date()
+      });
+    };
 
     useEffect(() => {
         getLocation();

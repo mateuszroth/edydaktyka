@@ -7,9 +7,11 @@ import {
   Row,
   Col,
   Button,
-  Modal
+  Modal,
+  Table
 } from "antd";
 import Link from "next/link";
+import Consultations from "../components/pages/consultations/Consultations";
 const { Title } = Typography;
 const { Content } = Layout;
 
@@ -111,6 +113,9 @@ export default class extends React.Component {
                       Zobacz dojście do pokoju
                     </Button>
                   </Col>
+                </Row>
+                <Row>
+                  <Consultations />
                 </Row>
               </div>
             </div>

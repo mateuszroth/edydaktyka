@@ -123,7 +123,9 @@ class MyApp extends App<AppProps> {
                               </Link>
                             </Menu.Item>
                             <Menu.Item key="1-3">
-                              Rezerwacja konsultacji
+                            <Link href="/consultations">
+                                <a>Zarezerwuj konsultacje</a>
+                              </Link>
                             </Menu.Item>
                             <Menu.Item key="1-4">
                               Przesłania sprawozdania
