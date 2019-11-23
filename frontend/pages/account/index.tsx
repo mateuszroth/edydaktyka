@@ -13,7 +13,7 @@ import {
 } from "antd";
 import Router from "next/router";
 import Breadcrumb from "../../components/pages/account/Breadcrumb";
-import ChangeGroup from "../../components/pages/account/ChangeGroup";
+import ChangeGroup from "../../components/shared/change-group/ChangeGroup";
 import { AuthContext } from "../../components/stores/AuthContext";
 import useNotLoggedInRedirection from "../../components/hocs/useNotLoggedInRedirection";
 import styles from "./index.module.scss";

@@ -1,5 +1,5 @@
 import React from "react";
-import App, { Container } from "next/app";
+import App from "next/app";
 import Link from "next/link";
 import Head from "next/head";
 import {
@@ -23,7 +23,7 @@ import withApolloClient from "../components/hocs/withApolloClient";
 import styles from "./_app.module.scss";
 import stylesheet from "antd/dist/antd.css";
 import WrappedLoginForm from "../components/pages/login/LoginForm";
-import ChangeGroup from "../components/pages/account/ChangeGroup";
+import ChangeGroup from "../components/shared/change-group/ChangeGroup";
 
 const { SubMenu } = Menu;
 const { Header } = Layout;

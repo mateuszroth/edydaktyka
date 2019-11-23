@@ -1,6 +1,7 @@
 import authResolvers from 'modules/auth/resolvers';
 import groupsResolvers from 'modules/groups/resolvers';
 import classResolvers from 'modules/classes/resolvers';
+import attendancesResolvers from 'modules/attendances/resolvers';
 
 const typeDefs = `
 scalar Date
@@ -66,6 +67,7 @@ type Query {
   groups(isActive: Boolean): [Group]!
   groupAttendances(id: ID!): [ClassAttendance]!
   classAttendances(id: ID!): [ClassAttendance]!
+  userClassAttendances(id: ID!): [ClassAttendance]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -85,7 +87,8 @@ const resolvers = {
         currentUser: authResolvers.currentUser,
         groups: groupsResolvers.groups,
         groupAttendances: groupsResolvers.groupAttendances,
-        classAttendances: classResolvers.classAttendances,
+        classAttendances: attendancesResolvers.classAttendances,
+        userClassAttendances: attendancesResolvers.userClassAttendances,
     },
     Mutation: {
         register: authResolvers.register,
