@@ -1,34 +1,41 @@
-import React from "react";
-import { PageHeader, Layout } from "antd";
+import React, { useContext } from "react";
+import { PageHeader, Layout, Spin } from "antd";
 import Breadcrumb from "../../components/pages/schedule/Breadcrumb";
 import styles from "./index.module.scss";
+import AuthContext from "../../components/stores/AuthContext";
+import useNotLoggedInRedirection from "../../components/hocs/useNotLoggedInRedirection";
+import { PageContent } from "../../components/layout/content/page-content";
 
-const PAGE_NAME = "Obecności na zajęciach";
+const PAGE_NAME = "Zajęcia i obecności";
 
 interface SchedulePageProps {}
 
 const SchedulePage: React.FC<SchedulePageProps> = () => {
+  useNotLoggedInRedirection();
+  const { state: authState } = useContext(AuthContext);
+  const { user, isInitialized } = authState;
+
   return (
-    <Layout className={styles.root}>
-      <Layout style={{ padding: "0 24px 24px" }}>
-        <Breadcrumb />
-        <Layout.Content
-          style={{
-            background: "#fff",
-            padding: 24,
-            margin: "0 auto",
-            minHeight: 280,
-            width: "100%",
-            maxWidth: 1150,
-            textAlign: "center"
-          }}
-        >
-          <PageHeader
-            ghost={false}
-            title={PAGE_NAME}
-          />
-        </Layout.Content>
-      </Layout>
+    <Layout className={styles.root} style={{ padding: "0 24px 24px" }}>
+      <Breadcrumb />
+      <PageContent>
+        <PageHeader
+          ghost={false}
+          title={PAGE_NAME}
+        />
+        {!isInitialized && !user && (
+          <Spin size="large" />
+        )}
+        {isInitialized && user && user.isAdmin && (
+          <>
+            <div>Dodaj zajęcia dla grupy</div>
+            <div>Lista zajęć dla grupy</div>
+          </>
+        )}
+        {isInitialized && user && !user.isAdmin && (
+          <div>Twoje obecności na zajęciach</div>
+        )}
+      </PageContent>
     </Layout>
   );
 };
