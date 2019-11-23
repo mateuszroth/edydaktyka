@@ -1,12 +1,12 @@
 .group {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .group:hover {
-  color: #1890ff;
+    color: #1890ff;
 }
 
 .selectedGroup {
-  font-weight: bold;
-  cursor: not-allowed;
+    font-weight: bold;
+    cursor: not-allowed;
 }

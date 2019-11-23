@@ -1,41 +1,41 @@
 .app {
-  font-family: Helvetica, Arial, sans-serif;
-  min-height: 100vh;
-  height: 100%;
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
     font-family: Helvetica, Arial, sans-serif;
-  }
+    min-height: 100vh;
+    height: 100%;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: Helvetica, Arial, sans-serif;
+    }
 }
 
 .header {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 .loggedInHeader {
-  min-height: 50px;
-  padding: 0 40px;
-  background: #1890ff;
-  font-size: 14px;
-  line-height: 50px;
-  color: white;
+    min-height: 50px;
+    padding: 0 40px;
+    background: #1890ff;
+    font-size: 14px;
+    line-height: 50px;
+    color: white;
 }
 
 .logo {
-  display: inline;
+    display: inline;
 }
 
 @media (max-width: 600px) {
-  .header {
-    padding: 0 70px 0 !important;
-  }
+    .header {
+        padding: 0 70px 0 !important;
+    }
 
-  .mobileHide {
-    display: none;
-  }
+    .mobileHide {
+        display: none;
+    }
 }

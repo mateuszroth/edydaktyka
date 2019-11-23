@@ -1,2 +1,2 @@
 // polyfills for olders IEs
-import "babel-polyfill";
+import 'babel-polyfill';
