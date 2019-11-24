@@ -75,7 +75,10 @@ const GroupsList: React.FC<GroupsListProps> = ({ active = true, manage = true, o
 
     const handleRow = (group, _) => {
         return {
-            onClick: _ => onDetailsClick(group)
+            onClick: event => {
+                event.preventDefault();
+                onDetailsClick(group);
+            }
         }
     }
 

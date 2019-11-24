@@ -15,7 +15,6 @@ export const PageContent: React.FC<PageContentProps> = ({ children }) => {
                 minHeight: 280,
                 width: '100%',
                 maxWidth: 1150,
-                textAlign: 'center',
             }}
         >
             {children}

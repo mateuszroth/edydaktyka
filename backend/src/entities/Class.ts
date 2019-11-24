@@ -3,10 +3,12 @@ import Group from './Group';
 import ClassAttendance from './ClassAttendance';
 
 export interface ClassType {
-    groupId: number;
-    classNumber: number;
+    id?: number;
+    groupId?: number;
+    classNumber?: number;
     takenOn?: Date;
-    title: string;
+    title?: string;
+    isReportRequired?: boolean;
 }
 
 @Entity()
@@ -25,6 +27,9 @@ export default class Class extends BaseEntity {
 
     @Column({ type: 'varchar', length: 100 })
     title: string;
+
+    @Column({ type: 'boolean', default: true })
+    isReportRequired: boolean;
 
     @ManyToOne(() => Group, group => group.classes)
     group: Group;

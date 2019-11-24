@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { PageHeader, Layout, Spin, Button, Modal, Typography } from 'antd';
 import gql from 'graphql-tag';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import Breadcrumb from '../../components/pages/groups/Breadcrumb';
 import GroupsList, { GET_GROUPS } from '../../components/pages/groups/GroupsList';
 import GroupForm from '../../components/pages/groups/GroupForm';
@@ -45,6 +45,7 @@ interface GroupsPageProps {}
 
 const GroupsPage: React.FC<GroupsPageProps> = () => {
     useNotAdminRedirection();
+    const router = useRouter();
     const { state: authState } = useContext(AuthContext);
     const { user, isInitialized } = authState;
     const [isAddGroupModalVisible, setIsAddGroupModalVisible] = useState(false);
@@ -52,7 +53,7 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
     const [getActiveGroups] = useLazyQuery(GET_GROUPS(true), { fetchPolicy: 'network-only' });
     const [getInactiveGroups] = useLazyQuery(GET_GROUPS(false), { fetchPolicy: 'network-only' });
     const [putGroup, { loading: putGroupLoading, data: putGroupData, error: putGroupError }] = useMutation(PUT_GROUP);
-    const handleGroupSelect = group => Router.push(`/group/${group.id}`); // TODO group details page
+    const handleGroupSelect = group => router.push(`/group/${group.id}`);
     const handleSendEmailClick = group => null; // TODO group email form
     const handleEditClick = group => {
         setGroupFormInitialValues(group);
@@ -115,7 +116,6 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
                         />
                     </>
                 )}
-                {isInitialized && user && !user.isAdmin && <div>Twoje obecności na zajęciach</div>}
             </PageContent>
         </Layout>
     );

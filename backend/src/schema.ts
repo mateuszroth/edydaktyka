@@ -6,10 +6,16 @@ import attendancesResolvers from 'modules/attendances/resolvers';
 const typeDefs = `
 scalar Date
 input InputClass {
-  groupId: ID!
-  classNumber: Int!
+  id: Int
+  groupId: Int
+  classNumber: Int
   takenOn: Date
-  title: String!
+  title: String
+  isReportRequired: Boolean
+}
+input InputRemoveClass {
+  id: Int!
+  groupId: Int!
 }
 input InputGroup {
   id: ID
@@ -34,11 +40,12 @@ type ClassAttendance {
   reportAddedOn: Date
 }
 type Class {
-  id: ID!
+  id: Int!
   groupId: Int!
   classNumber: Int!
   takenOn: Date
   title: String!
+  isReportRequired: Boolean
 }
 type Group {
   id: ID!
@@ -82,6 +89,8 @@ type Mutation {
   addGroup(group: InputGroup): String!
   putGroup(group: InputGroup): String!
   addClass(classData: InputClass): String!
+  putClass(classData: InputClass): String!
+  removeClass(classData: InputRemoveClass): String!
 }
 `;
 
@@ -105,6 +114,8 @@ const resolvers = {
         addGroup: groupsResolvers.addGroup,
         putGroup: groupsResolvers.putGroup,
         addClass: classResolvers.addClass,
+        putClass: classResolvers.putClass,
+        removeClass: classResolvers.removeClass,
     },
 };
 
