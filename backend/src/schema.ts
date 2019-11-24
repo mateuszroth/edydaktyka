@@ -12,6 +12,7 @@ input InputClass {
   title: String!
 }
 input InputGroup {
+  id: ID
   modeOfStudy: String!
   fieldOfStudy: String!
   groupNumber: String!
@@ -19,6 +20,7 @@ input InputGroup {
   courseName: String!
   link: String
   description: String
+  isActive: Boolean
 }
 type ClassAttendance {
   id: ID!
@@ -77,6 +79,7 @@ type Mutation {
   changePassword(album: Int!, password: String!): String!
   assignUserToGroups(groupIds: [Int!]): String!
   addGroup(group: InputGroup): String!
+  putGroup(group: InputGroup): String!
   addClass(classData: InputClass): String!
 }
 `;
@@ -98,6 +101,7 @@ const resolvers = {
         changePassword: authResolvers.changePassword,
         assignUserToGroups: groupsResolvers.assignUserToGroups,
         addGroup: groupsResolvers.addGroup,
+        putGroup: groupsResolvers.putGroup,
         addClass: classResolvers.addClass,
     },
 };

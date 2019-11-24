@@ -4,13 +4,15 @@ import Class from './Class';
 import ClassAttendance from './ClassAttendance';
 
 export interface GroupType {
-    modeOfStudy: ModeOfStudy;
-    fieldOfStudy: string;
-    groupNumber: GroupNumber;
-    groupHalf: string;
-    courseName: string;
-    link: string;
-    description: string;
+    id?: string;
+    modeOfStudy?: ModeOfStudy;
+    fieldOfStudy?: string;
+    groupNumber?: GroupNumber;
+    groupHalf?: string;
+    courseName?: string;
+    link?: string;
+    description?: string;
+    isActive?: boolean;
 }
 
 export enum ModeOfStudy {
