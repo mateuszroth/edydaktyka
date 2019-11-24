@@ -51,6 +51,19 @@ const editGroup = async (group: GroupType): Promise<void> => {
 };
 
 export default {
+    group: async (_, { id }, { auth }): Promise<Group | Error> => {
+        if (!auth || !auth.isAdmin) {
+            return new Error('Brak uprawnień.');
+        }
+
+        const group = await getRepository(Group).findOne(id);
+
+        if (!group) {
+            return new Error('Grupa nie istnieje.');
+        }
+
+        return group;
+    },
     groups: async (_, { isActive = true }, { auth }): Promise<Group[]> => {
         const groups = await getRepository(Group).find({ isActive: isActive });
 

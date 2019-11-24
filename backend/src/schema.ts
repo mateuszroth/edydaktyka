@@ -66,6 +66,7 @@ type User {
 type Query {
   hello(name: String): String!
   currentUser(album: Int): User!
+  group(id: ID!): Group!
   groups(isActive: Boolean): [Group]!
   groupAttendances(id: ID!): [ClassAttendance]!
   classAttendances(id: ID!): [ClassAttendance]!
@@ -88,6 +89,7 @@ const resolvers = {
     Query: {
         hello: (_, { name }): string => `Hello ${name || 'World'}`,
         currentUser: authResolvers.currentUser,
+        group: groupsResolvers.group,
         groups: groupsResolvers.groups,
         groupAttendances: groupsResolvers.groupAttendances,
         classAttendances: attendancesResolvers.classAttendances,
