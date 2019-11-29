@@ -21,7 +21,7 @@ export default ({ id }) => (
             </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-            <Link href="/groups">
+            <Link href={`/group/${id}`}>
                 <a>Grupa {id}</a>
             </Link>
         </Breadcrumb.Item>

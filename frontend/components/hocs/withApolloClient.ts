@@ -4,6 +4,8 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import withApollo from 'next-with-apollo';
 
+const localStorage = process.browser ? window.localStorage : { getItem: () => null, setItem: () => null };
+
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 const httpLink = createHttpLink({ uri: GRAPHQL_URL });
 const authLink = setContext((_, { headers }) => {

@@ -34,6 +34,6 @@ export default class Class extends BaseEntity {
     @ManyToOne(() => Group, group => group.classes)
     group: Group;
 
-    @OneToMany(() => ClassAttendance, ClassAttendance => ClassAttendance.class)
+    @OneToMany(() => ClassAttendance, classAttendance => classAttendance.class)
     attendances: Promise<ClassAttendance[]>;
 }

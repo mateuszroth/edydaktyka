@@ -5,6 +5,16 @@ import attendancesResolvers from 'modules/attendances/resolvers';
 
 const typeDefs = `
 scalar Date
+input InputAttendance {
+  id: Int
+  groupId: Int!
+  classId: Int!
+  userId: Int!
+  reportAddedOn: Date
+  reportGrade: Int
+  reportFile: String
+  isPresent: Boolean
+}
 input InputClass {
   id: Int
   groupId: Int
@@ -46,6 +56,8 @@ type Class {
   takenOn: Date
   title: String!
   isReportRequired: Boolean
+  attendances: [ClassAttendance]
+  group: Group
 }
 type Group {
   id: ID!
@@ -78,6 +90,7 @@ type Query {
   groupAttendances(id: ID!): [ClassAttendance]!
   classAttendances(id: ID!): [ClassAttendance]!
   userClassAttendances(id: ID!): [ClassAttendance]!
+  class(id: Int!, groupId: Int!): Class
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -91,6 +104,7 @@ type Mutation {
   addClass(classData: InputClass): String!
   putClass(classData: InputClass): String!
   removeClass(classData: InputRemoveClass): String!
+  putAttendance(attendance: InputAttendance): String!
 }
 `;
 
@@ -100,6 +114,7 @@ const resolvers = {
         currentUser: authResolvers.currentUser,
         group: groupsResolvers.group,
         groups: groupsResolvers.groups,
+        class: classResolvers.getClass,
         groupAttendances: groupsResolvers.groupAttendances,
         classAttendances: attendancesResolvers.classAttendances,
         userClassAttendances: attendancesResolvers.userClassAttendances,
@@ -116,6 +131,7 @@ const resolvers = {
         addClass: classResolvers.addClass,
         putClass: classResolvers.putClass,
         removeClass: classResolvers.removeClass,
+        putAttendance: attendancesResolvers.putAttendance,
     },
 };
 

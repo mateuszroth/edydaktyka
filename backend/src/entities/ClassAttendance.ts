@@ -9,7 +9,7 @@ export enum Grades {
     THREEPLUS = 35,
     FOUR = 40,
     FOURPLUS = 45,
-    FIVE = 5,
+    FIVE = 50,
 }
 
 @Entity()
@@ -29,13 +29,10 @@ export default class ClassAttendance extends BaseEntity {
     @Column({ type: 'boolean', default: false })
     isPresent: boolean;
 
-    @Column({ type: 'boolean', default: true })
-    isReportRequired: boolean;
-
     @Column({ type: 'text', nullable: true })
     reportFile: string;
 
-    @Column({ type: 'enum', enum: Grades })
+    @Column({ type: 'enum', enum: Grades, nullable: true })
     reportGrade: number;
 
     @Column({ type: 'datetime', nullable: true })

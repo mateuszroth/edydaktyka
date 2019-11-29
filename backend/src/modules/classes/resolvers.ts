@@ -1,6 +1,7 @@
 import Class, { ClassType } from 'entities/Class';
 import { getRepository } from 'typeorm';
 import User from 'entities/User';
+import Group from 'entities/Group';
 
 const addClass = async (classData: ClassType): Promise<void> => {
     const newClass = new Class();
@@ -36,6 +37,32 @@ const updateClass = async (classData: ClassType): Promise<void> => {
 };
 
 export default {
+    getClass: async (_, { id, groupId }, { auth }): Promise<any | Error> => {
+        if (!id) {
+            return new Error('Nie podano id zajęć');
+        }
+
+        if (!auth) {
+            return new Error('Brak uprawnień');
+        }
+
+        const user = await getRepository(User).findOne({ album: auth.album });
+
+        const classEntity = await getRepository(Class).findOne({ id: id, groupId: groupId });
+        let attendances = [];
+
+        if (!user.isAdmin) {
+            classEntity.group = null;
+            classEntity.attendances = null;
+        } else {
+            if (!classEntity.group) {
+                classEntity.group = await getRepository(Group).findOne(classEntity.groupId);
+            }
+            attendances = await classEntity.attendances;
+        }
+
+        return { ...classEntity, attendances };
+    },
     addClass: async (_, { classData }: { classData: ClassType }, { auth }): Promise<string | Error> => {
         if (!classData) {
             return new Error('Brak danych');

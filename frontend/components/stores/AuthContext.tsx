@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useLazyQuery } from '@apollo/react-hooks';
 
+const localStorage = process.browser ? window.localStorage : { getItem: () => null, setItem: () => null };
+
 interface Group {
     id: string;
     courseName: string;

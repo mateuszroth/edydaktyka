@@ -3,14 +3,14 @@ import { PageHeader, Layout, Spin, Button, Modal, Typography, Result, Descriptio
 import { NextPage, NextPageContext } from 'next';
 import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
-import Breadcrumb from '../../components/pages/group/Breadcrumb';
+import Breadcrumb from '../../../components/pages/group/Breadcrumb';
 import styles from './index.module.scss';
-import AuthContext from '../../components/stores/AuthContext';
-import { PageContent } from '../../components/layout/content/page-content';
-import useNotAdminRedirection from '../../components/hocs/useNotAdminRedirection';
+import AuthContext from '../../../components/stores/AuthContext';
+import { PageContent } from '../../../components/layout/content/page-content';
+import useNotAdminRedirection from '../../../components/hocs/useNotAdminRedirection';
 import { useMutation, useLazyQuery, useQuery } from 'react-apollo';
-import { getLongGroupName, getReadableModeOfStudy } from '../../helpers/groups';
-import ClassForm from '../../components/pages/group/ClassForm';
+import { getLongGroupName, getReadableModeOfStudy } from '../../../helpers/groups';
+import ClassForm from '../../../components/pages/group/ClassForm';
 
 const PAGE_NAME = 'Szczegóły grupy zajęciowej';
 
@@ -71,7 +71,7 @@ const REMOVE_CLASS = gql`
     }
 `;
 
-const getClassColumns = (onEdit, onRemove) => [
+const getClassColumns = (onEdit, onRemove, onDetailsClick) => [
     {
         title: 'ID',
         dataIndex: 'id',
@@ -108,6 +108,7 @@ const getClassColumns = (onEdit, onRemove) => [
                 <>
                     <Button type="default" icon="edit" shape="circle" onClick={() => onEdit(entry)} />
                     <Button type="default" icon="delete" shape="circle" onClick={() => onRemove(entry)} />
+                    <Button type="default" onClick={() => onDetailsClick(entry)}>Szczegóły</Button>
                 </>
             );
         },
@@ -164,11 +165,11 @@ const GroupPage: NextPage<GroupPageProps> = () => {
         setClassFormInitialValues(null);
         setIsClassFormModalVisible(false);
     };
-    const handleEditClass = classEntity => {
+    const handleClassEdit = classEntity => {
         setClassFormInitialValues(classEntity);
         handleShowClassFormModal();
     };
-    const handleRemoveClass = classEntity => {
+    const handleClassRemove = classEntity => {
         Modal.confirm({
             title: 'Czy na pewno chcesz usunąć zajęcia?',
             content: 'Tej operacji nie można cofnąć!',
@@ -183,6 +184,9 @@ const GroupPage: NextPage<GroupPageProps> = () => {
                 }),
         });
     };
+    const handleClassDetails = classEntity => {
+        router.push(`/group/${groupId}/class/${classEntity.id}`);
+    }
     useEffect(() => {
         getClasses();
     }, [removeClassData]);
@@ -201,7 +205,7 @@ const GroupPage: NextPage<GroupPageProps> = () => {
         return <Result status="error" title="Wystąpił błąd!" subTitle={(error || removeClassError).message} />;
 
     const { group } = data;
-    const classColumns = getClassColumns(handleEditClass, handleRemoveClass);
+    const classColumns = getClassColumns(handleClassEdit, handleClassRemove, handleClassDetails);
 
     return (
         <Layout className={styles.root}>
