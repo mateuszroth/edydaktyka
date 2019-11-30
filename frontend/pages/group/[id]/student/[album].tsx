@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { PageHeader, Layout, Spin, Radio, Typography, Result, Descriptions, Table, Icon, Button, List } from 'antd';
+import { PageHeader, Layout, Spin, Radio, Typography, Result, Descriptions, Table, Icon, Button, List, Tag } from 'antd';
 import { NextPage, NextPageContext } from 'next';
 import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
@@ -12,6 +12,7 @@ import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedir
 import { useMutation, useQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 import { GET_GROUP } from '../index';
+import GradeMark from '../../../../components/shared/grade-mark/GradeMark';
 
 const PAGE_NAME = 'Szczegóły studenta w grupie';
 
@@ -163,7 +164,7 @@ const StudentPage: NextPage<StudentPage> = () => {
                 val
                     ? entry.attendance && (entry.attendance.reportFile || entry.attendance.reportGrade)
                         ? entry.attendance.reportGrade
-                            ? parseFloat(String(Number(entry.attendance.reportGrade) / 10)).toFixed(1)
+                            ? <GradeMark grade={entry.attendance.reportGrade} />
                             : 'nieocenione'
                         : 'nieprzesłane'
                     : 'niewymagane',
@@ -172,7 +173,7 @@ const StudentPage: NextPage<StudentPage> = () => {
             title: 'Czy obecny?',
             dataIndex: 'attendance',
             key: 'attendance.isPresent',
-            render: val => (val ? (val.isPresent ? 'tak' : 'nie') : 'niesprawdzone'),
+            render: val => (val ? (val.isPresent ? <Tag color="green">tak</Tag> : <Tag color="red">nie</Tag>) : 'niesprawdzone'),
         },
         {
             title: 'Szczegóły',

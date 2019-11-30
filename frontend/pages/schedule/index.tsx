@@ -114,6 +114,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                                         title: 'Tytuł',
                                         dataIndex: 'title',
                                         key: 'title',
+                                        render: val => <strong>{val}</strong>
                                     },
                                     {
                                         title: 'Raport wymagany?',
