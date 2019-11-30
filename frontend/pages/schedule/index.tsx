@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PageHeader, Layout, Spin, Typography, Table } from 'antd';
+import { PageHeader, Layout, Spin, Typography, Table, Tag } from 'antd';
 import Breadcrumb from '../../components/pages/schedule/Breadcrumb';
 import styles from './index.module.scss';
 import AuthContext from '../../components/stores/AuthContext';
@@ -116,16 +116,22 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                                         key: 'title',
                                     },
                                     {
-                                        title: 'Sprawozdanie wymagane?',
+                                        title: 'Raport wymagany?',
                                         dataIndex: 'isReportRequired',
                                         key: 'isReportRequired',
                                         render: val => val ? 'tak' : 'nie'
                                     },
                                     {
+                                        title: 'Raport przesłany?',
+                                        dataIndex: 'attendance.reportFile',
+                                        key: 'reportFile',
+                                        render: (val, entry) => val ? 'tak' : 'nie'
+                                    },
+                                    {
                                         title: 'Obecność',
                                         dataIndex: 'attendance.isPresent',
                                         key: 'isPresent',
-                                        render: (val, entry) => (entry as any).attendance ? val ? 'obecność' : 'nieobecność' : 'niesprawdzona'
+                                        render: (val, entry) => (entry as any).attendance ? val ? <Tag color="green">obecność</Tag> : <Tag color="red">nieobecność</Tag> : <Tag color="gray">niesprawdzona</Tag>
                                     },
                                     {
                                         title: 'Ocena',

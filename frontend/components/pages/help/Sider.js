@@ -35,7 +35,7 @@ export default () => (
                 </Menu.Item>
                 <Menu.Item key="1-4">
                     <Link href="/help/faq#sprawozdania">
-                        <a>Przesłania sprawozdania</a>
+                        <a>Przesyłanie sprawozdanie</a>
                     </Link>
                 </Menu.Item>
             </Menu.SubMenu>
