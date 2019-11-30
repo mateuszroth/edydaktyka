@@ -87,6 +87,7 @@ type Group {
   users: [User]!
   classes: [Class]!
   grades: [UserGrade]!
+  attendances: [ClassAttendance]
 }
 type User {
   album: Int!

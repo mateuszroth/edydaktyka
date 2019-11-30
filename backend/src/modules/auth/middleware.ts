@@ -4,14 +4,16 @@ import { getRepository } from 'typeorm';
 
 export default async function authenticate(resolve, root, args, context, info) {
     let auth;
+    let user;
     const token: string = (context.request.get('Authorization') || '').replace('Bearer ', '');
     try {
         const decodedPayload = jwt.decode(token);
-        const user = await getRepository(User).findOne(decodedPayload.album);
+        user = await getRepository(User).findOne(decodedPayload.album);
         auth = jwt.verify(token, user.passwordSalt);
     } catch (e) {
         auth = null;
+        user = null;
     }
-    const result = await resolve(root, args, { ...context, auth }, info);
+    const result = await resolve(root, args, { ...context, auth, user }, info);
     return result;
 }

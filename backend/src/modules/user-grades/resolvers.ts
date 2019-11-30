@@ -19,9 +19,7 @@ async function addGrade(grade: Grade): Promise<UserGrade> {
     newGrade.groupId = grade.groupId;
     newGrade.userId = grade.userId;
     newGrade.grade = grade.grade;
-    if (grade.gradedOn) {
-        newGrade.gradedOn = grade.gradedOn;
-    }
+    newGrade.gradedOn = new Date();
     return await getRepository(UserGrade).save(newGrade);
 }
 
@@ -32,9 +30,7 @@ async function updateGrade(grade: ExistingGrade): Promise<UserGrade> {
     if (grade.grade !== null && grade.grade !== editedGrade.grade) {
         editedGrade.grade = grade.grade;
     }
-    if (grade.gradedOn !== null && grade.gradedOn !== editedGrade.gradedOn) {
-        editedGrade.gradedOn = grade.gradedOn;
-    }
+    editedGrade.gradedOn = new Date();
 
     return await getRepository(UserGrade).save(editedGrade);
 }

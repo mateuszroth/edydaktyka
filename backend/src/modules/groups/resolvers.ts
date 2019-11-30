@@ -51,8 +51,8 @@ const editGroup = async (group: GroupType): Promise<void> => {
 };
 
 export default {
-    group: async (_, { id }, { auth }): Promise<Group | Error> => {
-        if (!auth || !auth.isAdmin) {
+    group: async (_, { id }, { auth, user }): Promise<Group | Error> => {
+        if (!auth) {
             return new Error('Brak uprawnień.');
         }
 
@@ -60,6 +60,14 @@ export default {
 
         if (!group) {
             return new Error('Grupa nie istnieje.');
+        }
+
+        if (!user.isAdmin) {
+            group.users = Promise.resolve([]);
+            const attendances = await group.attendances;
+            group.attendances = Promise.resolve(attendances.filter(a => a.userId === Number(user.album)));
+            const grades = await group.grades;
+            group.grades = Promise.resolve(grades.filter(a => a.userId === Number(user.album)));
         }
 
         return group;

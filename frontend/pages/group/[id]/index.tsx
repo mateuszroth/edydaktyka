@@ -12,6 +12,7 @@ import { useMutation, useLazyQuery, useQuery } from 'react-apollo';
 import { getLongGroupName, getReadableModeOfStudy } from '../../../helpers/groups';
 import ClassForm from '../../../components/pages/group/ClassForm';
 import UserAvatar from '../../../components/shared/user-avatar/UserAvatar';
+import GradeMark from '../../../components/shared/grade-mark/GradeMark';
 
 const PAGE_NAME = 'Szczegóły grupy zajęciowej';
 
@@ -155,7 +156,7 @@ const defaultStudentColumns = (grades, onDetailsClick) => [
         key: 'grade',
         render: val => {
             const grade = grades.find(grade => grade.userId === val);
-            return grade && grade.grade > 0 ? parseFloat(String(Number(grade.grade) / 10)).toString() : 'nie wystawiono';
+            return grade && grade.grade > 0 ? <GradeMark grade={grade.grade} gradedOn={grade.gradedOn} /> : 'nie wystawiono';
         }
     },
     {
