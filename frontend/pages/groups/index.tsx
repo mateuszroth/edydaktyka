@@ -53,7 +53,7 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
     const [getActiveGroups] = useLazyQuery(GET_GROUPS(true), { fetchPolicy: 'network-only' });
     const [getInactiveGroups] = useLazyQuery(GET_GROUPS(false), { fetchPolicy: 'network-only' });
     const [putGroup, { loading: putGroupLoading, data: putGroupData, error: putGroupError }] = useMutation(PUT_GROUP);
-    const handleGroupSelect = group => router.push(`/group/${group.id}`);
+    const handleGroupSelect = group => router.push(`/group/[id]`, `/group/${group.id}`);
     const handleSendEmailClick = group => null; // TODO group email form
     const handleEditClick = group => {
         setGroupFormInitialValues(group);

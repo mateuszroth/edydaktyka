@@ -39,6 +39,13 @@ export const GET_GROUP = id => gql`
                 title
                 isReportRequired
             }
+            grades {
+                id
+                groupId
+                userId
+                grade
+                gradedOn
+            }
         }
     }
 `;
@@ -115,7 +122,7 @@ const getClassColumns = (onEdit, onRemove, onDetailsClick) => [
     },
 ];
 
-const defaultStudentColumns = [
+const defaultStudentColumns = (grades, onDetailsClick) => [
     {
         title: 'Album',
         dataIndex: 'album',
@@ -137,11 +144,22 @@ const defaultStudentColumns = [
         key: 'email',
     },
     {
+        title: 'Ocena końcowa',
+        dataIndex: 'album',
+        key: 'grade',
+        render: val => {
+            const grade = grades.find(grade => grade.userId === val);
+            return grade && grade.grade > 0 ? parseFloat(String(Number(grade.grade) / 10)).toString() : 'nie wystawiono';
+        }
+    },
+    {
         title: 'Akcje',
         dataIndex: 'manage',
         key: 'manage',
         render: (val, entry) => {
-            return '';
+            return (
+                <Button type="default" icon="user" onClick={() => onDetailsClick(entry.album)}>Szczegóły studenta</Button>
+            );
         },
     },
 ];
@@ -155,7 +173,7 @@ const GroupPage: NextPage<GroupPageProps> = () => {
     const [classFormInitialValues, setClassFormInitialValues] = useState(null);
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
-    const { loading, error, data } = useQuery(GET_GROUP(groupId));
+    const { loading, error, data } = groupId ? useQuery(GET_GROUP(groupId)) : {} as any;
     const [getClasses] = useLazyQuery(GET_GROUP(groupId), { fetchPolicy: 'network-only' });
     const [putClass, { loading: putClassLoading, data: putClassData, error: putClassError }] = useMutation(PUT_CLASS);
     const [removeClass, { data: removeClassData, error: removeClassError }] = useMutation(REMOVE_CLASS);
@@ -185,7 +203,10 @@ const GroupPage: NextPage<GroupPageProps> = () => {
         });
     };
     const handleClassDetails = classEntity => {
-        router.push(`/group/${groupId}/class/${classEntity.id}`);
+        router.push('/group/[id]/class/[classId]', `/group/${groupId}/class/${classEntity.id}`);
+    }
+    const handleStudentDetailsClick = album => {
+        router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`);
     }
     useEffect(() => {
         getClasses();
@@ -200,12 +221,13 @@ const GroupPage: NextPage<GroupPageProps> = () => {
         getClasses();
     }, [putClassData]);
 
-    if (loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
+    if (loading || putClassLoading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
     if (error || removeClassError)
         return <Result status="error" title="Wystąpił błąd!" subTitle={(error || removeClassError).message} />;
 
-    const { group } = data;
+    const { group = {} } = data || {};
     const classColumns = getClassColumns(handleClassEdit, handleClassRemove, handleClassDetails);
+    const studentColumns = defaultStudentColumns(group.grades, handleStudentDetailsClick)
 
     return (
         <Layout className={styles.root}>
@@ -213,7 +235,7 @@ const GroupPage: NextPage<GroupPageProps> = () => {
             <PageContent>
                 <PageHeader ghost={false} title={PAGE_NAME} />
                 {loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
-                {data && authState.isInitialized && authState.user && authState.user.isAdmin && (
+                {data && group && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
                         <Modal
                             visible={isClassFormModalVisible}
@@ -240,7 +262,7 @@ const GroupPage: NextPage<GroupPageProps> = () => {
                             <Descriptions.Item label="Podgrupa">{group.groupHalf}</Descriptions.Item>
                             <Descriptions.Item label="Opis">{group.description}</Descriptions.Item>
                             <Descriptions.Item label="Link">
-                                {group.link && <a href={group.link}>link</a>}
+                                {group.link && <a href={group.link} target="blank">link</a>}
                             </Descriptions.Item>
                             <Descriptions.Item label="Czy grupa jest aktywna">
                                 {group.isActive ? 'aktywna' : 'nieaktywna'}
@@ -258,7 +280,7 @@ const GroupPage: NextPage<GroupPageProps> = () => {
                         </Typography.Title>
                         <Table
                             dataSource={group.users}
-                            columns={defaultStudentColumns}
+                            columns={studentColumns}
                             pagination={false}
                             rowKey="album"
                         />

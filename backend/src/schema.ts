@@ -2,9 +2,17 @@ import authResolvers from 'modules/auth/resolvers';
 import groupsResolvers from 'modules/groups/resolvers';
 import classResolvers from 'modules/classes/resolvers';
 import attendancesResolvers from 'modules/attendances/resolvers';
+import userGradesResolvers from 'modules/user-grades/resolvers';
 
 const typeDefs = `
 scalar Date
+input InputUserGrade {
+  id: Int
+  groupId: Int!
+  userId: Int!
+  grade: Int!
+  gradedOn: Date
+}
 input InputAttendance {
   id: Int
   groupId: Int!
@@ -49,6 +57,13 @@ type ClassAttendance {
   reportGrade: Int
   reportAddedOn: Date
 }
+type UserGrade {
+  id: Int!
+  groupId: Int!
+  userId: Int!
+  grade: Int!
+  gradedOn: Date
+}
 type Class {
   id: Int!
   groupId: Int!
@@ -71,6 +86,7 @@ type Group {
   isActive: Boolean!
   users: [User]!
   classes: [Class]!
+  grades: [UserGrade]!
 }
 type User {
   album: Int!
@@ -81,6 +97,7 @@ type User {
   isActive: Boolean!
   isAdmin: Boolean!
   groups: [Group]!
+  grades: [UserGrade]!
 }
 type Query {
   hello(name: String): String!
@@ -105,6 +122,7 @@ type Mutation {
   putClass(classData: InputClass): String!
   removeClass(classData: InputRemoveClass): String!
   putAttendance(attendance: InputAttendance): ClassAttendance!
+  putUserGrade(grade: InputUserGrade): UserGrade!
 }
 `;
 
@@ -132,6 +150,7 @@ const resolvers = {
         putClass: classResolvers.putClass,
         removeClass: classResolvers.removeClass,
         putAttendance: attendancesResolvers.putAttendance,
+        putUserGrade: userGradesResolvers.putUserGrade,
     },
 };
 

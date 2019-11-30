@@ -1,6 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Group from './Group';
-import Class from './Class';
 import User from './User';
 
 export enum Grades {
@@ -14,12 +13,9 @@ export enum Grades {
 }
 
 @Entity()
-export default class ClassAttendance extends BaseEntity {
+export default class UserGrade extends BaseEntity {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
-
-    @PrimaryColumn({ type: 'int' })
-    classId: number;
 
     @PrimaryColumn({ type: 'int' })
     groupId: number;
@@ -27,27 +23,17 @@ export default class ClassAttendance extends BaseEntity {
     @PrimaryColumn({ type: 'int' })
     userId: number;
 
-    @Column({ type: 'boolean', default: false })
-    isPresent: boolean;
-
-    @Column({ type: 'text', nullable: true })
-    reportFile: string;
-
     @Column({ type: 'enum', enum: Grades, nullable: true })
-    reportGrade: number;
+    grade: number;
 
     @Column({ type: 'datetime', nullable: true })
-    reportAddedOn: Date;
+    gradedOn: Date;
 
-    @ManyToOne(() => User, user => user.attendances)
+    @ManyToOne(() => User, user => user.grades)
     @JoinColumn({ referencedColumnName: 'album', name: 'userId' })
     user: User;
 
-    @ManyToOne(() => Group, group => group.attendances)
+    @ManyToOne(() => Group, group => group.grades)
     @JoinColumn({ referencedColumnName: 'id' })
     group: Group;
-
-    @ManyToOne(() => Class, cls => cls.attendances)
-    @JoinColumn({ referencedColumnName: 'id' })
-    class: Class;
 }

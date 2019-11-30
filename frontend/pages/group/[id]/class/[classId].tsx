@@ -87,7 +87,7 @@ const PUT_ATTENDANCE = gql`
     }
 `;
 
-const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateClick, onEmailSendClick = () => null) => [
+const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateClick, onEmailSendClick = () => null, onStudentDetailsClick) => [
     {
         title: 'Album',
         dataIndex: 'album',
@@ -181,11 +181,16 @@ const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateCl
         },
     },
     {
-        title: 'Email',
+        title: 'Akcje',
         dataIndex: 'album',
         key: 'album',
-        render: (album, entry) => {
-            return <Button type="default" icon="mail" shape="circle" onClick={onEmailSendClick} />; // TODO onEmailSendClick
+        render: (album, entry) => { // TODO onEmailSendClick
+            return (
+                <>
+                    <Button type="default" icon="mail" shape="circle" onClick={onEmailSendClick} />
+                    <Button type="default" icon="user" shape="circle" onClick={() => onStudentDetailsClick(album)} />
+                </>
+            )
         },
     },
 ];
@@ -198,7 +203,7 @@ const ClassPage: NextPage<ClassPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const classId = router && router.query && router.query.classId;
-    const { loading, error, data } = useQuery(GET_CLASS(classId, groupId));
+    const { loading, error, data } = classId && groupId ? useQuery(GET_CLASS(classId, groupId)) : {} as any;
     const [usersAttendances, setUsersAttendances] = useState([]);
     const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
 
@@ -261,7 +266,11 @@ const ClassPage: NextPage<ClassPage> = () => {
         handlePutAttendanceCheck(attendance, user);
     };
 
-    const userColumns = defaultStudentColumns(classEntity.isReportRequired, handlePresenceCheck, handleReportRateClick);
+    const handleStudentDetailsClick = album => {
+        router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`)
+    }
+
+    const userColumns = defaultStudentColumns(classEntity.isReportRequired, handlePresenceCheck, handleReportRateClick, undefined, handleStudentDetailsClick);
 
     return (
         <Layout className={styles.root}>
@@ -272,7 +281,7 @@ const ClassPage: NextPage<ClassPage> = () => {
                 className={classEntity.title}
             />
             <PageContent>
-                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.push(`/group/${groupId}`)} />
+                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.push('/group/[id]', `/group/${groupId}`)} />
                 {!loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
                 {data && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
@@ -307,7 +316,7 @@ const ClassPage: NextPage<ClassPage> = () => {
                             renderItem={item => {
                                 const i = item as any;
                                 return (
-                                    <List.Item onClick={() => router.push(`/group/${groupId}/class/${i.id}`)} style={{ cursor: 'pointer' }}>
+                                    <List.Item onClick={() => router.push('/group/[id]/class/[classId]', `/group/${groupId}/class/${i.id}`, {shallow: true})} style={{ cursor: 'pointer' }}>
                                         {i.title}
                                     </List.Item>
                                 );
