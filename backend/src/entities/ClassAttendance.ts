@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Group from './Group';
 import Class from './Class';
 import User from './User';
@@ -42,8 +42,10 @@ export default class ClassAttendance extends BaseEntity {
     user: User;
 
     @ManyToOne(() => Group, group => group.attendances)
+    @JoinColumn({ referencedColumnName: 'id' })
     group: Group;
 
-    @ManyToOne(() => Class, classEntity => classEntity.attendances)
+    @ManyToOne(() => Class, cls => cls.attendances)
+    @JoinColumn({ referencedColumnName: 'id' })
     class: Class;
 }

@@ -1,4 +1,13 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+    Entity,
+    Column,
+    BaseEntity,
+    PrimaryGeneratedColumn,
+    PrimaryColumn,
+    ManyToOne,
+    OneToMany,
+    JoinColumn,
+} from 'typeorm';
 import Group from './Group';
 import ClassAttendance from './ClassAttendance';
 
@@ -32,6 +41,7 @@ export default class Class extends BaseEntity {
     isReportRequired: boolean;
 
     @ManyToOne(() => Group, group => group.classes)
+    @JoinColumn({ referencedColumnName: 'id' })
     group: Group;
 
     @OneToMany(() => ClassAttendance, classAttendance => classAttendance.class)

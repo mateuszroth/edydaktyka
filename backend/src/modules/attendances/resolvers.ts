@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import User from 'entities/User';
 import ClassAttendance from 'entities/ClassAttendance';
 
-async function addAttendance(attendance): Promise<void> {
+async function addAttendance(attendance): Promise<ClassAttendance> {
     const newAttendance = new ClassAttendance();
     newAttendance.groupId = attendance.groupId;
     newAttendance.classId = attendance.classId;
@@ -21,10 +21,10 @@ async function addAttendance(attendance): Promise<void> {
         newAttendance.reportAddedOn = attendance.reportAddedOn;
     }
 
-    await getRepository(ClassAttendance).save(newAttendance);
+    return await getRepository(ClassAttendance).save(newAttendance);
 }
 
-async function updateAttendance(attendance): Promise<void> {
+async function updateAttendance(attendance): Promise<ClassAttendance> {
     const id = {
         id: Number(attendance.id),
         classId: Number(attendance.classId),
@@ -49,11 +49,11 @@ async function updateAttendance(attendance): Promise<void> {
         editedAttendance.isPresent = attendance.isPresent;
     }
 
-    await getRepository(ClassAttendance).save(editedAttendance);
+    return await getRepository(ClassAttendance).save(editedAttendance);
 }
 
 export default {
-    putAttendance: async (_, { attendance }, { auth }): Promise<string | Error> => {
+    putAttendance: async (_, { attendance }, { auth }): Promise<ClassAttendance | Error> => {
         if (!auth) {
             return new Error('Brak uprawnień');
         }
@@ -65,11 +65,11 @@ export default {
         }
 
         if (!attendance.id) {
-            await addAttendance(attendance);
-            return 'Dodano obecność';
+            const saved = await addAttendance(attendance);
+            return saved;
         } else {
-            await updateAttendance(attendance);
-            return 'Zaktualizowano obecność';
+            const saved = await updateAttendance(attendance);
+            return saved;
         }
     },
     classAttendances: async (_, { id }, { auth }): Promise<ClassAttendance[] | Error> => {

@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinColumn } from 'typeorm';
 import User from 'entities/User';
 import Class from './Class';
 import ClassAttendance from './ClassAttendance';

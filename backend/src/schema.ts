@@ -104,7 +104,7 @@ type Mutation {
   addClass(classData: InputClass): String!
   putClass(classData: InputClass): String!
   removeClass(classData: InputRemoveClass): String!
-  putAttendance(attendance: InputAttendance): String!
+  putAttendance(attendance: InputAttendance): ClassAttendance!
 }
 `;
 

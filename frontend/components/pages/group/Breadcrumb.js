@@ -8,7 +8,7 @@ const styles = {
     },
 };
 
-export default ({ id }) => (
+export default ({ id, groupName = '', classId = null, className = '' }) => (
     <Breadcrumb style={styles.root}>
         <Breadcrumb.Item>
             <Link href="/">
@@ -22,8 +22,17 @@ export default ({ id }) => (
         </Breadcrumb.Item>
         <Breadcrumb.Item>
             <Link href={`/group/${id}`}>
-                <a>Grupa {id}</a>
+                <a>
+                    Grupa {id} {groupName ? `- ${groupName}` : ''}
+                </a>
             </Link>
         </Breadcrumb.Item>
+        {classId && (
+            <Breadcrumb.Item>
+                <Link href={`/group/${id}/class/${classId}`}>
+                    <a>{className}</a>
+                </Link>
+            </Breadcrumb.Item>
+        )}
     </Breadcrumb>
 );

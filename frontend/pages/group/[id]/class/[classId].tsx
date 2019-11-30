@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { PageHeader, Layout, Spin, Button, Radio, Typography, Result, Descriptions, Table } from 'antd';
+import { PageHeader, Layout, Spin, Radio, Typography, Result, Descriptions, Table, Icon, Button, List } from 'antd';
 import { NextPage, NextPageContext } from 'next';
 import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
@@ -8,7 +8,7 @@ import styles from './index.module.scss';
 import AuthContext from '../../../../components/stores/AuthContext';
 import { PageContent } from '../../../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedirection';
-import { useMutation, useLazyQuery, useQuery } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
@@ -33,6 +33,10 @@ export const GET_CLASS = (id, groupId) => gql`
                     firstName
                     lastName
                 }
+                classes {
+                    id
+                    title
+                }
             }
             attendances {
                 id
@@ -40,7 +44,6 @@ export const GET_CLASS = (id, groupId) => gql`
                 groupId
                 userId
                 isPresent
-                isReportRequired
                 reportFile
                 reportGrade
                 reportAddedOn
@@ -71,11 +74,20 @@ const PUT_ATTENDANCE = gql`
                 reportGrade: $reportGrade
                 reportAddedOn: $reportAddedOn
             }
-        )
+        ) {
+            id
+            userId
+            classId
+            groupId
+            isPresent
+            reportFile
+            reportGrade
+            reportAddedOn
+        }
     }
 `;
 
-const defaultStudentColumns = (isReportRequired, onPresenceCheck) => [ // TODO isReportRequired, onReportRate, onPresenceCheck, onEmailSend
+const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateClick, onEmailSendClick = () => null) => [
     {
         title: 'Album',
         dataIndex: 'album',
@@ -96,27 +108,46 @@ const defaultStudentColumns = (isReportRequired, onPresenceCheck) => [ // TODO i
         dataIndex: 'isReportRequired',
         key: 'isReportRequired',
         render: (_, entry) => {
-            const reportFile = entry.reportFile ? `przesłane ${new Date(entry.reportAddedOn).toLocaleDateString()}` : 'jeszcze nieprzesłane';
+            const reportFile =
+                entry.attendance && entry.attendance.reportFile
+                    ? `przesłane ${new Date(entry.attendance && entry.attendance.reportAddedOn).toLocaleDateString()}`
+                    : 'jeszcze nieprzesłane';
             return isReportRequired ? reportFile : 'niewymagane';
         },
     },
     {
         title: 'Ocena',
-        dataIndex: 'reportGrade',
-        key: 'reportGrade',
+        dataIndex: 'attendance.reportGrade',
+        key: 'attendance.reportGrade',
         render: (val, entry) => {
+            const handleClick = e => {
+                onReportRateClick(e, entry);
+            };
+            const defaultValue = val ? val : '';
             const grade = (
                 <>
-                    <Radio.Group defaultValue={val ? val : ''} buttonStyle="solid">
-                        <Radio.Button value="20">2</Radio.Button>
-                        <Radio.Button value="30">3</Radio.Button>
-                        <Radio.Button value="35">3.5</Radio.Button>
-                        <Radio.Button value="40">4</Radio.Button>
-                        <Radio.Button value="45">4.5</Radio.Button>
-                        <Radio.Button value="50">5</Radio.Button>
+                    <Radio.Group defaultValue={defaultValue} buttonStyle="solid">
+                        <Radio.Button checked={defaultValue === 20} value="20" onClick={handleClick}>
+                            2
+                        </Radio.Button>
+                        <Radio.Button checked={defaultValue === 30} value="30" onClick={handleClick}>
+                            3
+                        </Radio.Button>
+                        <Radio.Button checked={defaultValue === 35} value="35" onClick={handleClick}>
+                            3.5
+                        </Radio.Button>
+                        <Radio.Button checked={defaultValue === 40} value="40" onClick={handleClick}>
+                            4
+                        </Radio.Button>
+                        <Radio.Button checked={defaultValue === 45} value="45" onClick={handleClick}>
+                            4.5
+                        </Radio.Button>
+                        <Radio.Button checked={defaultValue === 50} value="50" onClick={handleClick}>
+                            5
+                        </Radio.Button>
                     </Radio.Group>
                 </>
-            )
+            );
             const render = isReportRequired ? grade : 'niewymagane';
             return render;
         },
@@ -128,17 +159,33 @@ const defaultStudentColumns = (isReportRequired, onPresenceCheck) => [ // TODO i
         render: (val, entry) => {
             const handleClick = e => {
                 onPresenceCheck(e, entry);
-            }
-            const isPresent = entry.isPresent ? 'tak' : 'nie';
+            };
+            const isPresent = entry.attendance && entry.attendance.isPresent ? 'tak' : 'nie';
             const text = val ? isPresent : 'niesprawdzone';
+            const defaultValue =
+                entry.attendance && entry.attendance.isPresent != null
+                    ? Number(entry.attendance.isPresent).toString()
+                    : '';
             return (
                 <>
-                    <Radio.Group defaultValue={val ? val : ''} buttonStyle="solid">
-                        <Radio.Button value="0" onClick={handleClick}>nie</Radio.Button>
-                        <Radio.Button value="1" onClick={handleClick}>tak</Radio.Button>
+                    <Radio.Group defaultValue={defaultValue} buttonStyle="solid">
+                        <Radio.Button value="0" checked={defaultValue === '0'} onClick={handleClick}>
+                            nie
+                        </Radio.Button>
+                        <Radio.Button value="1" checked={defaultValue === '1'} onClick={handleClick}>
+                            tak
+                        </Radio.Button>
                     </Radio.Group>
                 </>
             );
+        },
+    },
+    {
+        title: 'Email',
+        dataIndex: 'album',
+        key: 'album',
+        render: (album, entry) => {
+            return <Button type="default" icon="mail" shape="circle" onClick={onEmailSendClick} />; // TODO onEmailSendClick
         },
     },
 ];
@@ -152,42 +199,80 @@ const ClassPage: NextPage<ClassPage> = () => {
     const groupId = router && router.query && router.query.id;
     const classId = router && router.query && router.query.classId;
     const { loading, error, data } = useQuery(GET_CLASS(classId, groupId));
-    const [putAttendance, { loading: putAttendanceLoading, data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
+    const [usersAttendances, setUsersAttendances] = useState([]);
+    const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
+
+    useEffect(() => {
+        if (data && data.class) {
+            const group = data.class.group;
+            setUsersAttendances(
+                group &&
+                    group.users &&
+                    group.users.map(user => {
+                        const attendance = data.class.attendances.find(a => a.userId === user.album);
+                        return {
+                            ...user,
+                            attendance,
+                        };
+                    }),
+            );
+        }
+    }, [data]);
+
+    useEffect(() => {
+        const attendance = putAttendanceData && putAttendanceData.putAttendance;
+        if (attendance) {
+            const user = usersAttendances.find(user => user.album === attendance.userId);
+            user.attendance = attendance;
+            setUsersAttendances([...usersAttendances]);
+        }
+    }, [putAttendanceData]);
 
     if (loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
-    if (error) return <Result status="error" title="Wystąpił błąd!" subTitle={error.message} />;
+    if (error || putAttendanceError)
+        return <Result status="error" title="Wystąpił błąd!" subTitle={(error || putAttendanceError).message} />;
 
     const { class: classEntity } = data;
-    const { group: { users = [] } = {}, attendances } = classEntity;
-    const usersAttendances = users.map(user => {
-        const attendance = attendances.find(a => a.userId === user.album);
-        return {
-            ...attendance,
-            ...user,
-            attendance,
-        };
-    });
 
-    const handlePresenceCheck = (e, user) => {
-        const attendance = {} as any;
+    const handlePutAttendanceCheck = (attendance, user) => {
         attendance.userId = Number(user.album);
         if (user.attendance && user.attendance.id) {
             attendance.id = Number(user.attendance.id);
-        };
+        }
         attendance.classId = Number(classId);
         attendance.groupId = Number(groupId);
-        attendance.isPresent = !!Number(e.target.value);
-        console.log(e.target);
         putAttendance({ variables: attendance });
     };
 
-    const userColumns = defaultStudentColumns(classEntity.isReportRequired, handlePresenceCheck)
+    const handlePresenceCheck = (e, user) => {
+        const attendance = {} as any;
+        attendance.isPresent = !!Number(e.target.value);
+        handlePutAttendanceCheck(attendance, user);
+    };
+
+    const handleReportRateClick = (e, user) => {
+        const attendance = {} as any;
+        if (user.attendance && user.attendance.isPresent) {
+            attendance.isPresent = !!Number(user.attendance.isPresent);
+        } else {
+            attendance.isPresent = false;
+        }
+        attendance.reportGrade = Number(e.target.value);
+        handlePutAttendanceCheck(attendance, user);
+    };
+
+    const userColumns = defaultStudentColumns(classEntity.isReportRequired, handlePresenceCheck, handleReportRateClick);
 
     return (
         <Layout className={styles.root}>
-            <Breadcrumb id={router && router.query && router.query.id} />
+            <Breadcrumb
+                id={groupId}
+                groupName={classEntity.group.courseName}
+                classId={classId}
+                className={classEntity.title}
+            />
             <PageContent>
-                <PageHeader ghost={false} title={PAGE_NAME} />
+                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.push(`/group/${groupId}`)} />
                 {!loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
                 {data && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
@@ -207,10 +292,26 @@ const ClassPage: NextPage<ClassPage> = () => {
                             Obecności i sprawozdania
                         </Typography.Title>
                         <Table
-                            dataSource={usersAttendances}
-                            columns={userColumns}
+                            dataSource={[...usersAttendances]}
+                            columns={[...userColumns]}
                             pagination={false}
                             rowKey="album"
+                        />
+                        <Typography.Title level={4} style={{ marginTop: 30 }}>
+                            Lista wszystkich zajęć
+                        </Typography.Title>
+                        <List
+                            size="small"
+                            bordered
+                            dataSource={classEntity.group.classes}
+                            renderItem={item => {
+                                const i = item as any;
+                                return (
+                                    <List.Item onClick={() => router.push(`/group/${groupId}/class/${i.id}`)} style={{ cursor: 'pointer' }}>
+                                        {i.title}
+                                    </List.Item>
+                                );
+                            }}
                         />
                     </>
                 )}
