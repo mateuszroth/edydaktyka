@@ -69,7 +69,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
     }, [currentGroup]);
 
     useEffect(() => {
-        if (data && data.group) {
+        if (data && data.group && user) {
             const group = data.group;
             setGrade(group.grades.find(grade => grade.userId === user.album) || {});
             setClasses(
@@ -80,7 +80,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                 }) || [],
             );
         }
-    }, [data]);
+    }, [data, user]);
 
     return (
         <Layout className={styles.root} style={{ padding: '0 24px 24px' }}>

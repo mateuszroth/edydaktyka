@@ -142,7 +142,7 @@ class MyApp extends App<AppProps> {
                                                             <Link href="/lessons">
                                                                 <a>
                                                                     <Icon type="highlight" />
-                                                                    Zajęcia
+                                                                    Materiały z zajęć
                                                                 </a>
                                                             </Link>
                                                         }
@@ -341,16 +341,19 @@ class MyApp extends App<AppProps> {
                                                     {/* tylko dla niezalogowanych */}
 
                                                     {/* only for admins */}
-                                                    {auth.isInitialized && auth.isLoggedIn && auth.user && auth.user.isAdmin && (
-                                                        <Menu.Item key="9">
-                                                            <Link href="/groups">
-                                                                <a>
-                                                                    <Icon type="team" />
-                                                                    Grupy
-                                                                </a>
-                                                            </Link>
-                                                        </Menu.Item>
-                                                    )}
+                                                    {auth.isInitialized &&
+                                                        auth.isLoggedIn &&
+                                                        auth.user &&
+                                                        auth.user.isAdmin && (
+                                                            <Menu.Item key="9">
+                                                                <Link href="/groups">
+                                                                    <a>
+                                                                        <Icon type="team" />
+                                                                        Grupy
+                                                                    </a>
+                                                                </Link>
+                                                            </Menu.Item>
+                                                        )}
                                                     {/* only for admins */}
 
                                                     {/* tylko dla zalogowanych */}
@@ -394,7 +397,8 @@ class MyApp extends App<AppProps> {
                                                             {auth.isLoggedIn && auth.user && (
                                                                 <span>
                                                                     <span className={styles.mobileHide}>
-                                                                        <UserAvatar size="small" user={auth.user} />Hej {auth.user.firstName} (
+                                                                        <UserAvatar size="small" user={auth.user} />
+                                                                        Hej {auth.user.firstName} (
                                                                         <strong>{auth.user.album}</strong>)!{' '}
                                                                     </span>
                                                                     {currentGroup && (
