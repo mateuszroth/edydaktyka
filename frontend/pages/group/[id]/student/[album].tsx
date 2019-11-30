@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Breadcrumb from '../../../../components/pages/group/Breadcrumb';
 import styles from './index.module.scss';
 import AuthContext from '../../../../components/stores/AuthContext';
+import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
 import { PageContent } from '../../../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedirection';
 import { useMutation, useQuery } from 'react-apollo';
@@ -208,7 +209,7 @@ const StudentPage: NextPage<StudentPage> = () => {
                 {data && user && classes && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
                         <Typography.Title level={3}>
-                            Student {user.firstName} {user.lastName} (indeks {album})
+                            <UserAvatar user={user} />Student {user.firstName} {user.lastName} (indeks {album})
                         </Typography.Title>
                         <Typography.Paragraph>dla kursu {getLongGroupName(data.group)}</Typography.Paragraph>
                         <Typography.Title level={4} style={{ marginTop: 30 }}>

@@ -11,6 +11,7 @@ import useNotAdminRedirection from '../../../components/hocs/useNotAdminRedirect
 import { useMutation, useLazyQuery, useQuery } from 'react-apollo';
 import { getLongGroupName, getReadableModeOfStudy } from '../../../helpers/groups';
 import ClassForm from '../../../components/pages/group/ClassForm';
+import UserAvatar from '../../../components/shared/user-avatar/UserAvatar';
 
 const PAGE_NAME = 'Szczegóły grupy zajęciowej';
 
@@ -127,6 +128,11 @@ const defaultStudentColumns = (grades, onDetailsClick) => [
         title: 'Album',
         dataIndex: 'album',
         key: 'album',
+        render: (val, entry) => {
+            return (
+                <div onClick={() => onDetailsClick(entry.album)}><UserAvatar size="large" user={entry} />{val}</div>
+            )
+        }
     },
     {
         title: 'Imię',

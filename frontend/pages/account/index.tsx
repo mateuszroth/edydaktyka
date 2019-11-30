@@ -3,6 +3,7 @@ import { Avatar, Button, Layout, notification, Spin, Icon, Typography, Row, Col,
 import Router from 'next/router';
 import Breadcrumb from '../../components/pages/account/Breadcrumb';
 import ChangeGroup from '../../components/shared/change-group/ChangeGroup';
+import UserAvatar from '../../components/shared/user-avatar/UserAvatar';
 import { AuthContext } from '../../components/stores/AuthContext';
 import useNotLoggedInRedirection from '../../components/hocs/useNotLoggedInRedirection';
 import styles from './index.module.scss';
@@ -77,8 +78,8 @@ const AccountPage: React.FC<AccountPageProps> = () => {
                     {user && (
                         <div className={styles.content}>
                             <Row justify="start" type="flex" style={{ marginBottom: 30 }}>
-                                <Col md={4}>
-                                    <Avatar size={128} icon="user" src={avatarUrl || (user && user.photo)} />
+                                {/* <Col md={4}>
+                                    <Avatar size={128} icon="user" src={avatarUrl || (user && user.photo)}></Avatar>
                                 </Col>
                                 <Col md={4}>
                                     <Upload {...uploadProps}>
@@ -86,7 +87,8 @@ const AccountPage: React.FC<AccountPageProps> = () => {
                                             <Icon type="upload" /> Wgraj zdjęcie
                                         </Button>
                                     </Upload>
-                                </Col>
+                                </Col> */}
+                                <Col md={4}>{user && <UserAvatar size={128} fontSize={42} user={user} />}</Col>
                             </Row>
                             <Row style={{ marginBottom: 20 }}>
                                 <Col sm={24} md={8} lg={8}>

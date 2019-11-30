@@ -11,6 +11,7 @@ import withApolloClient from '../components/hocs/withApolloClient';
 import styles from './_app.module.scss';
 import stylesheet from 'antd/dist/antd.css';
 import WrappedLoginForm from '../components/pages/login/LoginForm';
+import UserAvatar from '../components/shared/user-avatar/UserAvatar';
 import ChangeGroup from '../components/shared/change-group/ChangeGroup';
 
 const { SubMenu } = Menu;
@@ -393,7 +394,7 @@ class MyApp extends App<AppProps> {
                                                             {auth.isLoggedIn && auth.user && (
                                                                 <span>
                                                                     <span className={styles.mobileHide}>
-                                                                        Cześć {auth.user.firstName} (
+                                                                        <UserAvatar size="small" user={auth.user} />Hej {auth.user.firstName} (
                                                                         <strong>{auth.user.album}</strong>)!{' '}
                                                                     </span>
                                                                     {currentGroup && (
