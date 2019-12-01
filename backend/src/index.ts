@@ -1,17 +1,22 @@
 import 'module-alias/register';
+import * as express from 'express';
 import * as dotenv from 'dotenv';
 import { GraphQLServer } from 'graphql-yoga';
 import { createConnection } from 'typeorm';
 import schema from './schema';
 import authenticate from 'modules/auth/middleware';
+import { ensureUploadDirExists } from 'modules/upload';
 
 dotenv.config();
+ensureUploadDirExists();
 
 const server = new GraphQLServer({
     ...schema,
     context: (req: Request): Request => ({ ...req }),
     middlewares: [authenticate],
 });
+
+server.express.use('/static', express.static('static'));
 
 const opts = {
     port: 4000,

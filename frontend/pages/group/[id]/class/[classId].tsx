@@ -209,7 +209,7 @@ const ClassPage: NextPage<ClassPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const classId = router && router.query && router.query.classId;
-    const { loading, error, data } = classId && groupId ? useQuery(GET_CLASS(classId, groupId)) : {} as any;
+    const { loading, error, data } = useQuery(GET_CLASS(classId, groupId));
     const [usersAttendances, setUsersAttendances] = useState([]);
     const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
 

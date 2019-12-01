@@ -17,9 +17,18 @@ interface ClassFormProps extends FormComponentProps {
     loading?: boolean;
     error?: any;
     data?: any;
+    largestClassNumber?: number;
 }
 
-const ClassForm: React.FC<ClassFormProps> = ({ form, initialValues, onSubmit, data, loading, error }) => {
+const ClassForm: React.FC<ClassFormProps> = ({
+    form,
+    largestClassNumber,
+    initialValues,
+    onSubmit,
+    data,
+    loading,
+    error,
+}) => {
     const { getFieldDecorator, validateFields } = form;
 
     const handleSubmit = event => {
@@ -57,7 +66,7 @@ const ClassForm: React.FC<ClassFormProps> = ({ form, initialValues, onSubmit, da
             <Form.Item label="Numer zajęć">
                 {getFieldDecorator('classNumber', {
                     rules: [],
-                    initialValue: initialValues ? initialValues.classNumber : 0,
+                    initialValue: initialValues ? initialValues.classNumber : largestClassNumber + 1,
                 })(<InputNumber min={0} max={30} step={1} />)}
             </Form.Item>
 

@@ -82,10 +82,9 @@ const StudentPage: NextPage<StudentPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const album = router && router.query && router.query.album;
-    const { loading: groupLoading, error: groupError, data } = groupId ? useQuery(GET_GROUP(groupId)) : {} as any;
-    const { loading: attendancesLoading, error: attendancesError, data: attendancesData } = groupId ? useQuery(
-        GET_GROUP_ATTENDANCES(groupId),
-    ) : {} as any;
+    const { loading: groupLoading, error: groupError, data } = useQuery(GET_GROUP(groupId));
+    const { loading: attendancesLoading, error: attendancesError, data: attendancesData } = useQuery(
+        GET_GROUP_ATTENDANCES(groupId));
     const [putUserGrade, { data: putUserGradeData, error: putUserGradeError }] = useMutation(PUT_USER_GRADE);
     const loading = groupLoading || attendancesLoading;
     const error = groupError || attendancesError || putUserGradeError;

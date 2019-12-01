@@ -2,6 +2,7 @@ import Class from 'entities/Class';
 import { getRepository } from 'typeorm';
 import User from 'entities/User';
 import ClassAttendance from 'entities/ClassAttendance';
+import { storeUpload } from 'modules/upload';
 
 async function addAttendance(attendance): Promise<ClassAttendance> {
     const newAttendance = new ClassAttendance();
@@ -33,19 +34,31 @@ async function updateAttendance(attendance): Promise<ClassAttendance> {
     };
     const editedAttendance = await getRepository(ClassAttendance).findOne(id);
 
-    if (attendance.reportAddedOn !== null && attendance.reportAddedOn !== editedAttendance.reportAddedOn) {
-        editedAttendance.reportAddedOn = attendance.reportAddedOn;
-    }
-
-    if (attendance.reportGrade !== null && attendance.reportGrade !== editedAttendance.reportGrade) {
+    if (
+        attendance.reportGrade !== undefined &&
+        attendance.reportGrade !== null &&
+        attendance.reportGrade !== editedAttendance.reportGrade
+    ) {
         editedAttendance.reportGrade = attendance.reportGrade;
     }
 
-    if (attendance.reportFile !== null && attendance.reportFile !== editedAttendance.reportFile) {
+    if (
+        attendance.reportFile !== undefined &&
+        attendance.reportFile !== null &&
+        attendance.reportFile !== editedAttendance.reportFile
+    ) {
         editedAttendance.reportFile = attendance.reportFile;
+        editedAttendance.reportFileId = attendance.reportFileId;
+        editedAttendance.reportFileMimeType = attendance.reportFileMimeType;
+        editedAttendance.reportFileEncoding = attendance.reportFileEncoding;
+        editedAttendance.reportAddedOn = new Date(Date.now());
     }
 
-    if (attendance.isPresent !== null && attendance.isPresent !== editedAttendance.isPresent) {
+    if (
+        attendance.isPresent !== undefined &&
+        attendance.isPresent !== null &&
+        attendance.isPresent !== editedAttendance.isPresent
+    ) {
         editedAttendance.isPresent = attendance.isPresent;
     }
 
@@ -107,5 +120,50 @@ export default {
         }
 
         return new Error('Brak uprawnień.');
+    },
+    uploadReport: async (_, { file, attendance }, { auth, user }): Promise<ClassAttendance | Error> => {
+        if (!auth) {
+            return new Error('Brak uprawnień');
+        }
+
+        if (!user.isAdmin && attendance.userId !== user.album) {
+            return new Error('Brak uprawnień');
+        }
+
+        const { createReadStream, filename, mimetype, encoding } = await file;
+        const stream = createReadStream();
+        const { id, path } = await storeUpload({ stream, filename });
+
+        const updatedAttendance = {
+            ...attendance,
+            reportFile: path,
+            reportFileId: id,
+            reportFileMimeType: mimetype,
+            reportFileEncoding: encoding,
+        };
+
+        const action = attendance.id ? updateAttendance : addAttendance;
+        const updated = await action(updatedAttendance);
+        return updated;
+    },
+    removeReport: async (_, { attendance }, { auth, user }): Promise<ClassAttendance | Error> => {
+        if (!auth) {
+            return new Error('Brak uprawnień');
+        }
+
+        if (!user.isAdmin && attendance.userId !== user.album) {
+            return new Error('Brak uprawnień');
+        }
+
+        const updatedAttendance = {
+            ...attendance,
+            reportFile: '',
+            reportFileId: null,
+            reportFileMimeType: null,
+            reportFileEncoding: null,
+        };
+
+        const updated = await updateAttendance(updatedAttendance);
+        return updated;
     },
 };

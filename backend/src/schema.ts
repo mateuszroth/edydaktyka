@@ -6,6 +6,20 @@ import userGradesResolvers from 'modules/user-grades/resolvers';
 
 const typeDefs = `
 scalar Date
+scalar Upload
+type File {
+  id: ID!
+  path: String!
+  filename: String!
+  mimetype: String!
+  encoding: String!
+}
+input InputReportAttendance {
+  id: ID
+  groupId: Int!
+  classId: Int!
+  userId: Int!
+}
 input InputUserGrade {
   id: Int
   groupId: Int!
@@ -52,7 +66,6 @@ type ClassAttendance {
   groupId: Int!
   userId: Int!
   isPresent: Boolean!
-  isReportRequired: Boolean!
   reportFile: String
   reportGrade: Int
   reportAddedOn: Date
@@ -124,6 +137,8 @@ type Mutation {
   removeClass(classData: InputRemoveClass): String!
   putAttendance(attendance: InputAttendance): ClassAttendance!
   putUserGrade(grade: InputUserGrade): UserGrade!
+  uploadReport(file: Upload!, attendance: InputReportAttendance!): ClassAttendance!
+  removeReport(attendance: InputReportAttendance!): ClassAttendance!
 }
 `;
 
@@ -152,6 +167,8 @@ const resolvers = {
         removeClass: classResolvers.removeClass,
         putAttendance: attendancesResolvers.putAttendance,
         putUserGrade: userGradesResolvers.putUserGrade,
+        uploadReport: attendancesResolvers.uploadReport,
+        removeReport: attendancesResolvers.removeReport,
     },
 };
 

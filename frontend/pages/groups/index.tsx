@@ -50,7 +50,7 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
     const { user, isInitialized } = authState;
     const [isAddGroupModalVisible, setIsAddGroupModalVisible] = useState(false);
     const [groupFormInitialValues, setGroupFormInitialValues] = useState(null);
-    const [getActiveGroups] = useLazyQuery(GET_GROUPS(true), { fetchPolicy: 'network-only' });
+    const [getActiveGroups, { loading }] = useLazyQuery(GET_GROUPS(true), { fetchPolicy: 'network-only' });
     const [getInactiveGroups] = useLazyQuery(GET_GROUPS(false), { fetchPolicy: 'network-only' });
     const [putGroup, { loading: putGroupLoading, data: putGroupData, error: putGroupError }] = useMutation(PUT_GROUP);
     const handleGroupSelect = group => router.push(`/group/[id]`, `/group/${group.id}`);
@@ -78,8 +78,8 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
             <Breadcrumb />
             <PageContent>
                 <PageHeader ghost={false} title={PAGE_NAME} />
-                {!isInitialized && !user && <Spin size="large" />}
-                {isInitialized && user && user.isAdmin && (
+                {loading || !isInitialized || !user && <Spin size="large" />}
+                {!loading && isInitialized && user && user.isAdmin && (
                     <>
                         <div className={styles.buttons}>
                             <Button size="large" type="primary" onClick={handleShowAddGroupModal}>

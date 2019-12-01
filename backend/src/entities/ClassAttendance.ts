@@ -33,6 +33,15 @@ export default class ClassAttendance extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     reportFile: string;
 
+    @Column({ type: 'text', nullable: true })
+    reportFileId: string;
+
+    @Column({ type: 'text', nullable: true })
+    reportFileMimeType: string;
+
+    @Column({ type: 'text', nullable: true })
+    reportFileEncoding: string;
+
     @Column({ type: 'enum', enum: Grades, nullable: true })
     reportGrade: number;
 

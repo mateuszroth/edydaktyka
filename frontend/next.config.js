@@ -13,6 +13,7 @@ module.exports = withLess(
         },
         env: {
             GRAPHQL_URL: 'http://localhost:4000', // TODO: set for production
+            SERVER_URL: 'http://localhost:4000', // TODO: set for production
         },
         webpack: (config, { dev }) => {
             // Unshift polyfills in main entrypoint.
