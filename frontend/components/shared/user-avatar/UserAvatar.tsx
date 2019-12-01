@@ -9,7 +9,7 @@ const ChangeGroup: React.FC<{ fontSize?: number; size?: number | 'large' | 'smal
 }) => {
     const styles = {
         backgroundColor: stringToColor(user.firstName + user.lastName),
-        marginLeft: 10,
+        marginLeft: -5,
         marginRight: 10,
         verticalAlign: 'middle',
     } as any;

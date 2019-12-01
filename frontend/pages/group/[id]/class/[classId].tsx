@@ -10,6 +10,7 @@ import { PageContent } from '../../../../components/layout/content/page-content'
 import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedirection';
 import { useMutation, useQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
+import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
 
@@ -92,6 +93,11 @@ const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateCl
         title: 'Album',
         dataIndex: 'album',
         key: 'album',
+        render: (val, entry) => {
+            return (
+                <div onClick={() => onStudentDetailsClick(val)}><UserAvatar size="large" user={entry} />{val}</div>
+            )
+        }
     },
     {
         title: 'Imię',
