@@ -107,8 +107,6 @@ const GroupsList: React.FC<GroupsListProps> = ({ active = true, manage = true, o
                             <Button type="default" icon="schedule" onClick={handleDetailsClick}>Tematy</Button>
                             <br />
                             <Button type="default" icon="team" onClick={handleDetailsClick}>Studenci</Button>
-                            <Button type="default" icon="check" onClick={handleDetailsClick}>Obecności</Button>
-                            
                         </div>
                     )
                 }
