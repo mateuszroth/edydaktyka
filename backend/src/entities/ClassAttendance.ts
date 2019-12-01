@@ -13,6 +13,29 @@ export enum Grades {
     FIVE = 50,
 }
 
+export interface ClassAttendanceObject {
+    id?: number;
+    classId: number;
+    groupId: number;
+    userId: number;
+    isPresent?: boolean;
+    reportFile?: string;
+    reportFileId?: string;
+    reportFileMimeType?: string;
+    reportFileEncoding?: string;
+    reportGrade?: number;
+    reportAddedOn?: Date;
+    user: User;
+    group: Group;
+    class: Class;
+}
+
+export interface ClassAttendanceDetailedObject extends ClassAttendanceObject {
+    groupName: string;
+    classTitle: string;
+    userName: string;
+}
+
 @Entity()
 export default class ClassAttendance extends BaseEntity {
     @PrimaryGeneratedColumn({ type: 'int' })
@@ -27,7 +50,7 @@ export default class ClassAttendance extends BaseEntity {
     @PrimaryColumn({ type: 'int' })
     userId: number;
 
-    @Column({ type: 'boolean', default: false })
+    @Column({ type: 'boolean', default: false, nullable: true })
     isPresent: boolean;
 
     @Column({ type: 'text', nullable: true })

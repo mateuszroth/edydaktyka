@@ -1,10 +1,10 @@
 import Class from 'entities/Class';
-import { getRepository } from 'typeorm';
+import { getRepository, IsNull, Not } from 'typeorm';
 import User from 'entities/User';
-import ClassAttendance from 'entities/ClassAttendance';
+import ClassAttendance, { ClassAttendanceDetailedObject, ClassAttendanceObject } from 'entities/ClassAttendance';
 import { storeUpload } from 'modules/upload';
 
-async function addAttendance(attendance): Promise<ClassAttendance> {
+async function addAttendance(attendance: ClassAttendanceObject): Promise<ClassAttendanceObject> {
     const newAttendance = new ClassAttendance();
     newAttendance.groupId = attendance.groupId;
     newAttendance.classId = attendance.classId;
@@ -25,7 +25,10 @@ async function addAttendance(attendance): Promise<ClassAttendance> {
     return await getRepository(ClassAttendance).save(newAttendance);
 }
 
-async function updateAttendance(attendance): Promise<ClassAttendance> {
+async function updateAttendance(
+    attendance: ClassAttendanceObject,
+    shouldRemoveReport = false,
+): Promise<ClassAttendanceObject> {
     const id = {
         id: Number(attendance.id),
         classId: Number(attendance.classId),
@@ -43,9 +46,10 @@ async function updateAttendance(attendance): Promise<ClassAttendance> {
     }
 
     if (
-        attendance.reportFile !== undefined &&
-        attendance.reportFile !== null &&
-        attendance.reportFile !== editedAttendance.reportFile
+        shouldRemoveReport ||
+        (attendance.reportFile !== undefined &&
+            attendance.reportFile !== null &&
+            attendance.reportFile !== editedAttendance.reportFile)
     ) {
         editedAttendance.reportFile = attendance.reportFile;
         editedAttendance.reportFileId = attendance.reportFileId;
@@ -66,7 +70,7 @@ async function updateAttendance(attendance): Promise<ClassAttendance> {
 }
 
 export default {
-    putAttendance: async (_, { attendance }, { auth }): Promise<ClassAttendance | Error> => {
+    putAttendance: async (_, { attendance }, { auth }): Promise<ClassAttendanceObject | Error> => {
         if (!auth) {
             return new Error('Brak uprawnień');
         }
@@ -85,7 +89,7 @@ export default {
             return saved;
         }
     },
-    classAttendances: async (_, { id }, { auth }): Promise<ClassAttendance[] | Error> => {
+    classAttendances: async (_, { id }, { auth }): Promise<ClassAttendanceObject[] | Error> => {
         const currentClass = await getRepository(Class).findOne({ id });
 
         if (!currentClass) {
@@ -103,7 +107,7 @@ export default {
 
         return new Error('Brak uprawnień.');
     },
-    userClassAttendances: async (_, { id }, { auth }): Promise<ClassAttendance[] | Error> => {
+    userClassAttendances: async (_, { id }, { auth }): Promise<ClassAttendanceObject[] | Error> => {
         const currentClass = await getRepository(Class).findOne({ id });
 
         if (!currentClass) {
@@ -121,7 +125,7 @@ export default {
 
         return new Error('Brak uprawnień.');
     },
-    uploadReport: async (_, { file, attendance }, { auth, user }): Promise<ClassAttendance | Error> => {
+    uploadReport: async (_, { file, attendance }, { auth, user }): Promise<ClassAttendanceObject | Error> => {
         if (!auth) {
             return new Error('Brak uprawnień');
         }
@@ -146,7 +150,7 @@ export default {
         const updated = await action(updatedAttendance);
         return updated;
     },
-    removeReport: async (_, { attendance }, { auth, user }): Promise<ClassAttendance | Error> => {
+    removeReport: async (_, { attendance }, { auth, user }): Promise<ClassAttendanceObject | Error> => {
         if (!auth) {
             return new Error('Brak uprawnień');
         }
@@ -157,13 +161,45 @@ export default {
 
         const updatedAttendance = {
             ...attendance,
-            reportFile: '',
+            reportFile: null,
             reportFileId: null,
             reportFileMimeType: null,
             reportFileEncoding: null,
         };
 
-        const updated = await updateAttendance(updatedAttendance);
+        const updated = await updateAttendance(updatedAttendance, true);
         return updated;
+    },
+    pendingReports: async (_, { activeGroups }, { auth, user }): Promise<ClassAttendanceDetailedObject[] | Error> => {
+        if (!auth || !user.isAdmin) {
+            return new Error('Brak uprawnień.');
+        }
+
+        const classAttendances = await getRepository(ClassAttendance).find({
+            where: [
+                {
+                    reportGrade: IsNull(),
+                    reportFile: Not(IsNull()),
+                },
+            ],
+            order: {
+                classId: 'ASC',
+                reportAddedOn: 'ASC',
+            },
+            relations: ['group', 'user', 'class'],
+        });
+
+        const attendances = classAttendances
+            .filter(a => a.group.isActive === activeGroups)
+            .map(a => {
+                return {
+                    ...a,
+                    groupName: a.group.courseName,
+                    classTitle: a.class.title,
+                    userName: `${a.user.firstName} ${a.user.lastName}`,
+                };
+            });
+
+        return attendances;
     },
 };

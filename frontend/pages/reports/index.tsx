@@ -1,4 +1,4 @@
-import { Button, Icon, Layout, PageHeader, Spin, Table, Typography } from 'antd';
+import { Button, Icon, Layout, PageHeader, Spin, Table, Typography, Avatar } from 'antd';
 import gql from 'graphql-tag';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from 'react-apollo';
@@ -106,7 +106,7 @@ const ReportsPage: React.FC<ReportsPageProps> = () => {
             setGrade(group.grades.find(grade => grade.userId === user.album) || {});
             setClasses(
                 group.classes.map(cls => {
-                    const attendance = group.attendances.find(a => a.classId === cls.id);
+                    const attendance = group.attendances.find(a => a.classId === cls.id && a.userId === user.album);
                     cls.attendance = attendance;
                     return cls;
                 }) || [],

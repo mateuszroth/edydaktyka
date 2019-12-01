@@ -70,6 +70,19 @@ type ClassAttendance {
   reportGrade: Int
   reportAddedOn: Date
 }
+type ClassAttendanceDetailed {
+  id: ID!
+  classId: Int!
+  groupId: Int!
+  userId: Int!
+  isPresent: Boolean!
+  reportFile: String
+  reportGrade: Int
+  reportAddedOn: Date
+  groupName: String
+  classTitle: String
+  userName: String
+}
 type UserGrade {
   id: Int!
   groupId: Int!
@@ -122,6 +135,7 @@ type Query {
   classAttendances(id: ID!): [ClassAttendance]!
   userClassAttendances(id: ID!): [ClassAttendance]!
   class(id: Int!, groupId: Int!): Class
+  pendingReports(activeGroups: Boolean): [ClassAttendanceDetailed]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -152,6 +166,7 @@ const resolvers = {
         groupAttendances: groupsResolvers.groupAttendances,
         classAttendances: attendancesResolvers.classAttendances,
         userClassAttendances: attendancesResolvers.userClassAttendances,
+        pendingReports: attendancesResolvers.pendingReports,
     },
     Mutation: {
         register: authResolvers.register,

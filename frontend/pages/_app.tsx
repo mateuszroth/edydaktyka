@@ -354,11 +354,24 @@ class MyApp extends App<AppProps> {
                                                                 </Link>
                                                             </Menu.Item>
                                                         )}
+                                                    {auth.isInitialized &&
+                                                        auth.isLoggedIn &&
+                                                        auth.user &&
+                                                        auth.user.isAdmin && (
+                                                            <Menu.Item key="10">
+                                                                <Link href="/reports/admin">
+                                                                    <a>
+                                                                        <Icon type="like" />
+                                                                        Ocenianie
+                                                                    </a>
+                                                                </Link>
+                                                            </Menu.Item>
+                                                        )}
                                                     {/* only for admins */}
 
                                                     {/* tylko dla zalogowanych */}
                                                     {auth.isInitialized && auth.isLoggedIn && auth.user && (
-                                                        <Menu.Item key="10">
+                                                        <Menu.Item key="11">
                                                             <Link href="/schedule">
                                                                 <a>
                                                                     <Icon type="schedule" />
@@ -368,7 +381,7 @@ class MyApp extends App<AppProps> {
                                                         </Menu.Item>
                                                     )}
                                                     {auth.isInitialized && auth.isLoggedIn && auth.user && (
-                                                        <Menu.Item key="11">
+                                                        <Menu.Item key="12">
                                                             <Link href="/reports">
                                                                 <a>
                                                                     <Icon type="file-text" />
@@ -378,7 +391,7 @@ class MyApp extends App<AppProps> {
                                                         </Menu.Item>
                                                     )}
                                                     {auth.isInitialized && auth.isLoggedIn && auth.user && (
-                                                        <Menu.Item key="12">
+                                                        <Menu.Item key="13">
                                                             <Link href="/account">
                                                                 <a>
                                                                     <Icon type="smile" />
