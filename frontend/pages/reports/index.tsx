@@ -235,7 +235,7 @@ const ReportsPage: React.FC<ReportsPageProps> = () => {
                                             val ? (
                                                 <a
                                                     href={
-                                                        process.env.SERVER_URL + entry.attendance.reportFile
+                                                        "http://localhost:4000/" + entry.attendance.reportFile
                                                     }
                                                     target="blank"
                                                 >

@@ -51,7 +51,7 @@ async function updateAttendance(attendance): Promise<ClassAttendance> {
         editedAttendance.reportFileId = attendance.reportFileId;
         editedAttendance.reportFileMimeType = attendance.reportFileMimeType;
         editedAttendance.reportFileEncoding = attendance.reportFileEncoding;
-        editedAttendance.reportAddedOn = new Date(Date.now());
+        editedAttendance.reportAddedOn = new Date();
     }
 
     if (

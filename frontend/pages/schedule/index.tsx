@@ -94,12 +94,20 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                         <Typography.Title level={3}>{data.group.courseName}</Typography.Title>
                         <Typography.Paragraph>{getLongGroupName(data.group)}</Typography.Paragraph>
                         <Typography.Paragraph>
-                            <strong>Ocena końcowa:</strong> {grade.grade ? <GradeMark grade={grade.grade} gradedOn={grade.gradedOn} /> : 'jeszcze niewystawiona'}
+                            <strong>Ocena końcowa:</strong>{' '}
+                            {grade.grade ? (
+                                <GradeMark grade={grade.grade} gradedOn={grade.gradedOn} />
+                            ) : (
+                                'jeszcze niewystawiona'
+                            )}
                         </Typography.Paragraph>
                         <Typography.Title level={4}>Zajęcia</Typography.Title>
                         {classes.length > 0 && (
                             <Table
-                                dataSource={classes} rowKey="id" pagination={false} columns={[
+                                dataSource={classes}
+                                rowKey="id"
+                                pagination={false}
+                                columns={[
                                     {
                                         title: 'Numer',
                                         dataIndex: 'classNumber',
@@ -109,45 +117,70 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                                         title: 'Data',
                                         dataIndex: 'takenOn',
                                         key: 'takenOn',
-                                        render: val => (new Date(val)).toLocaleDateString()
+                                        render: val => new Date(val).toLocaleDateString(),
                                     },
                                     {
                                         title: 'Tytuł',
                                         dataIndex: 'title',
                                         key: 'title',
-                                        render: val => <strong>{val}</strong>
+                                        render: val => <strong>{val}</strong>,
                                     },
                                     {
                                         title: 'Raport wymagany?',
                                         dataIndex: 'isReportRequired',
                                         key: 'isReportRequired',
-                                        render: val => val ? 'tak' : 'nie'
+                                        render: val => (val ? 'tak' : 'nie'),
                                     },
                                     {
                                         title: 'Raport przesłany?',
                                         dataIndex: 'attendance.reportFile',
                                         key: 'reportFile',
-                                        render: (val, entry) => val ? <>tak ({new Date((entry as any).attendance.reportAddedOn).toLocaleDateString()})</> : <>nie (<Link href="/reports"><a>prześlij</a></Link>)</>
+                                        render: (val, entry: any) => {
+                                            if (!entry.isReportRequired) {
+                                                return 'niewymagany';
+                                            }
+                                            const date = entry.attendance && entry.attendance.reportAddedOn;
+                                            return val ? (
+                                                <>
+                                                    tak {date ? `(${new Date(date).toLocaleDateString()})` : ''}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    nie (
+                                                    <Link href="/reports">
+                                                        <a>prześlij</a>
+                                                    </Link>
+                                                    )
+                                                </>
+                                            );
+                                        },
                                     },
                                     {
                                         title: 'Obecność',
                                         dataIndex: 'attendance.isPresent',
                                         key: 'isPresent',
-                                        render: (val, entry) => (entry as any).attendance ? val ? <Tag color="green">obecność</Tag> : <Tag color="red">nieobecność</Tag> : <Tag color="gray">niesprawdzona</Tag>
+                                        render: (val, entry: any) =>
+                                            entry.attendance ? (
+                                                val ? (
+                                                    <Tag color="green">obecność</Tag>
+                                                ) : (
+                                                    <Tag color="red">nieobecność</Tag>
+                                                )
+                                            ) : (
+                                                <Tag color="gray">niesprawdzona</Tag>
+                                            ),
                                     },
                                     {
                                         title: 'Ocena',
                                         dataIndex: 'attendance.reportGrade',
                                         key: 'reportGrade',
-                                        render: (val, entry) => val ? <GradeMark grade={val} /> : 'brak'
+                                        render: val => (val ? <GradeMark grade={val} /> : 'brak'),
                                     },
                                 ]}
                             />
                         )}
                         {classes.length === 0 && (
-                            <Typography.Paragraph>
-                                Jeszcze nie odbyły się żadne zajęcia.
-                            </Typography.Paragraph>
+                            <Typography.Paragraph>Jeszcze nie odbyły się żadne zajęcia.</Typography.Paragraph>
                         )}
                     </>
                 )}
