@@ -9,6 +9,7 @@ import gql from 'graphql-tag';
 import { useLazyQuery } from 'react-apollo';
 import { getLongGroupName } from '../../helpers/groups';
 import GradeMark, { getReadableGrade } from '../../components/shared/grade-mark/GradeMark';
+import Link from 'next/link';
 
 const PAGE_NAME = 'Zajęcia i obecności';
 
@@ -93,7 +94,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                         <Typography.Title level={3}>{data.group.courseName}</Typography.Title>
                         <Typography.Paragraph>{getLongGroupName(data.group)}</Typography.Paragraph>
                         <Typography.Paragraph>
-                            Ocena końcowa: {grade.grade ? <GradeMark grade={grade.grade} gradedOn={grade.gradedOn} /> : 'jeszcze niewystawiona'}
+                            <strong>Ocena końcowa:</strong> {grade.grade ? <GradeMark grade={grade.grade} gradedOn={grade.gradedOn} /> : 'jeszcze niewystawiona'}
                         </Typography.Paragraph>
                         <Typography.Title level={4}>Zajęcia</Typography.Title>
                         {classes.length > 0 && (
@@ -126,7 +127,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                                         title: 'Raport przesłany?',
                                         dataIndex: 'attendance.reportFile',
                                         key: 'reportFile',
-                                        render: (val, entry) => val ? 'tak' : 'nie'
+                                        render: (val, entry) => val ? <>tak ({new Date((entry as any).attendance.reportAddedOn).toLocaleDateString()})</> : <>nie (<Link href="/reports"><a>prześlij</a></Link>)</>
                                     },
                                     {
                                         title: 'Obecność',
