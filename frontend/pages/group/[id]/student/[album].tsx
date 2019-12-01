@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { PageHeader, Layout, Spin, Radio, Typography, Result, Descriptions, Table, Icon, Button, List, Tag } from 'antd';
+import { PageHeader, Layout, Spin, Radio, Typography, Result, Table, Button, Tag } from 'antd';
 import { NextPage, NextPageContext } from 'next';
 import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
@@ -9,16 +9,16 @@ import AuthContext from '../../../../components/stores/AuthContext';
 import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
 import { PageContent } from '../../../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedirection';
-import { useMutation, useQuery } from 'react-apollo';
+import { useMutation, useLazyQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 import { GET_GROUP } from '../index';
 import GradeMark from '../../../../components/shared/grade-mark/GradeMark';
 
 const PAGE_NAME = 'Szczegóły studenta w grupie';
 
-export const GET_GROUP_ATTENDANCES = id => gql`
-    {
-        groupAttendances(id: ${id}) {
+export const GET_GROUP_ATTENDANCES = gql`
+    query GroupAttendances($id: ID!) {
+        groupAttendances(id: $id) {
             id
             groupId
             classId
@@ -82,9 +82,9 @@ const StudentPage: NextPage<StudentPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const album = router && router.query && router.query.album;
-    const { loading: groupLoading, error: groupError, data } = useQuery(GET_GROUP(groupId));
-    const { loading: attendancesLoading, error: attendancesError, data: attendancesData } = useQuery(
-        GET_GROUP_ATTENDANCES(groupId));
+    const [getGroup, { loading: groupLoading, error: groupError, data }] = useLazyQuery(GET_GROUP);
+    const [getGroupAttendances, { loading: attendancesLoading, error: attendancesError, data: attendancesData }] = useLazyQuery(
+        GET_GROUP_ATTENDANCES);
     const [putUserGrade, { data: putUserGradeData, error: putUserGradeError }] = useMutation(PUT_USER_GRADE);
     const loading = groupLoading || attendancesLoading;
     const error = groupError || attendancesError || putUserGradeError;
@@ -92,6 +92,13 @@ const StudentPage: NextPage<StudentPage> = () => {
     const [classes, setClasses] = useState(null);
     const [attendances, setAttendances] = useState(null);
     const [userGrade, setUserGrade] = useState(null);
+
+    useEffect(() => {
+        if (groupId) {
+            getGroup({ variables: { id: groupId } });
+            getGroupAttendances({ variables: { id: groupId } });
+        }
+    }, [groupId]);
 
     useEffect(() => {
         if (data && data.group) {

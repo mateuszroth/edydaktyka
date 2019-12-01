@@ -45,7 +45,10 @@ export default class User extends BaseEntity {
     })
     groups: Group[];
 
-    @OneToMany(() => UserGrade, grade => grade.user, { eager: true })
+    @OneToMany(() => UserGrade, grade => grade.user, {
+        eager: true,
+        persistence: false, // see https://github.com/typeorm/typeorm/issues/2859
+    })
     grades: UserGrade[];
 
     @OneToMany(() => ClassAttendance, classAttendance => classAttendance.user)

@@ -8,15 +8,15 @@ import styles from './index.module.scss';
 import AuthContext from '../../../../components/stores/AuthContext';
 import { PageContent } from '../../../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedirection';
-import { useMutation, useQuery } from 'react-apollo';
+import { useMutation, useQuery, useLazyQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
 
-export const GET_CLASS = (id, groupId) => gql`
-    {
-        class(id: ${id}, groupId: ${groupId}) {
+export const GET_CLASS = gql`
+    query Class($id: Int!, $groupId: Int!) {
+        class(id: $id, groupId: $groupId) {
             id
             classNumber
             takenOn
@@ -88,16 +88,25 @@ const PUT_ATTENDANCE = gql`
     }
 `;
 
-const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateClick, onEmailSendClick = () => null, onStudentDetailsClick) => [
+const defaultStudentColumns = (
+    isReportRequired,
+    onPresenceCheck,
+    onReportRateClick,
+    onEmailSendClick = () => null,
+    onStudentDetailsClick,
+) => [
     {
         title: 'Album',
         dataIndex: 'album',
         key: 'album',
         render: (val, entry) => {
             return (
-                <div onClick={() => onStudentDetailsClick(val)}><UserAvatar size="large" user={entry} />{val}</div>
-            )
-        }
+                <div onClick={() => onStudentDetailsClick(val)}>
+                    <UserAvatar size="large" user={entry} />
+                    {val}
+                </div>
+            );
+        },
     },
     {
         title: 'Imię',
@@ -190,13 +199,14 @@ const defaultStudentColumns = (isReportRequired, onPresenceCheck, onReportRateCl
         title: 'Akcje',
         dataIndex: 'album',
         key: 'album',
-        render: (album, entry) => { // TODO onEmailSendClick
+        render: (album, entry) => {
+            // TODO onEmailSendClick
             return (
                 <>
                     <Button type="default" icon="mail" shape="circle" onClick={onEmailSendClick} />
                     <Button type="default" icon="user" shape="circle" onClick={() => onStudentDetailsClick(album)} />
                 </>
-            )
+            );
         },
     },
 ];
@@ -209,9 +219,20 @@ const ClassPage: NextPage<ClassPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const classId = router && router.query && router.query.classId;
-    const { loading, error, data } = useQuery(GET_CLASS(classId, groupId));
+    const [getClass, { loading, error, data }] = useLazyQuery(GET_CLASS);
     const [usersAttendances, setUsersAttendances] = useState([]);
     const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
+
+    useEffect(() => {
+        if (groupId && classId) {
+            getClass({
+                variables: {
+                    id: Number(classId),
+                    groupId: Number(groupId),
+                },
+            });
+        }
+    }, [groupId, classId]);
 
     useEffect(() => {
         if (data && data.class) {
@@ -239,11 +260,11 @@ const ClassPage: NextPage<ClassPage> = () => {
         }
     }, [putAttendanceData]);
 
-    if (loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
+    if (!data || loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
     if (error || putAttendanceError)
         return <Result status="error" title="Wystąpił błąd!" subTitle={(error || putAttendanceError).message} />;
 
-    const { class: classEntity } = data;
+    const { class: classEntity = {} } = data;
 
     const handlePutAttendanceCheck = (attendance, user) => {
         attendance.userId = Number(user.album);
@@ -273,10 +294,16 @@ const ClassPage: NextPage<ClassPage> = () => {
     };
 
     const handleStudentDetailsClick = album => {
-        router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`)
-    }
+        router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`);
+    };
 
-    const userColumns = defaultStudentColumns(classEntity.isReportRequired, handlePresenceCheck, handleReportRateClick, undefined, handleStudentDetailsClick);
+    const userColumns = defaultStudentColumns(
+        classEntity.isReportRequired,
+        handlePresenceCheck,
+        handleReportRateClick,
+        undefined,
+        handleStudentDetailsClick,
+    );
 
     return (
         <Layout className={styles.root}>
@@ -287,7 +314,11 @@ const ClassPage: NextPage<ClassPage> = () => {
                 className={classEntity.title}
             />
             <PageContent>
-                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.push('/group/[id]', `/group/${groupId}`)} />
+                <PageHeader
+                    ghost={false}
+                    title={PAGE_NAME}
+                    onBack={() => router.push('/group/[id]', `/group/${groupId}`)}
+                />
                 {!loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
                 {data && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
@@ -322,7 +353,16 @@ const ClassPage: NextPage<ClassPage> = () => {
                             renderItem={item => {
                                 const i = item as any;
                                 return (
-                                    <List.Item onClick={() => router.push('/group/[id]/class/[classId]', `/group/${groupId}/class/${i.id}`, {shallow: true})} style={{ cursor: 'pointer' }}>
+                                    <List.Item
+                                        onClick={() =>
+                                            router.push(
+                                                '/group/[id]/class/[classId]',
+                                                `/group/${groupId}/class/${i.id}`,
+                                                { shallow: true },
+                                            )
+                                        }
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         {i.title}
                                     </List.Item>
                                 );

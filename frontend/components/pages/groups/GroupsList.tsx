@@ -73,15 +73,6 @@ const GroupsList: React.FC<GroupsListProps> = ({ active = true, manage = true, o
     const [ tableData, setTableData ] = useState([]);
     const [ tableColumns, setTableColumns ] = useState(defaultColumns);
 
-    const handleRow = (group, _) => {
-        return {
-            onClick: event => {
-                event.preventDefault();
-                onDetailsClick(group);
-            }
-        }
-    }
-
     useEffect(() => {
         if (data && data.groups) {
             const dataSource = data.groups.map(group => {

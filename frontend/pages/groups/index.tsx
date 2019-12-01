@@ -78,8 +78,8 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
             <Breadcrumb />
             <PageContent>
                 <PageHeader ghost={false} title={PAGE_NAME} />
-                {loading || !isInitialized || !user && <Spin size="large" />}
-                {!loading && isInitialized && user && user.isAdmin && (
+                {!loading || !isInitialized || !user && <Spin size="large" />}
+                {isInitialized && user && user.isAdmin && (
                     <>
                         <div className={styles.buttons}>
                             <Button size="large" type="primary" onClick={handleShowAddGroupModal}>

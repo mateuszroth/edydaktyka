@@ -8,7 +8,7 @@ import styles from './index.module.scss';
 import AuthContext from '../../../components/stores/AuthContext';
 import { PageContent } from '../../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../../components/hocs/useNotAdminRedirection';
-import { useMutation, useLazyQuery, useQuery } from 'react-apollo';
+import { useMutation, useLazyQuery } from 'react-apollo';
 import { getLongGroupName, getReadableModeOfStudy } from '../../../helpers/groups';
 import ClassForm from '../../../components/pages/group/ClassForm';
 import UserAvatar from '../../../components/shared/user-avatar/UserAvatar';
@@ -16,9 +16,9 @@ import GradeMark from '../../../components/shared/grade-mark/GradeMark';
 
 const PAGE_NAME = 'Szczegóły grupy zajęciowej';
 
-export const GET_GROUP = id => gql`
-    {
-        group(id: ${id}) {
+export const GET_GROUP = gql`
+    query Group($id: ID!) {
+        group(id: $id) {
             id
             modeOfStudy
             fieldOfStudy
@@ -191,20 +191,25 @@ const GroupPage: NextPage<GroupPageProps> = () => {
     const [classFormInitialValues, setClassFormInitialValues] = useState(null);
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
-    const { loading, error, data } = useQuery(GET_GROUP(groupId));
-    const [getClasses] = useLazyQuery(GET_GROUP(groupId), { fetchPolicy: 'network-only' });
+    const [getGroup, { loading, error, data }] = useLazyQuery(GET_GROUP, { fetchPolicy: 'network-only' });
     const [putClass, { loading: putClassLoading, data: putClassData, error: putClassError }] = useMutation(PUT_CLASS);
     const [removeClass, { data: removeClassData, error: removeClassError }] = useMutation(REMOVE_CLASS);
 
     useEffect(() => {
+        if (groupId) {
+            getGroup({ variables: { id: groupId } });
+        }
+    }, [groupId]);
+
+    useEffect(() => {
         if (removeClassData) {
-            getClasses();
+            getGroup({ variables: { id: groupId } });
         }
     }, [removeClassData]);
 
     useEffect(() => {
         if (putClassData) {
-            getClasses();
+            getGroup({ variables: { id: groupId } });
             setIsClassFormModalVisible(false);
         }
     }, [putClassData]);
