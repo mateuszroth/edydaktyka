@@ -1,16 +1,17 @@
-import { Button, Icon, Layout, PageHeader, Spin, Table, Typography } from 'antd';
+import { Button, Layout, PageHeader, Spin, Table, Typography } from 'antd';
 import gql from 'graphql-tag';
-import React, { useContext, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from 'react-apollo';
+import { useRouter } from 'next/router';
+import React, { useContext } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
 import useNotLoggedInRedirection from '../../../components/hocs/useNotLoggedInRedirection';
 import { PageContent } from '../../../components/layout/content/page-content';
-import Breadcrumb from '../../../components/pages/schedule/Breadcrumb';
-import GradeMark from '../../../components/shared/grade-mark/GradeMark';
+import Breadcrumb from '../../../components/pages/reports-admin/Breadcrumb';
+import ReportGrade from '../../../components/shared/report-grade';
 import AuthContext from '../../../components/stores/AuthContext';
-import { getLongGroupName } from '../../../helpers/groups';
+import { getReportUrl } from '../../../helpers/attendances';
+import { getTableFilters } from '../../../helpers/ui';
+import { PUT_ATTENDANCE } from '../../group/[id]/class/[classId]';
 import styles from './index.module.scss';
-import { useRouter } from 'next/router';
-import UserAvatar from '../../../components/shared/user-avatar/UserAvatar';
 
 const PAGE_NAME = 'Ocenianie i zarządzanie sprawozdaniami';
 
@@ -38,11 +39,27 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
     const { state: authState } = useContext(AuthContext);
     const router = useRouter();
     const { user, isInitialized } = authState;
-    const { data, loading, error } = useQuery(GET_PENDING_REPORTS);
+    const { data } = useQuery(GET_PENDING_REPORTS, { fetchPolicy: 'network-only' });
+    const [putAttendance] = useMutation(PUT_ATTENDANCE);
 
     const handleStudentDetailsClick = (groupId, userId) => {
         router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${userId}`);
     };
+
+    const handlePutAttendanceCheck = (attendance, entity) => {
+        attendance.id = Number(entity.id);
+        attendance.userId = Number(entity.userId);
+        attendance.classId = Number(entity.classId);
+        attendance.groupId = Number(entity.groupId);
+        putAttendance({ variables: attendance });
+    };
+
+    const handleReportRateClick = (e, entity) => {
+        const attendance = { } as any;
+        attendance.reportGrade = Number(e.target.value);
+        handlePutAttendanceCheck(attendance, entity);
+    };
+
 
     return (
         <Layout className={styles.root} style={{ padding: '0 24px 24px' }}>
@@ -50,6 +67,7 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
             <PageContent>
                 <PageHeader ghost={false} title={PAGE_NAME} />
                 {(!isInitialized || !user) && <Spin size="large" />}
+                <Typography.Title level={4}>Nieocenione sprawozdania</Typography.Title>
                 {data && isInitialized && user && (
                     <>
                         <Table
@@ -59,6 +77,8 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     title: 'Album',
                                     dataIndex: 'userId',
                                     key: 'userId',
+                                    filters: getTableFilters(data && data.pendingReports, 'userId'),
+                                    onFilter: (value, record: any) => value === record.userId,
                                     render: (val, entry: any) => {
                                         return (
                                             <div onClick={() => handleStudentDetailsClick(entry.groupId, val)}>
@@ -71,12 +91,16 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     title: 'Student',
                                     dataIndex: 'userName',
                                     key: 'userName',
+                                    filters: getTableFilters(data && data.pendingReports, 'userName'),
+                                    onFilter: (value, record: any) => value === record.userName,
                                 },
                                 {
                                     title: 'Kurs',
                                     dataIndex: 'groupName',
                                     key: 'groupName',
                                     width: 200,
+                                    filters: getTableFilters(data && data.pendingReports, 'groupName'),
+                                    onFilter: (value, record: any) => value === record.groupName,
                                 },
                                 {
                                     title: 'Tytuł',
@@ -90,15 +114,33 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     key: 'reportFile',
                                     render: (val, entry: any) => (
                                         <>
-                                            <Button type="link" href={"http://localhost:4000/" + val} target="blank">pobierz</Button>
-                                            {entry.reportAddedOn ? (new Date(entry.reportAddedOn)).toLocaleDateString() : ''}
+                                            <a type="link" href={getReportUrl(val)} target="blank">pobierz</a>
+                                            {' '}{entry.reportAddedOn ? (new Date(entry.reportAddedOn)).toLocaleDateString() : ''}
                                         </>
-                                    )
+                                    ),
                                 },
                                 {
                                     title: 'Oceń',
                                     dataIndex: 'reportGrade',
                                     key: 'reportGrade',
+                                    render: (val, entry: any) => {
+                                        const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+                                            handleReportRateClick(e, entry);
+                                        };
+                                        const defaultValue = val ? val : '';
+                                        const grade = (
+                                            <ReportGrade defaultValue={defaultValue} onClick={handleClick} />
+                                        );
+                                        return grade;
+                                    },
+                                },
+                                {
+                                    title: 'Email',
+                                    dataIndex: 'userId',
+                                    key: 'email',
+                                    render: (val, entry: any) => {
+                                        return <Button type="default" icon="mail" shape="circle" onClick={() => 'TODO'} />
+                                    },
                                 },
                             ]}
                             pagination={false}

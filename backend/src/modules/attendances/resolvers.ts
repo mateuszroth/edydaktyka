@@ -14,12 +14,13 @@ async function addAttendance(attendance: ClassAttendanceObject): Promise<ClassAt
     }
     if (attendance.reportFile) {
         newAttendance.reportFile = attendance.reportFile;
+        newAttendance.reportFileId = attendance.reportFileId;
+        newAttendance.reportFileMimeType = attendance.reportFileMimeType;
+        newAttendance.reportFileEncoding = attendance.reportFileEncoding;
+        newAttendance.reportAddedOn = new Date();
     }
     if (attendance.reportGrade) {
         newAttendance.reportGrade = attendance.reportGrade;
-    }
-    if (attendance.reportAddedOn) {
-        newAttendance.reportAddedOn = attendance.reportAddedOn;
     }
 
     return await getRepository(ClassAttendance).save(newAttendance);
@@ -183,6 +184,7 @@ export default {
                 },
             ],
             order: {
+                groupId: 'ASC',
                 classId: 'ASC',
                 reportAddedOn: 'ASC',
             },

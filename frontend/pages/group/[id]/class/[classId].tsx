@@ -11,6 +11,8 @@ import useNotAdminRedirection from '../../../../components/hocs/useNotAdminRedir
 import { useMutation, useQuery, useLazyQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
+import ReportGrade from '../../../../components/shared/report-grade';
+import { getReportUrl } from '../../../../helpers/attendances';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
 
@@ -53,7 +55,7 @@ export const GET_CLASS = gql`
     }
 `;
 
-const PUT_ATTENDANCE = gql`
+export const PUT_ATTENDANCE = gql`
     mutation PutAttendance(
         $id: Int
         $classId: Int!
@@ -125,7 +127,11 @@ const defaultStudentColumns = (
         render: (_, entry) => {
             const reportFile =
                 entry.attendance && entry.attendance.reportFile
-                    ? `przesłane ${new Date(entry.attendance && entry.attendance.reportAddedOn).toLocaleDateString()}`
+                    ? (
+                        <a href={getReportUrl(entry.attendance.reportFile)} target="blank">
+                            przesłane {new Date(entry.attendance && entry.attendance.reportAddedOn).toLocaleDateString()}
+                        </a>
+                    )
                     : 'jeszcze nieprzesłane';
             return isReportRequired ? reportFile : 'niewymagane';
         },
@@ -139,30 +145,7 @@ const defaultStudentColumns = (
                 onReportRateClick(e, entry);
             };
             const defaultValue = val ? val : '';
-            const grade = (
-                <>
-                    <Radio.Group defaultValue={defaultValue} buttonStyle="solid">
-                        <Radio.Button checked={defaultValue === 20} value="20" onClick={handleClick}>
-                            2
-                        </Radio.Button>
-                        <Radio.Button checked={defaultValue === 30} value="30" onClick={handleClick}>
-                            3
-                        </Radio.Button>
-                        <Radio.Button checked={defaultValue === 35} value="35" onClick={handleClick}>
-                            3.5
-                        </Radio.Button>
-                        <Radio.Button checked={defaultValue === 40} value="40" onClick={handleClick}>
-                            4
-                        </Radio.Button>
-                        <Radio.Button checked={defaultValue === 45} value="45" onClick={handleClick}>
-                            4.5
-                        </Radio.Button>
-                        <Radio.Button checked={defaultValue === 50} value="50" onClick={handleClick}>
-                            5
-                        </Radio.Button>
-                    </Radio.Group>
-                </>
-            );
+            const grade = <ReportGrade defaultValue={defaultValue} onClick={handleClick} />;
             const render = isReportRequired ? grade : 'niewymagane';
             return render;
         },
@@ -287,7 +270,7 @@ const ClassPage: NextPage<ClassPage> = () => {
         if (user.attendance && user.attendance.isPresent) {
             attendance.isPresent = !!Number(user.attendance.isPresent);
         } else {
-            attendance.isPresent = false;
+            attendance.isPresent = null;
         }
         attendance.reportGrade = Number(e.target.value);
         handlePutAttendanceCheck(attendance, user);
