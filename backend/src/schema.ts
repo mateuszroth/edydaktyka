@@ -4,6 +4,7 @@ import classResolvers from 'modules/classes/resolvers';
 import attendancesResolvers from 'modules/attendances/resolvers';
 import userGradesResolvers from 'modules/user-grades/resolvers';
 import usersResolvers from 'modules/users/resolvers';
+import consultationResolvers from 'modules/consultation-slots/resolvers';
 
 const typeDefs = `
 scalar Date
@@ -60,6 +61,13 @@ input InputGroup {
   link: String
   description: String
   isActive: Boolean
+}
+type ConsultationSlot {
+  id: ID!
+  date: Date!
+  slot: Int!
+  userId: Int
+  userName: String
 }
 type ClassAttendance {
   id: ID!
@@ -137,6 +145,7 @@ type Query {
   userClassAttendances(id: ID!): [ClassAttendance]!
   class(id: Int!, groupId: Int!): Class
   pendingReports(activeGroups: Boolean): [ClassAttendanceDetailed]!
+  consultationSlots(forHowManyWeeks: Int!): [ConsultationSlot]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -170,6 +179,7 @@ const resolvers = {
         classAttendances: attendancesResolvers.classAttendances,
         userClassAttendances: attendancesResolvers.userClassAttendances,
         pendingReports: attendancesResolvers.pendingReports,
+        consultationSlots: consultationResolvers.consultationSlots,
     },
     Mutation: {
         register: authResolvers.register,

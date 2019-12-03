@@ -139,7 +139,7 @@ INSERT INTO ThesisVolunteers VALUES (NULL, 1, 117328, NULL);
 CREATE TABLE Consultations ( # rezerwacje
 	ID INT NOT NULL AUTO_INCREMENT,
 	StudentID INT NOT NULL,
-    ReservationOn DATETIME NOT NULL,
+    ReservationOn DATETIME NOT NULL, # todo index
 	PRIMARY KEY (ID),
 	FOREIGN KEY (StudentID) REFERENCES Users(Album)
 );

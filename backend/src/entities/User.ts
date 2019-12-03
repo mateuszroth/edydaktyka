@@ -1,7 +1,8 @@
-import { Entity, PrimaryColumn, Column, BaseEntity, ManyToMany, OneToMany, JoinTable, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, BaseEntity, ManyToMany, OneToMany, JoinTable } from 'typeorm';
 import Group from 'entities/Group';
 import ClassAttendance from './ClassAttendance';
 import UserGrade from './UserGrade';
+import ConsultationSlot from './ConsultationSlot';
 
 @Entity()
 export default class User extends BaseEntity {
@@ -53,4 +54,7 @@ export default class User extends BaseEntity {
 
     @OneToMany(() => ClassAttendance, classAttendance => classAttendance.user)
     attendances: Promise<ClassAttendance[]>;
+
+    @OneToMany(() => ConsultationSlot, consultation => consultation.user)
+    consultations: Promise<ConsultationSlot[]>;
 }
