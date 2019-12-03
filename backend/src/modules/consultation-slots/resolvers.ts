@@ -48,4 +48,23 @@ export default {
             });
         }
     },
+    removeConsultationSlot: async (_, { id }, { auth, user }): Promise<string | Error> => {
+        if (!id) {
+            throw new Error('Brak id');
+        }
+
+        if (!auth) {
+            throw new Error('Brak uprawnień');
+        }
+
+        const slot = await getRepository(ConsultationSlot).findOne(id);
+
+        if (!user.isAdmin && user.album !== slot.userId) {
+            throw new Error('Brak uprawnień');
+        }
+
+        await getRepository(ConsultationSlot).remove(slot);
+
+        return 'Usunięto rezerwację konsultacji';
+    },
 };

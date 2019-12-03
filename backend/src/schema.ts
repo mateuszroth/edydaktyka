@@ -165,6 +165,7 @@ type Mutation {
   removeReport(attendance: InputReportAttendance!): ClassAttendance!
   sendUserEmail(id: Int!, message: String!, title: String): String!
   sendGroupEmail(id: Int!, message: String!, title: String): String!
+  removeConsultationSlot(id: ID!): String!
 }
 `;
 
@@ -199,6 +200,7 @@ const resolvers = {
         removeReport: attendancesResolvers.removeReport,
         sendUserEmail: usersResolvers.sendUserEmail,
         sendGroupEmail: groupsResolvers.sendGroupEmail,
+        removeConsultationSlot: consultationResolvers.removeConsultationSlot,
     },
 };
 

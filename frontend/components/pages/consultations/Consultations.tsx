@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Table, Alert, Spin } from 'antd';
+import { Table, Alert, Spin, notification, Button, Tooltip } from 'antd';
 import Link from 'next/link';
 import AuthContext from '../../stores/AuthContext';
 import moment from 'moment';
 import Centered from '../../shared/centered';
 import gql from 'graphql-tag';
-import { useLazyQuery } from 'react-apollo';
+import { useLazyQuery, useMutation } from 'react-apollo';
 
 // How many slots should be available per day
 const SLOTS_TO_SHOW = 9;
@@ -31,7 +31,7 @@ const getSlotTitle = slotId => {
     return title;
 };
 
-const getColumns = (onSlotReserve, isLoggedIn: boolean, isAdmin: boolean) => {
+const getColumns = (onSlotReserve, onSlotRemove, isLoggedIn: boolean, isAdmin: boolean, userId: number) => {
     const columns: any[] = [
         {
             title: 'Data',
@@ -47,16 +47,34 @@ const getColumns = (onSlotReserve, isLoggedIn: boolean, isAdmin: boolean) => {
             dataIndex: String(slot),
             key: String(slot),
             render: obj => {
-                if (obj.userId && obj.id) {
-                    return obj.userName || 'Twoja rezerwacja';
+                const isCurrentUser = isLoggedIn && userId === obj.userId && userId !== undefined && userId !== null;
+                let element;
+
+                if ((isCurrentUser || isAdmin) && obj.id) {
+                    element = (
+                        <>
+                            <span style={{ color: 'green' }}>{obj.userName || 'Twoja rezerwacja'}</span>
+                            <Tooltip title="Odwołaj">
+                                <Button shape="circle" type="danger" icon="delete" onClick={() => onSlotRemove(obj)} />
+                            </Tooltip>
+                        </>
+                    );
                 }
-                if (obj.id) {
-                    return '-';
+                if (!isAdmin && !isCurrentUser && obj.id) {
+                    element = (
+                        <Tooltip title="Już zostało zarezerwowane">
+                            <Button shape="circle" icon="minus-circle" />
+                        </Tooltip>
+                    );
                 }
-                if (!isLoggedIn) {
-                    return 'dostępne';
+                if (!obj.id) {
+                    element = (
+                        <Tooltip title={isLoggedIn ? 'Zarezerwuj' : 'Musisz się zalogować'}>
+                            <Button shape="circle" type="primary" icon="calendar" onClick={isLoggedIn ? () => onSlotReserve(obj) : () => null} />
+                        </Tooltip>
+                    );
                 }
-                return <a onClick={() => onSlotReserve(obj)}>Zapisz</a>;
+                return element;
             },
         }),
     );
@@ -128,7 +146,10 @@ const REMOVE_CONSULTATION_SLOT = gql`
 export default () => {
     const { state } = useContext(AuthContext);
     const [reservedSlots, setReservedSlots] = useState(new Map());
-    const [getConsultatationSlots, { data }] = useLazyQuery(QUERY_CONSULTATION_SLOTS, { fetchPolicy: 'network-only' });
+    const [getConsultatationSlots, { data, loading }] = useLazyQuery(QUERY_CONSULTATION_SLOTS, {
+        fetchPolicy: 'network-only',
+    });
+    const [removeConsultationSlot, { data: removeData }] = useMutation(REMOVE_CONSULTATION_SLOT);
 
     useEffect(() => {
         const dataConsultationSlots = data && data.consultationSlots;
@@ -151,19 +172,35 @@ export default () => {
     }, [data]);
 
     useEffect(() => {
+        if (removeData && state && state.isInitialized) {
+            notification.success({
+                message: (removeData && removeData.removeConsultationSlot) || 'Sukces',
+            });
+            getConsultatationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
+        }
+    }, [removeData]);
+
+    useEffect(() => {
         if (state && state.isInitialized) {
             getConsultatationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
         }
     }, [state.isInitialized]);
 
-    const handleSlotReserve = slot => console.log(slot);
+    const handleSlotReserve = slot => {
+        console.log(slot);
+    };
+
+    const handleSlotRemove = slot => {
+        removeConsultationSlot({ variables: { id: slot.id } });
+    };
 
     const rows = getRows(reservedSlots);
-    const isLoggedIn = state && state.isInitialized && state.isLoggedIn;
+    const isLoggedIn = state.isInitialized && state.isLoggedIn && state.user && !!state.user.album;
     const isAdmin = state && state.isInitialized && state.user && state.user.isAdmin;
-    const columns = getColumns(handleSlotReserve, isLoggedIn, isAdmin);
+    const userId = state && state.isInitialized && state.user && state.user.album;
+    const columns = getColumns(handleSlotReserve, handleSlotRemove, isLoggedIn, isAdmin, userId);
 
-    if (!reservedSlots.size) {
+    if (!state || !state.isInitialized || loading) {
         return (
             <Centered>
                 <Spin
@@ -177,7 +214,6 @@ export default () => {
 
     return (
         <>
-            <Table columns={columns} dataSource={rows} pagination={false} />
             {state && state.isInitialized && !state.isLoggedIn && (
                 <Alert
                     message="Zaloguj się"
@@ -193,9 +229,10 @@ export default () => {
                     closable={false}
                     type="warning"
                     showIcon
-                    style={{ marginTop: 10 }}
+                    style={{ marginBottom: 10 }}
                 />
             )}
+            <Table columns={columns} dataSource={rows} pagination={false} />
         </>
     );
 };
