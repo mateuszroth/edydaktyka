@@ -13,6 +13,8 @@ import { getLongGroupName, getReadableModeOfStudy } from '../../../helpers/group
 import ClassForm from '../../../components/pages/group/ClassForm';
 import UserAvatar from '../../../components/shared/user-avatar/UserAvatar';
 import GradeMark from '../../../components/shared/grade-mark/GradeMark';
+import useSendEmailForm from '../../../components/hocs/useSendEmailForm';
+import Centered from '../../../components/shared/centered';
 
 const PAGE_NAME = 'Szczegóły grupy zajęciowej';
 
@@ -115,8 +117,8 @@ const getClassColumns = (onEdit, onRemove, onDetailsClick) => [
         render: (val, entry) => {
             return (
                 <>
-                    <Button type="default" icon="edit" shape="circle" onClick={() => onEdit(entry)} />
-                    <Button type="default" icon="delete" shape="circle" onClick={() => onRemove(entry)} />
+                    <Button type="default" icon="edit" shape="circle" onClick={() => onEdit(entry)} style={{ marginRight: 5 }} />
+                    <Button type="default" icon="delete" shape="circle" onClick={() => onRemove(entry)} style={{ marginRight: 5 }} />
                     <Button type="default" onClick={() => onDetailsClick(entry)}>
                         Szczegóły
                     </Button>
@@ -126,7 +128,7 @@ const getClassColumns = (onEdit, onRemove, onDetailsClick) => [
     },
 ];
 
-const defaultStudentColumns = (grades, onDetailsClick) => [
+const defaultStudentColumns = (grades, onDetailsClick, onEmailSendClick) => [
     {
         title: 'Album',
         dataIndex: 'album',
@@ -174,9 +176,18 @@ const defaultStudentColumns = (grades, onDetailsClick) => [
         key: 'manage',
         render: (val, entry) => {
             return (
-                <Button type="default" icon="user" onClick={() => onDetailsClick(entry.album)}>
-                    Szczegóły studenta
-                </Button>
+                <>
+                    <Button
+                        type="default"
+                        icon="mail"
+                        shape="circle"
+                        onClick={() => onEmailSendClick(entry.album)}
+                        style={{ marginRight: 5 }}
+                    />
+                    <Button type="default" icon="user" onClick={() => onDetailsClick(entry.album)}>
+                        Szczegóły studenta
+                    </Button>
+                </>
             );
         },
     },
@@ -191,9 +202,10 @@ const GroupPage: NextPage<GroupPageProps> = () => {
     const [classFormInitialValues, setClassFormInitialValues] = useState(null);
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
-    const [getGroup, { loading, error, data }] = useLazyQuery(GET_GROUP, { fetchPolicy: 'network-only' });
+    const [getGroup, { loading, error, data }] = useLazyQuery(GET_GROUP, { fetchPolicy: 'cache-and-network' });
     const [putClass, { loading: putClassLoading, data: putClassData, error: putClassError }] = useMutation(PUT_CLASS);
     const [removeClass, { data: removeClassData, error: removeClassError }] = useMutation(REMOVE_CLASS);
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
 
     useEffect(() => {
         if (groupId) {
@@ -250,22 +262,30 @@ const GroupPage: NextPage<GroupPageProps> = () => {
         router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`);
     };
 
-    if (!data || loading || putClassLoading || (!authState.isInitialized && !authState.user))
-        return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
+    const handleStudentEmailSendClick = album => {
+        showEmailModal(album, 'user');
+    }
+
     if (error || removeClassError)
         return <Result status="error" title="Wystąpił błąd!" subTitle={(error || removeClassError).message} />;
 
     const { group = {} } = data || {};
     const classColumns = getClassColumns(handleClassEdit, handleClassRemove, handleClassDetails);
-    const studentColumns = defaultStudentColumns(group.grades, handleStudentDetailsClick);
+    const studentColumns = defaultStudentColumns(group.grades, handleStudentDetailsClick, handleStudentEmailSendClick);
 
     return (
         <Layout className={styles.root}>
             <Breadcrumb id={router && router.query && router.query.id} />
             <PageContent>
-                <PageHeader ghost={false} title={PAGE_NAME} />
-                {data && group && authState.isInitialized && authState.user && authState.user.isAdmin && (
+                {(!data || loading || putClassLoading || (!authState.isInitialized && !authState.user)) && (
+                    <Centered>
+                        <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
+                    </Centered>
+                )}
+                {!loading && !putClassLoading && data && group && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
+                        <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.back()} />
+                        {renderEmailModal()}
                         <Modal
                             visible={isClassFormModalVisible}
                             title={!classFormInitialValues ? 'Dodaj temat zajęć' : 'Edytuj temat zajęć'}

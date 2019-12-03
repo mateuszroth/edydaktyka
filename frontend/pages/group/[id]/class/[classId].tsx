@@ -13,6 +13,8 @@ import { getLongGroupName } from '../../../../helpers/groups';
 import UserAvatar from '../../../../components/shared/user-avatar/UserAvatar';
 import ReportGrade from '../../../../components/shared/report-grade';
 import { getReportUrl } from '../../../../helpers/attendances';
+import useSendEmailForm from '../../../../components/hocs/useSendEmailForm';
+import Centered from '../../../../components/shared/centered';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
 
@@ -94,7 +96,7 @@ const defaultStudentColumns = (
     isReportRequired,
     onPresenceCheck,
     onReportRateClick,
-    onEmailSendClick = () => null,
+    onEmailSendClick,
     onStudentDetailsClick,
 ) => [
     {
@@ -183,10 +185,9 @@ const defaultStudentColumns = (
         dataIndex: 'album',
         key: 'album',
         render: (album, entry) => {
-            // TODO onEmailSendClick
             return (
                 <>
-                    <Button type="default" icon="mail" shape="circle" onClick={onEmailSendClick} />
+                    <Button type="default" icon="mail" shape="circle" onClick={() => onEmailSendClick(album)} style={{ marginRight: 5 }} />
                     <Button type="default" icon="user" shape="circle" onClick={() => onStudentDetailsClick(album)} />
                 </>
             );
@@ -204,6 +205,7 @@ const ClassPage: NextPage<ClassPage> = () => {
     const classId = router && router.query && router.query.classId;
     const [getClass, { loading, error, data }] = useLazyQuery(GET_CLASS);
     const [usersAttendances, setUsersAttendances] = useState([]);
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
     const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
 
     useEffect(() => {
@@ -243,11 +245,10 @@ const ClassPage: NextPage<ClassPage> = () => {
         }
     }, [putAttendanceData]);
 
-    if (!data || loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
     if (error || putAttendanceError)
         return <Result status="error" title="Wystąpił błąd!" subTitle={(error || putAttendanceError).message} />;
 
-    const { class: classEntity = {} } = data;
+    const { class: classEntity = {} } = data || {};
 
     const handlePutAttendanceCheck = (attendance, user) => {
         attendance.userId = Number(user.album);
@@ -280,11 +281,15 @@ const ClassPage: NextPage<ClassPage> = () => {
         router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${album}`);
     };
 
+    const handleEmailSendClick = album => {
+        showEmailModal(album, 'user');
+    }
+
     const userColumns = defaultStudentColumns(
         classEntity.isReportRequired,
         handlePresenceCheck,
         handleReportRateClick,
-        undefined,
+        handleEmailSendClick,
         handleStudentDetailsClick,
     );
 
@@ -292,7 +297,7 @@ const ClassPage: NextPage<ClassPage> = () => {
         <Layout className={styles.root}>
             <Breadcrumb
                 id={groupId}
-                groupName={classEntity.group.courseName}
+                groupName={classEntity.group && classEntity.group.courseName}
                 classId={classId}
                 className={classEntity.title}
             />
@@ -300,11 +305,16 @@ const ClassPage: NextPage<ClassPage> = () => {
                 <PageHeader
                     ghost={false}
                     title={PAGE_NAME}
-                    onBack={() => router.push('/group/[id]', `/group/${groupId}`)}
+                    onBack={() => router.back()}
                 />
-                {!loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
+                {!loading || !authState.isInitialized || !authState.user && (
+                    <Centered>
+                        <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
+                    </Centered>
+                )}
                 {data && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
+                        {renderEmailModal()}
                         <Typography.Title level={3}>Temat: {classEntity && classEntity.title}</Typography.Title>
                         <Typography.Paragraph>dla kursu {getLongGroupName(classEntity.group)}</Typography.Paragraph>
                         <Descriptions bordered column={1}>

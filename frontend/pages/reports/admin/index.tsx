@@ -12,6 +12,7 @@ import { getReportUrl } from '../../../helpers/attendances';
 import { getTableFilters } from '../../../helpers/ui';
 import { PUT_ATTENDANCE } from '../../group/[id]/class/[classId]';
 import styles from './index.module.scss';
+import useSendEmailForm from '../../../components/hocs/useSendEmailForm';
 
 const PAGE_NAME = 'Ocenianie i zarządzanie sprawozdaniami';
 
@@ -30,7 +31,7 @@ const GET_PENDING_REPORTS = gql`
             userName
         }
     }
-`
+`;
 
 interface ReportsAdminPageProps {}
 
@@ -41,6 +42,7 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
     const { user, isInitialized } = authState;
     const { data } = useQuery(GET_PENDING_REPORTS, { fetchPolicy: 'network-only' });
     const [putAttendance] = useMutation(PUT_ATTENDANCE);
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
 
     const handleStudentDetailsClick = (groupId, userId) => {
         router.push('/group/[id]/student/[album]', `/group/${groupId}/student/${userId}`);
@@ -55,11 +57,10 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
     };
 
     const handleReportRateClick = (e, entity) => {
-        const attendance = { } as any;
+        const attendance = {} as any;
         attendance.reportGrade = Number(e.target.value);
         handlePutAttendanceCheck(attendance, entity);
     };
-
 
     return (
         <Layout className={styles.root} style={{ padding: '0 24px 24px' }}>
@@ -67,9 +68,10 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
             <PageContent>
                 <PageHeader ghost={false} title={PAGE_NAME} />
                 {(!isInitialized || !user) && <Spin size="large" />}
-                <Typography.Title level={4}>Nieocenione sprawozdania</Typography.Title>
                 {data && isInitialized && user && (
                     <>
+                        <Typography.Title level={4}>Nieocenione sprawozdania</Typography.Title>
+                        {renderEmailModal()}
                         <Table
                             dataSource={data && data.pendingReports}
                             columns={[
@@ -106,7 +108,7 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     title: 'Tytuł',
                                     dataIndex: 'classTitle',
                                     key: 'classTitle',
-                                    render: val => <strong>{val}</strong>
+                                    render: val => <strong>{val}</strong>,
                                 },
                                 {
                                     title: 'Raport',
@@ -114,8 +116,12 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     key: 'reportFile',
                                     render: (val, entry: any) => (
                                         <>
-                                            <a type="link" href={getReportUrl(val)} target="blank">pobierz</a>
-                                            {' '}{entry.reportAddedOn ? (new Date(entry.reportAddedOn)).toLocaleDateString() : ''}
+                                            <a type="link" href={getReportUrl(val)} target="blank">
+                                                pobierz
+                                            </a>{' '}
+                                            {entry.reportAddedOn
+                                                ? new Date(entry.reportAddedOn).toLocaleDateString()
+                                                : ''}
                                         </>
                                     ),
                                 },
@@ -128,9 +134,7 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                             handleReportRateClick(e, entry);
                                         };
                                         const defaultValue = val ? val : '';
-                                        const grade = (
-                                            <ReportGrade defaultValue={defaultValue} onClick={handleClick} />
-                                        );
+                                        const grade = <ReportGrade defaultValue={defaultValue} onClick={handleClick} />;
                                         return grade;
                                     },
                                 },
@@ -139,7 +143,20 @@ const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
                                     dataIndex: 'userId',
                                     key: 'email',
                                     render: (val, entry: any) => {
-                                        return <Button type="default" icon="mail" shape="circle" onClick={() => 'TODO'} />
+                                        return (
+                                            <Button
+                                                type="default"
+                                                icon="mail"
+                                                shape="circle"
+                                                onClick={() =>
+                                                    showEmailModal(
+                                                        val,
+                                                        'user',
+                                                        `Wiadomość do sprawozdania ${entry.classTitle} z kursu ${entry.groupName}`,
+                                                    )
+                                                }
+                                            />
+                                        );
                                     },
                                 },
                             ]}

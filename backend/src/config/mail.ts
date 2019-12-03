@@ -14,6 +14,8 @@ const from = process.env.EMAIL_USER;
 
 const SYSTEM_NAME = process.env.SYSTEM_NAME;
 
+const defaultTitle = `Wiadomość z systemu ${SYSTEM_NAME}`;
+
 const resetPasswordSubject = `Nowe hasło | ${SYSTEM_NAME}`;
 const resetPasswordText = (name, password): string => `
     Witaj ${name}!
@@ -33,4 +35,5 @@ export default {
     resetPasswordSubject,
     resetPasswordText,
     resetPasswordHtml,
+    defaultTitle,
 };

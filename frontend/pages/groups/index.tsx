@@ -10,6 +10,7 @@ import AuthContext from '../../components/stores/AuthContext';
 import { PageContent } from '../../components/layout/content/page-content';
 import useNotAdminRedirection from '../../components/hocs/useNotAdminRedirection';
 import { useMutation, useLazyQuery } from 'react-apollo';
+import useSendEmailForm from '../../components/hocs/useSendEmailForm';
 
 const PAGE_NAME = 'Zarządzanie grupami zajęciowymi';
 
@@ -52,9 +53,13 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
     const [groupFormInitialValues, setGroupFormInitialValues] = useState(null);
     const [getActiveGroups, { loading }] = useLazyQuery(GET_GROUPS(true), { fetchPolicy: 'network-only' });
     const [getInactiveGroups] = useLazyQuery(GET_GROUPS(false), { fetchPolicy: 'network-only' });
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
     const [putGroup, { loading: putGroupLoading, data: putGroupData, error: putGroupError }] = useMutation(PUT_GROUP);
+
     const handleGroupSelect = group => router.push(`/group/[id]`, `/group/${group.id}`);
-    const handleSendEmailClick = group => null; // TODO group email form
+    const handleSendEmailClick = group => {
+        showEmailModal(Number(group.id), 'group', `Wiadomość do grupy zajęciowej ${group.courseName}`);
+    };
     const handleEditClick = group => {
         setGroupFormInitialValues(group);
         setIsAddGroupModalVisible(true);
@@ -81,6 +86,7 @@ const GroupsPage: React.FC<GroupsPageProps> = () => {
                 {!loading || !isInitialized || !user && <Spin size="large" />}
                 {isInitialized && user && user.isAdmin && (
                     <>
+                        {renderEmailModal()}
                         <div className={styles.buttons}>
                             <Button size="large" type="primary" onClick={handleShowAddGroupModal}>
                                 Dodaj grupę

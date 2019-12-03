@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import useNotAdminRedirection from '../../hocs/useNotAdminRedirection';
 import { useQuery } from 'react-apollo';
 import { Spin, Result, Table, Button } from 'antd';
+import Centered from '../../shared/centered';
 
 export const GET_GROUPS = (isActive = true) => gql`
     {
@@ -123,7 +124,7 @@ const GroupsList: React.FC<GroupsListProps> = ({ active = true, manage = true, o
         }
     }, [data]);
 
-    if (loading) return <Spin tip="Ładowanie..." />;
+    if (loading) return <Centered><Spin tip="Ładowanie..." /></Centered>;
     if (error) return <Result status="error" title="Wystąpił błąd!" subTitle={error.message} />;
 
     return <Table dataSource={tableData} rowKey="id" pagination={false} columns={tableColumns} />;

@@ -13,6 +13,8 @@ import { useMutation, useLazyQuery } from 'react-apollo';
 import { getLongGroupName } from '../../../../helpers/groups';
 import { GET_GROUP } from '../index';
 import GradeMark from '../../../../components/shared/grade-mark/GradeMark';
+import useSendEmailForm from '../../../../components/hocs/useSendEmailForm';
+import Centered from '../../../../components/shared/centered';
 
 const PAGE_NAME = 'Szczegóły studenta w grupie';
 
@@ -83,8 +85,10 @@ const StudentPage: NextPage<StudentPage> = () => {
     const groupId = router && router.query && router.query.id;
     const album = router && router.query && router.query.album;
     const [getGroup, { loading: groupLoading, error: groupError, data }] = useLazyQuery(GET_GROUP);
-    const [getGroupAttendances, { loading: attendancesLoading, error: attendancesError, data: attendancesData }] = useLazyQuery(
-        GET_GROUP_ATTENDANCES);
+    const [
+        getGroupAttendances,
+        { loading: attendancesLoading, error: attendancesError, data: attendancesData },
+    ] = useLazyQuery(GET_GROUP_ATTENDANCES);
     const [putUserGrade, { data: putUserGradeData, error: putUserGradeError }] = useMutation(PUT_USER_GRADE);
     const loading = groupLoading || attendancesLoading;
     const error = groupError || attendancesError || putUserGradeError;
@@ -92,6 +96,7 @@ const StudentPage: NextPage<StudentPage> = () => {
     const [classes, setClasses] = useState(null);
     const [attendances, setAttendances] = useState(null);
     const [userGrade, setUserGrade] = useState(null);
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
 
     useEffect(() => {
         if (groupId) {
@@ -138,9 +143,6 @@ const StudentPage: NextPage<StudentPage> = () => {
         }
     }, [putUserGradeData]);
 
-    if (loading) return <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />;
-    if (error) return <Result status="error" title="Wystąpił błąd!" subTitle={error.message} />;
-
     const handleClassDetailsClick = classId => {
         router.push('/group/[id]/class/[classId]', `/group/${groupId}/class/${classId}`);
     };
@@ -167,19 +169,26 @@ const StudentPage: NextPage<StudentPage> = () => {
             dataIndex: 'isReportRequired',
             key: 'isReportRequired',
             render: (val, entry) =>
-                val
-                    ? entry.attendance && (entry.attendance.reportFile || entry.attendance.reportGrade)
-                        ? entry.attendance.reportGrade
-                            ? <GradeMark grade={entry.attendance.reportGrade} />
-                            : 'nieocenione'
-                        : 'nieprzesłane'
-                    : 'niewymagane',
+                val ? (
+                    entry.attendance && (entry.attendance.reportFile || entry.attendance.reportGrade) ? (
+                        entry.attendance.reportGrade ? (
+                            <GradeMark grade={entry.attendance.reportGrade} />
+                        ) : (
+                            'nieocenione'
+                        )
+                    ) : (
+                        'nieprzesłane'
+                    )
+                ) : (
+                    'niewymagane'
+                ),
         },
         {
             title: 'Czy obecny?',
             dataIndex: 'attendance',
             key: 'attendance.isPresent',
-            render: val => (val ? (val.isPresent ? <Tag color="green">tak</Tag> : <Tag color="red">nie</Tag>) : 'niesprawdzone'),
+            render: val =>
+                val ? val.isPresent ? <Tag color="green">tak</Tag> : <Tag color="red">nie</Tag> : 'niesprawdzone',
         },
         {
             title: 'Szczegóły',
@@ -198,11 +207,13 @@ const StudentPage: NextPage<StudentPage> = () => {
         putUserGrade({ variables: newGrade });
     };
 
+    if (error) return <Result status="error" title="Wystąpił błąd!" subTitle={error.message} />;
+
     return (
         <Layout className={styles.root}>
             <Breadcrumb
                 id={groupId}
-                groupName={data && data.group.courseName}
+                groupName={data && data.group && data.group.courseName}
                 userId={user && user.album}
                 userName={user && `${user.firstName} ${user.lastName}`}
             />
@@ -210,15 +221,31 @@ const StudentPage: NextPage<StudentPage> = () => {
                 <PageHeader
                     ghost={false}
                     title={PAGE_NAME}
-                    onBack={() => router.push('/group/[id]', `/group/${groupId}`, { shallow: true })}
+                    onBack={() => router.back()}
                 />
-                {!loading || (!authState.isInitialized && !authState.user && <Spin size="large" />)}
+                {!loading || !authState.isInitialized || !authState.user && (
+                    <Centered>
+                        <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
+                    </Centered>
+                )}
                 {data && user && classes && authState.isInitialized && authState.user && authState.user.isAdmin && (
                     <>
+                        {renderEmailModal()}
                         <Typography.Title level={3}>
-                            <UserAvatar user={user} />Student {user.firstName} {user.lastName} (indeks {album})
+                            <UserAvatar user={user} />
+                            Student {user.firstName} {user.lastName} (indeks {album})
                         </Typography.Title>
                         <Typography.Paragraph>dla kursu {getLongGroupName(data.group)}</Typography.Paragraph>
+                        <Typography.Title level={4} style={{ marginTop: 30 }}>
+                            Email
+                            <Button
+                                type="default"
+                                icon="mail"
+                                shape="circle"
+                                onClick={() => showEmailModal(Number(album), 'user')}
+                                style={{ marginLeft: 10 }}
+                            />
+                        </Typography.Title>
                         <Typography.Title level={4} style={{ marginTop: 30 }}>
                             Ocena semestralna
                         </Typography.Title>

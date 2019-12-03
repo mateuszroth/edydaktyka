@@ -3,6 +3,7 @@ import groupsResolvers from 'modules/groups/resolvers';
 import classResolvers from 'modules/classes/resolvers';
 import attendancesResolvers from 'modules/attendances/resolvers';
 import userGradesResolvers from 'modules/user-grades/resolvers';
+import usersResolvers from 'modules/users/resolvers';
 
 const typeDefs = `
 scalar Date
@@ -153,6 +154,8 @@ type Mutation {
   putUserGrade(grade: InputUserGrade): UserGrade!
   uploadReport(file: Upload!, attendance: InputReportAttendance!): ClassAttendance!
   removeReport(attendance: InputReportAttendance!): ClassAttendance!
+  sendUserEmail(id: Int!, message: String!, title: String): String!
+  sendGroupEmail(id: Int!, message: String!, title: String): String!
 }
 `;
 
@@ -184,6 +187,8 @@ const resolvers = {
         putUserGrade: userGradesResolvers.putUserGrade,
         uploadReport: attendancesResolvers.uploadReport,
         removeReport: attendancesResolvers.removeReport,
+        sendUserEmail: usersResolvers.sendUserEmail,
+        sendGroupEmail: groupsResolvers.sendGroupEmail,
     },
 };
 

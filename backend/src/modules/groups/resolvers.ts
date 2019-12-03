@@ -2,6 +2,8 @@ import { getRepository } from 'typeorm';
 import Group, { GroupType } from 'entities/Group';
 import User from 'entities/User';
 import ClassAttendance from 'entities/ClassAttendance';
+import { createTransport } from 'nodemailer';
+import mailConfig from 'config/mail';
 
 const addGroup = async (group: GroupType): Promise<void> => {
     const newGroup = new Group();
@@ -172,5 +174,33 @@ export default {
             await addGroup(group);
             return 'Dodano grupę';
         }
+    },
+    sendGroupEmail: async (_, { id, message, title }, { auth, user }): Promise<string | Error> => {
+        if (!auth || !user.isAdmin) {
+            throw new Error('Brak uprawnień');
+        }
+        if (!id) {
+            throw new Error('Brak id');
+        }
+
+        const group = await getRepository(Group).findOne(id);
+        const users = await group.users;
+        const emails = users.map(user => user && user.email);
+
+        if (!emails.length) {
+            throw new Error('Brak powiązanych emaili');
+        }
+
+        const transporter = createTransport(mailConfig.smtpConfig);
+        const mailOptions = {
+            from: mailConfig.from,
+            bcc: emails,
+            subject: title,
+            text: message,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return `Wysłano wiadomość do grupy ${id}`;
     },
 };
