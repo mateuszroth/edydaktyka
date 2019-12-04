@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinColumn, Index } from 'typeorm';
 import User from 'entities/User';
 import Class from './Class';
 import UserGrade from './UserGrade';
@@ -70,6 +70,7 @@ export default class Group extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     description: string;
 
+    @Index()
     @Column({ type: 'boolean', default: true })
     isActive: boolean;
 

@@ -1,4 +1,13 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    BaseEntity,
+    PrimaryGeneratedColumn,
+    PrimaryColumn,
+    ManyToOne,
+    JoinColumn,
+    Index,
+} from 'typeorm';
 import Group from './Group';
 import Class from './Class';
 import User from './User';
@@ -65,6 +74,7 @@ export default class ClassAttendance extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     reportFileEncoding: string;
 
+    @Index()
     @Column({ type: 'enum', enum: Grades, nullable: true })
     reportGrade: number;
 
