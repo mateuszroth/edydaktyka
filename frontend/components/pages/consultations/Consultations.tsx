@@ -132,8 +132,12 @@ const QUERY_CONSULTATION_SLOTS = gql`
 `;
 
 const RESERVE_CONSULTATION_SLOT = gql`
-    mutation ReserveConsultationSlot($slot: Int!, $day: Date!) {
-        reserveConsultationSlot(slot: $slot, day: $day)
+    mutation ReserveConsultationSlot($slot: Int!, $date: Date!) {
+        reserveConsultationSlot(slot: $slot, date: $date) {
+            id
+            slot
+            date
+        }
     }
 `;
 
@@ -146,10 +150,11 @@ const REMOVE_CONSULTATION_SLOT = gql`
 export default () => {
     const { state } = useContext(AuthContext);
     const [reservedSlots, setReservedSlots] = useState(new Map());
-    const [getConsultatationSlots, { data, loading }] = useLazyQuery(QUERY_CONSULTATION_SLOTS, {
+    const [getConsultationSlots, { data, loading }] = useLazyQuery(QUERY_CONSULTATION_SLOTS, {
         fetchPolicy: 'network-only',
     });
     const [removeConsultationSlot, { data: removeData }] = useMutation(REMOVE_CONSULTATION_SLOT);
+    const [reserveConsultationSlot, { data: reserveData }] = useMutation(RESERVE_CONSULTATION_SLOT);
 
     useEffect(() => {
         const dataConsultationSlots = data && data.consultationSlots;
@@ -176,18 +181,28 @@ export default () => {
             notification.success({
                 message: (removeData && removeData.removeConsultationSlot) || 'Sukces',
             });
-            getConsultatationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
+            getConsultationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
         }
     }, [removeData]);
 
     useEffect(() => {
+        if (reserveData && state && state.isInitialized) {
+            const date = reserveData && reserveData.reserveConsultationSlot && reserveData.reserveConsultationSlot.date;
+            notification.success({
+                message: `Zarezerwowano termin ${date && ('na ' + new Date(date).toLocaleDateString())}`,
+            });
+            getConsultationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
+        }
+    }, [reserveData]);
+
+    useEffect(() => {
         if (state && state.isInitialized) {
-            getConsultatationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
+            getConsultationSlots({ variables: { forHowManyWeeks: WEEKS_TO_SHOW } });
         }
     }, [state.isInitialized]);
 
     const handleSlotReserve = slot => {
-        console.log(slot);
+        reserveConsultationSlot({ variables: { date: slot.date, slot: slot.slot } })
     };
 
     const handleSlotRemove = slot => {

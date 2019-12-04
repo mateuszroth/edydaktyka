@@ -67,4 +67,22 @@ export default {
 
         return 'Usunięto rezerwację konsultacji';
     },
+    reserveConsultationSlot: async (_, { slot, date }, { auth, user }): Promise<ConsultationSlot | Error> => {
+        if (Number.isNaN(slot) || !date) {
+            throw new Error('Brak danych');
+        }
+
+        if (!auth || !user) {
+            throw new Error('Brak uprawnień');
+        }
+
+        const consultationSlot = new ConsultationSlot();
+        consultationSlot.slot = slot;
+        consultationSlot.date = date;
+        consultationSlot.user = user;
+
+        const saved = await getRepository(ConsultationSlot).save(consultationSlot);
+
+        return saved;
+    },
 };

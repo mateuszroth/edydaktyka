@@ -166,6 +166,7 @@ type Mutation {
   sendUserEmail(id: Int!, message: String!, title: String): String!
   sendGroupEmail(id: Int!, message: String!, title: String): String!
   removeConsultationSlot(id: ID!): String!
+  reserveConsultationSlot(slot: Int!, date: Date!): ConsultationSlot
 }
 `;
 
@@ -201,6 +202,7 @@ const resolvers = {
         sendUserEmail: usersResolvers.sendUserEmail,
         sendGroupEmail: groupsResolvers.sendGroupEmail,
         removeConsultationSlot: consultationResolvers.removeConsultationSlot,
+        reserveConsultationSlot: consultationResolvers.reserveConsultationSlot,
     },
 };
 

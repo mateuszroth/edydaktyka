@@ -1,7 +1,8 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Index, Unique } from 'typeorm';
 import User from './User';
 
 @Entity()
+@Unique('UQ_SLOTS', ['date', 'slot'])
 export default class ConsultationSlot extends BaseEntity {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
