@@ -5,6 +5,7 @@ import attendancesResolvers from 'modules/attendances/resolvers';
 import userGradesResolvers from 'modules/user-grades/resolvers';
 import usersResolvers from 'modules/users/resolvers';
 import consultationResolvers from 'modules/consultation-slots/resolvers';
+import questionnairesResolvers from 'modules/questionnaires/resolvers';
 
 const typeDefs = `
 scalar Date
@@ -61,6 +62,15 @@ input InputGroup {
   link: String
   description: String
   isActive: Boolean
+}
+type Questionnaire {
+  id: ID!
+  createdOn: Date!
+  groupID: Int
+  grade: Int!
+  speed: Int!
+  value: Int!
+  comments: String
 }
 type ConsultationSlot {
   id: ID!
@@ -146,6 +156,7 @@ type Query {
   class(id: Int!, groupId: Int!): Class
   pendingReports(activeGroups: Boolean): [ClassAttendanceDetailed]!
   consultationSlots(forHowManyWeeks: Int!): [ConsultationSlot]!
+  questionnaires: [Questionnaire]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -167,6 +178,7 @@ type Mutation {
   sendGroupEmail(id: Int!, message: String!, title: String): String!
   removeConsultationSlot(id: ID!): String!
   reserveConsultationSlot(slot: Int!, date: Date!): ConsultationSlot
+  addQuestionnaire(grade: Int!, speed: Int!, value: Int!, comments: String, groupId: Int): Questionnaire
 }
 `;
 
@@ -182,6 +194,7 @@ const resolvers = {
         userClassAttendances: attendancesResolvers.userClassAttendances,
         pendingReports: attendancesResolvers.pendingReports,
         consultationSlots: consultationResolvers.consultationSlots,
+        questionnaires: questionnairesResolvers.questionnaires,
     },
     Mutation: {
         register: authResolvers.register,
@@ -203,6 +216,7 @@ const resolvers = {
         sendGroupEmail: groupsResolvers.sendGroupEmail,
         removeConsultationSlot: consultationResolvers.removeConsultationSlot,
         reserveConsultationSlot: consultationResolvers.reserveConsultationSlot,
+        addQuestionnaire: questionnairesResolvers.addQuestionnaire,
     },
 };
 

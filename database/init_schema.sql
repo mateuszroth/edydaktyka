@@ -152,7 +152,7 @@ CREATE TABLE Questionnaires (
     GroupID INT,
     Grade INT NOT NULL,
     Speed INT NOT NULL,
-    Valueable INT NOT NULL,
+    Value INT NOT NULL,
     Comments TEXT,
     PRIMARY KEY (ID),
     FOREIGN KEY (GroupID)
@@ -161,8 +161,8 @@ CREATE TABLE Questionnaires (
     CHECK (Grade <= 50),
     CHECK (Speed >= - 2),
     CHECK (Speed <= 2),
-    CHECK (Valueable >= - 2),
-    CHECK (Valueable <= 2)
+    CHECK (Value >= - 2),
+    CHECK (Value <= 2)
 );
 
 INSERT INTO Questionnaires VALUES (NULL, NULL, 1, 50, 0, 2, NULL);
