@@ -81,7 +81,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, onLogout, onLogin
         album: null,
         user: null,
         token: null,
-        isInitialized: false,
+        isInitialized: process.browser ? !localStorage.getItem('token') : true,
     };
     const [state, setState] = useState(initState);
     const [currentGroup, setCurrentGroup] = useState(null);

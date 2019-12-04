@@ -66,7 +66,7 @@ input InputGroup {
 type Questionnaire {
   id: ID!
   createdOn: Date!
-  groupID: Int
+  groupId: Int
   grade: Int!
   speed: Int!
   value: Int!
