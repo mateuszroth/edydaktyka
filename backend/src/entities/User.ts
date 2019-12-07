@@ -3,6 +3,8 @@ import Group from 'entities/Group';
 import ClassAttendance from './ClassAttendance';
 import UserGrade from './UserGrade';
 import ConsultationSlot from './ConsultationSlot';
+import Thesis from './Thesis';
+import ThesisVolunteer from './ThesisVolunteer';
 
 @Entity()
 export default class User extends BaseEntity {
@@ -57,4 +59,10 @@ export default class User extends BaseEntity {
 
     @OneToMany(() => ConsultationSlot, consultation => consultation.user)
     consultations: Promise<ConsultationSlot[]>;
+
+    @OneToMany(() => Thesis, thesis => thesis.user)
+    theses: Promise<Thesis[]>;
+
+    @OneToMany(() => ThesisVolunteer, thesisVolunteer => thesisVolunteer.user)
+    thesesVolunteers: Promise<ThesisVolunteer[]>;
 }
