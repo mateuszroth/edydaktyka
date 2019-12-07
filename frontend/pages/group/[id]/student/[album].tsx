@@ -223,7 +223,7 @@ const StudentPage: NextPage<StudentPage> = () => {
                     title={PAGE_NAME}
                     onBack={() => router.back()}
                 />
-                {!loading || !authState.isInitialized || !authState.user && (
+                {(!data || !classes || loading || !authState.isInitialized || !authState.user) && (
                     <Centered>
                         <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
                     </Centered>
@@ -237,7 +237,7 @@ const StudentPage: NextPage<StudentPage> = () => {
                         </Typography.Title>
                         <Typography.Paragraph>dla kursu {getLongGroupName(data.group)}</Typography.Paragraph>
                         <Typography.Title level={4} style={{ marginTop: 30 }}>
-                            Email
+                            Email: {user.email}
                             <Button
                                 type="default"
                                 icon="mail"

@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import useNotLoggedInRedirection from '../../../components/hocs/useNotLoggedInRedirection';
 import { PageContent } from '../../../components/layout/content/page-content';
 import Breadcrumb from '../../../components/pages/reports-admin/Breadcrumb';
 import ReportGrade from '../../../components/shared/report-grade';
@@ -13,6 +12,7 @@ import { getTableFilters } from '../../../helpers/ui';
 import { PUT_ATTENDANCE } from '../../group/[id]/class/[classId]';
 import styles from './index.module.scss';
 import useSendEmailForm from '../../../components/hocs/useSendEmailForm';
+import useNotAdminRedirection from '../../../components/hocs/useNotAdminRedirection';
 
 const PAGE_NAME = 'Ocenianie i zarządzanie sprawozdaniami';
 
@@ -36,7 +36,7 @@ const GET_PENDING_REPORTS = gql`
 interface ReportsAdminPageProps {}
 
 const ReportsAdminPage: React.FC<ReportsAdminPageProps> = () => {
-    useNotLoggedInRedirection();
+    useNotAdminRedirection();
     const { state: authState } = useContext(AuthContext);
     const router = useRouter();
     const { user, isInitialized } = authState;

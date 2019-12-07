@@ -14,6 +14,7 @@ export default async function authenticate(resolve, root, args, context, info) {
         auth = null;
         user = null;
     }
-    const result = await resolve(root, args, { ...context, auth, user }, info);
+    const isAdmin = auth && user && user.isAdmin;
+    const result = await resolve(root, args, { ...context, auth, user, isAdmin }, info);
     return result;
 }

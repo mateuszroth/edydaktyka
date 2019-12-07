@@ -157,6 +157,7 @@ type Query {
   pendingReports(activeGroups: Boolean): [ClassAttendanceDetailed]!
   consultationSlots(forHowManyWeeks: Int!): [ConsultationSlot]!
   questionnaires: [Questionnaire]!
+  users: [User]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -195,6 +196,7 @@ const resolvers = {
         pendingReports: attendancesResolvers.pendingReports,
         consultationSlots: consultationResolvers.consultationSlots,
         questionnaires: questionnairesResolvers.questionnaires,
+        users: usersResolvers.users,
     },
     Mutation: {
         register: authResolvers.register,

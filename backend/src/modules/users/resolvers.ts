@@ -35,4 +35,11 @@ export default {
 
         return `Wysłano wiadomość do ${email}`;
     },
+    users: async (_, __, { isAdmin }): Promise<User[] | Error> => {
+        if (!isAdmin) {
+            throw new Error('Brak uprawnień');
+        }
+        const users = await getRepository(User).find({ relations: ['groups'] });
+        return users;
+    },
 };
