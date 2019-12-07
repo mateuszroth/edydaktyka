@@ -372,7 +372,7 @@ class MyApp extends App<AppProps> {
                                                         auth.user &&
                                                         auth.user.isAdmin && (
                                                             <Menu.Item key="11">
-                                                                <Link href="/reports/admin">
+                                                                <Link href="/users">
                                                                     <a>
                                                                         <Icon type="user" />
                                                                         Studenci
