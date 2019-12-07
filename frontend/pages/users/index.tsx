@@ -8,6 +8,7 @@ import useSendEmailForm from '../../components/hocs/useSendEmailForm';
 import { PageContent } from '../../components/layout/content/page-content';
 import Breadcrumb from '../../components/pages/users/Breadcrumb';
 import AuthContext from '../../components/stores/AuthContext';
+import UserAvatar from '../../components/shared/user-avatar/UserAvatar';
 import { getTableFilters } from '../../helpers/ui';
 import styles from './index.module.scss';
 
@@ -85,7 +86,8 @@ const UsersAdminPage: React.FC<UsersAdminPageProps> = () => {
                                                     groupId ? handleStudentDetailsClick(groupId, val) : null
                                                 }
                                             >
-                                                <a>{val}</a>
+                                                <UserAvatar user={entry} />
+                                                {val}
                                             </div>
                                         );
                                     },
