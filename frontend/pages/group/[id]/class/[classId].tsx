@@ -307,7 +307,7 @@ const ClassPage: NextPage<ClassPage> = () => {
                     title={PAGE_NAME}
                     onBack={() => router.back()}
                 />
-                {!loading || !authState.isInitialized || !authState.user && (
+                {(!data || loading || !authState.isInitialized || !authState.user) && (
                     <Centered>
                         <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
                     </Centered>
