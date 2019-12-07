@@ -5,13 +5,9 @@ import Breadcrumb from '../../components/pages/diplomas/Breadcrumb';
 import Diplomas from '../../components/pages/diplomas/Diplomas';
 import Router from 'next/router';
 
-const PAGE_NAME = 'Proponowane tematy prac dyplomowych do realizacji';
+const PAGE_NAME = 'Dyplomy obronione';
 
 export default class extends React.Component {
-    static async getInitialProps(props) {
-        return {};
-    }
-
     render() {
         return (
             <Layout>
@@ -27,7 +23,7 @@ export default class extends React.Component {
                         }}
                     >
                         <PageHeader onBack={() => Router.push('/diplomas')} ghost={false} title={PAGE_NAME} />
-                        <Diplomas />
+                        <Diplomas type="obroniona" />
                     </Layout.Content>
                 </Layout>
             </Layout>

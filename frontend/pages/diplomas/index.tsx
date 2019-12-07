@@ -7,10 +7,6 @@ import Breadcrumb from '../../components/pages/diplomas/Breadcrumb';
 const PAGE_NAME = 'Prace dyplomowe';
 
 export default class extends React.Component {
-    static async getInitialProps(props) {
-        return {};
-    }
-
     render() {
         return (
             <Layout>

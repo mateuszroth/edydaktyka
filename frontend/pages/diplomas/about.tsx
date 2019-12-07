@@ -1,17 +1,13 @@
-import React from 'react';
 import { Layout, PageHeader, Typography } from 'antd';
-import Sider from '../../components/pages/diplomas/Sider';
-import Breadcrumb from '../../components/pages/diplomas/Breadcrumb';
 import Link from 'next/link';
 import Router from 'next/router';
+import React from 'react';
+import Breadcrumb from '../../components/pages/diplomas/Breadcrumb';
+import Sider from '../../components/pages/diplomas/Sider';
 
 const PAGE_NAME = 'Promotorstwo';
 
 export default class extends React.Component {
-    static async getInitialProps(props) {
-        return {};
-    }
-
     render() {
         return (
             <Layout>
