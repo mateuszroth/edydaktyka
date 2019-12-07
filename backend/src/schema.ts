@@ -6,6 +6,7 @@ import userGradesResolvers from 'modules/user-grades/resolvers';
 import usersResolvers from 'modules/users/resolvers';
 import consultationResolvers from 'modules/consultation-slots/resolvers';
 import questionnairesResolvers from 'modules/questionnaires/resolvers';
+import thesesResolvers from 'modules/theses/resolvers';
 
 const typeDefs = `
 scalar Date
@@ -16,6 +17,23 @@ type File {
   filename: String!
   mimetype: String!
   encoding: String!
+}
+input InputThesisVolunteer {
+  thesisId: Int!
+  userId: Int!
+  createdOn: Date
+}
+input InputThesis {
+  id: ID
+  type: String!
+  year: Int
+  graduateName: String
+  graduateId: Int
+  title: String!
+  usedTechnologies: String
+  goal: String
+  sketch: String
+  link: String
 }
 input InputReportAttendance {
   id: ID
@@ -62,6 +80,28 @@ input InputGroup {
   link: String
   description: String
   isActive: Boolean
+}
+type ThesisVolunteer {
+  id: ID!
+  thesisId: Int!
+  userId: Int!
+  createdOn: Date!
+  user: User
+  thesis: Thesis
+}
+type Thesis {
+  id: ID!
+  type: String!
+  year: Int
+  graduateName: String
+  graduateId: Int
+  title: String!
+  usedTechnologies: String
+  goal: String
+  sketch: String
+  link: String
+  user: User
+  volunteers: ThesisVolunteer
 }
 type Questionnaire {
   id: ID!
@@ -158,6 +198,8 @@ type Query {
   consultationSlots(forHowManyWeeks: Int!): [ConsultationSlot]!
   questionnaires: [Questionnaire]!
   users: [User]!
+  theses: [Thesis]!
+  thesesVolunteers: [ThesisVolunteer]!
 }
 type Mutation {
   register(album: Int!, firstName: String!, lastName: String!, email: String!, password: String!, photo: String, groupIds: [Int!]!): String!,
@@ -180,6 +222,11 @@ type Mutation {
   removeConsultationSlot(id: ID!): String!
   reserveConsultationSlot(slot: Int!, date: Date!): ConsultationSlot
   addQuestionnaire(grade: Int!, speed: Int!, value: Int!, comments: String, groupId: Int): Questionnaire
+  putThesis(input: InputThesis): Thesis!
+  removeThesis(id: ID!): String!
+  addThesisVolunteer(input: InputThesisVolunteer): ThesisVolunteer!
+  removeThesisVolunteer(id: ID!): String!
+  acceptThesisVolunteer(id: ID!): String!
 }
 `;
 
@@ -197,6 +244,8 @@ const resolvers = {
         consultationSlots: consultationResolvers.consultationSlots,
         questionnaires: questionnairesResolvers.questionnaires,
         users: usersResolvers.users,
+        theses: thesesResolvers.theses,
+        thesesVolunteers: thesesResolvers.thesesVolunteers,
     },
     Mutation: {
         register: authResolvers.register,
@@ -219,6 +268,11 @@ const resolvers = {
         removeConsultationSlot: consultationResolvers.removeConsultationSlot,
         reserveConsultationSlot: consultationResolvers.reserveConsultationSlot,
         addQuestionnaire: questionnairesResolvers.addQuestionnaire,
+        putThesis: thesesResolvers.putThesis,
+        removeThesis: thesesResolvers.removeThesis,
+        addThesisVolunteer: thesesResolvers.addThesisVolunteer,
+        removeThesisVolunteer: thesesResolvers.removeThesisVolunteer,
+        acceptThesisVolunteer: thesesResolvers.acceptThesisVolunteer,
     },
 };
 
