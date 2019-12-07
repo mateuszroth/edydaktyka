@@ -27,6 +27,12 @@ export default class Thesis extends BaseEntity {
     @Column({ type: 'int', nullable: true })
     graduateId: number;
 
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    consultantName: string;
+
+    @Column({ type: 'int', nullable: true })
+    consultantId: number;
+
     @Column({ type: 'text' })
     title: string;
 
