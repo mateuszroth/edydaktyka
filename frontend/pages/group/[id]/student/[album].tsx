@@ -143,8 +143,11 @@ const StudentPage: NextPage<StudentPage> = () => {
         }
     }, [putUserGradeData]);
 
-    const handleClassDetailsClick = classId => {
-        router.push('/group/[id]/class/[classId]', `/group/${groupId}/class/${classId}`);
+    const handleClassDetailsClick = (classId, userId) => {
+        router.push(
+            `/group/[id]/class/[classId]?album=${userId}`,
+            `/group/${groupId}/class/${classId}?album=${userId}`,
+        );
     };
 
     const columns = [
@@ -170,15 +173,18 @@ const StudentPage: NextPage<StudentPage> = () => {
             key: 'isReportRequired',
             render: (val, entry) =>
                 val ? (
-                    entry.attendance && (entry.attendance.reportFile || entry.attendance.reportGrade) ? (
-                        entry.attendance.reportGrade ? (
-                            <GradeMark grade={entry.attendance.reportGrade} />
+                    <>
+                        {entry.attendance && (entry.attendance.reportFile || entry.attendance.reportGrade) ? (
+                            entry.attendance.reportGrade ? (
+                                <GradeMark grade={entry.attendance.reportGrade} />
+                            ) : (
+                                'nieocenione'
+                            )
                         ) : (
-                            'nieocenione'
-                        )
-                    ) : (
-                        'nieprzesłane'
-                    )
+                            'nieprzesłane'
+                        )}{' '}
+                        (<a onClick={() => handleClassDetailsClick(entry.id, album)}>oceń</a>)
+                    </>
                 ) : (
                     'niewymagane'
                 ),
@@ -187,14 +193,18 @@ const StudentPage: NextPage<StudentPage> = () => {
             title: 'Czy obecny?',
             dataIndex: 'attendance',
             key: 'attendance.isPresent',
-            render: val =>
-                val ? val.isPresent ? <Tag color="green">tak</Tag> : <Tag color="red">nie</Tag> : 'niesprawdzone',
+            render: (val, entry: any) => (
+                <>
+                    {val ? val.isPresent ? <Tag color="green">tak</Tag> : <Tag color="red">nie</Tag> : 'niesprawdzone'}{' '}
+                    (<a onClick={() => handleClassDetailsClick(entry.id, album)}>sprawdź</a>)
+                </>
+            ),
         },
         {
             title: 'Szczegóły',
             dataIndex: 'id',
             key: 'classDetails',
-            render: val => <Button onClick={() => handleClassDetailsClick(val)}>Zajęcia</Button>,
+            render: val => <Button onClick={() => handleClassDetailsClick(val, album)}>Zajęcia</Button>,
         },
     ];
     const handleGroupRateClick = (e: React.MouseEvent<HTMLInputElement>) => {
@@ -218,44 +228,52 @@ const StudentPage: NextPage<StudentPage> = () => {
                 userName={user && `${user.firstName} ${user.lastName}`}
             />
             <PageContent>
-                <PageHeader
-                    ghost={false}
-                    title={PAGE_NAME}
-                    onBack={() => router.back()}
-                />
-                {(!data || !classes || loading || !authState.isInitialized || !authState.user) && (
+                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.back()} />
+                {(!data ||
+                    !user ||
+                    !classes ||
+                    loading ||
+                    !authState.isInitialized ||
+                    !authState.user ||
+                    !authState.user.isAdmin) && (
                     <Centered>
                         <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
                     </Centered>
                 )}
-                {data && user && classes && authState.isInitialized && authState.user && authState.user.isAdmin && (
-                    <>
-                        {renderEmailModal()}
-                        <Typography.Title level={3}>
-                            <UserAvatar user={user} />
-                            Student {user.firstName} {user.lastName} (indeks {album})
-                        </Typography.Title>
-                        <Typography.Paragraph>dla kursu {getLongGroupName(data.group)}</Typography.Paragraph>
-                        <Typography.Title level={4} style={{ marginTop: 30 }}>
-                            Email: {user.email}
-                            <Button
-                                type="default"
-                                icon="mail"
-                                shape="circle"
-                                onClick={() => showEmailModal(Number(album), 'user')}
-                                style={{ marginLeft: 10 }}
-                            />
-                        </Typography.Title>
-                        <Typography.Title level={4} style={{ marginTop: 30 }}>
-                            Ocena semestralna
-                        </Typography.Title>
-                        {renderGrade(userGrade, handleGroupRateClick)}
-                        <Typography.Title level={4} style={{ marginTop: 30 }}>
-                            Obecności i oceny na zajęciach
-                        </Typography.Title>
-                        <Table dataSource={classes} columns={columns} pagination={false} rowKey="id" />
-                    </>
-                )}
+                {data &&
+                    user &&
+                    classes &&
+                    !loading &&
+                    authState.isInitialized &&
+                    authState.user &&
+                    authState.user.isAdmin && (
+                        <>
+                            {renderEmailModal()}
+                            <Typography.Title level={3}>
+                                <UserAvatar user={user} />
+                                Student {user.firstName} {user.lastName} (indeks {album})
+                            </Typography.Title>
+                            <Typography.Paragraph>dla kursu {getLongGroupName(data.group)}</Typography.Paragraph>
+                            <Typography.Title level={4} style={{ marginTop: 30 }}>
+                                Email: {user.email}
+                                <Button
+                                    type="default"
+                                    icon="mail"
+                                    shape="circle"
+                                    onClick={() => showEmailModal(Number(album), 'user')}
+                                    style={{ marginLeft: 10 }}
+                                />
+                            </Typography.Title>
+                            <Typography.Title level={4} style={{ marginTop: 30 }}>
+                                Ocena semestralna
+                            </Typography.Title>
+                            {renderGrade(userGrade, handleGroupRateClick)}
+                            <Typography.Title level={4} style={{ marginTop: 30 }}>
+                                Obecności i oceny na zajęciach
+                            </Typography.Title>
+                            <Table dataSource={classes} columns={columns} pagination={false} rowKey="id" />
+                        </>
+                    )}
             </PageContent>
         </Layout>
     );

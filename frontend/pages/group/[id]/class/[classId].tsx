@@ -15,6 +15,7 @@ import ReportGrade from '../../../../components/shared/report-grade';
 import { getReportUrl } from '../../../../helpers/attendances';
 import useSendEmailForm from '../../../../components/hocs/useSendEmailForm';
 import Centered from '../../../../components/shared/centered';
+import { getTableFilters } from '../../../../helpers/ui';
 
 const PAGE_NAME = 'Szczegóły tematu zajęć';
 
@@ -93,16 +94,23 @@ export const PUT_ATTENDANCE = gql`
 `;
 
 const defaultStudentColumns = (
+    data,
     isReportRequired,
     onPresenceCheck,
     onReportRateClick,
     onEmailSendClick,
     onStudentDetailsClick,
+    defaultFilteredUser = null,
 ) => [
     {
         title: 'Album',
         dataIndex: 'album',
         key: 'album',
+        filteredValue: defaultFilteredUser ? [defaultFilteredUser] : null,
+        filters: getTableFilters(data, 'album'),
+        onFilter: (value, record: any) => {
+            return Number(value) === Number(record.album);
+        },
         render: (val, entry) => {
             return (
                 <div onClick={() => onStudentDetailsClick(val)}>
@@ -128,13 +136,13 @@ const defaultStudentColumns = (
         key: 'isReportRequired',
         render: (_, entry) => {
             const reportFile =
-                entry.attendance && entry.attendance.reportFile
-                    ? (
-                        <a href={getReportUrl(entry.attendance.reportFile)} target="blank">
-                            przesłane {new Date(entry.attendance && entry.attendance.reportAddedOn).toLocaleDateString()}
-                        </a>
-                    )
-                    : 'jeszcze nieprzesłane';
+                entry.attendance && entry.attendance.reportFile ? (
+                    <a href={getReportUrl(entry.attendance.reportFile)} target="blank">
+                        przesłane {new Date(entry.attendance && entry.attendance.reportAddedOn).toLocaleDateString()}
+                    </a>
+                ) : (
+                    'jeszcze nieprzesłane'
+                );
             return isReportRequired ? reportFile : 'niewymagane';
         },
     },
@@ -183,11 +191,17 @@ const defaultStudentColumns = (
     {
         title: 'Akcje',
         dataIndex: 'album',
-        key: 'album',
+        key: 'actions',
         render: (album, entry) => {
             return (
                 <>
-                    <Button type="default" icon="mail" shape="circle" onClick={() => onEmailSendClick(album)} style={{ marginRight: 5 }} />
+                    <Button
+                        type="default"
+                        icon="mail"
+                        shape="circle"
+                        onClick={() => onEmailSendClick(album)}
+                        style={{ marginRight: 5 }}
+                    />
                     <Button type="default" icon="user" shape="circle" onClick={() => onStudentDetailsClick(album)} />
                 </>
             );
@@ -203,10 +217,12 @@ const ClassPage: NextPage<ClassPage> = () => {
     const router = useRouter();
     const groupId = router && router.query && router.query.id;
     const classId = router && router.query && router.query.classId;
+    const userId = router && router.query && router.query.album;
     const [getClass, { loading, error, data }] = useLazyQuery(GET_CLASS);
     const [usersAttendances, setUsersAttendances] = useState([]);
     const { renderEmailModal, showEmailModal } = useSendEmailForm();
     const [putAttendance, { data: putAttendanceData, error: putAttendanceError }] = useMutation(PUT_ATTENDANCE);
+    const [filterUserId, setFilterUserId] = useState(userId);
 
     useEffect(() => {
         if (groupId && classId) {
@@ -283,16 +299,17 @@ const ClassPage: NextPage<ClassPage> = () => {
 
     const handleEmailSendClick = album => {
         showEmailModal(album, 'user');
-    }
+    };
 
     const userColumns = defaultStudentColumns(
+        [...usersAttendances],
         classEntity.isReportRequired,
         handlePresenceCheck,
         handleReportRateClick,
         handleEmailSendClick,
         handleStudentDetailsClick,
+        filterUserId,
     );
-
     return (
         <Layout className={styles.root}>
             <Breadcrumb
@@ -302,11 +319,7 @@ const ClassPage: NextPage<ClassPage> = () => {
                 className={classEntity.title}
             />
             <PageContent>
-                <PageHeader
-                    ghost={false}
-                    title={PAGE_NAME}
-                    onBack={() => router.back()}
-                />
+                <PageHeader ghost={false} title={PAGE_NAME} onBack={() => router.back()} />
                 {(!data || loading || !authState.isInitialized || !authState.user) && (
                     <Centered>
                         <Spin tip="Ładowanie..." style={{ marginTop: 50 }} />
@@ -330,6 +343,12 @@ const ClassPage: NextPage<ClassPage> = () => {
                         <Typography.Title level={4} style={{ marginTop: 30 }}>
                             Obecności i sprawozdania
                         </Typography.Title>
+                        {filterUserId && (
+                            <Typography.Title level={4} style={{ marginTop: 30 }}>
+                                Filtrowane dla studenta z album {filterUserId}{' '}
+                                <Button onClick={() => setFilterUserId(null)}>usuń filtr</Button>
+                            </Typography.Title>
+                        )}
                         <Table
                             dataSource={[...usersAttendances]}
                             columns={[...userColumns]}
