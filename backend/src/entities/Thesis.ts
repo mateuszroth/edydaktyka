@@ -42,6 +42,9 @@ export default class Thesis extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     link: string;
 
+    @Column({ type: 'boolean', default: false })
+    isFavourite: boolean;
+
     @ManyToOne(() => User, user => user.theses, { nullable: true })
     @JoinColumn({ referencedColumnName: 'album', name: 'graduateId' })
     user: User;
