@@ -29,11 +29,14 @@ input InputThesis {
   year: Int
   graduateName: String
   graduateId: Int
+  consultantName: String
+  consultantId: Int
   title: String!
   usedTechnologies: String
   goal: String
   sketch: String
   link: String
+  isFavourite: Boolean
 }
 input InputReportAttendance {
   id: ID
@@ -95,11 +98,14 @@ type Thesis {
   year: Int
   graduateName: String
   graduateId: Int
+  consultantName: String
+  consultantId: Int
   title: String!
   usedTechnologies: String
   goal: String
   sketch: String
   link: String
+  isFavourite: Boolean
   user: User
   volunteers: ThesisVolunteer
 }

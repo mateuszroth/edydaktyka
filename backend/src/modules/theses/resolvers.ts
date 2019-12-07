@@ -8,11 +8,14 @@ async function addThesis(thesis): Promise<Thesis> {
     newThesis.year = thesis.year;
     newThesis.graduateName = thesis.graduateName;
     newThesis.graduateId = thesis.graduateId;
+    newThesis.consultantName = thesis.consultantName;
+    newThesis.consultantId = thesis.consultantId;
     newThesis.title = thesis.title;
     newThesis.usedTechnologies = thesis.usedTechnologies;
     newThesis.goal = thesis.goal;
     newThesis.sketch = thesis.sketch;
     newThesis.link = thesis.link;
+    newThesis.isFavourite = thesis.isFavourite;
 
     return await getRepository(Thesis).save(newThesis);
 }
@@ -31,6 +34,12 @@ async function updateThesis(thesis): Promise<Thesis> {
     if (thesis.graduateId && editedThesis.graduateId !== thesis.graduateId) {
         editedThesis.graduateId = thesis.graduateId;
     }
+    if (thesis.consultantName && editedThesis.consultantName !== thesis.consultantName) {
+        editedThesis.consultantName = thesis.consultantName;
+    }
+    if (thesis.consultantId && editedThesis.consultantId !== thesis.consultantId) {
+        editedThesis.consultantId = thesis.consultantId;
+    }
     if (thesis.title && editedThesis.title !== thesis.title) {
         editedThesis.title = thesis.title;
     }
@@ -45,6 +54,13 @@ async function updateThesis(thesis): Promise<Thesis> {
     }
     if (thesis.link && editedThesis.link !== thesis.link) {
         editedThesis.link = thesis.link;
+    }
+    if (
+        thesis.isFavourite !== undefined &&
+        thesis.isFavourite !== null &&
+        editedThesis.isFavourite !== thesis.isFavourite
+    ) {
+        editedThesis.isFavourite = thesis.isFavourite;
     }
 
     return await getRepository(Thesis).save(editedThesis);
@@ -75,18 +91,26 @@ export default {
         }
         return theses;
     },
-    putThesis: async (_, { input }, { auth, user }): Promise<Thesis | Error> => {
+    putThesis: async (_, { input }, { auth, user, isAdmin }): Promise<Thesis | Error> => {
         if (!auth || !user) {
             throw new Error('Brak uprawnień');
         }
         if (!user.isAdmin && input.type !== ThesisState.SUBMITTED) {
             throw new Error('Brak uprawnień');
         }
+        if (!isAdmin) {
+            input.consultantId = null;
+            input.consultantName = null;
+            input.isFavourite = null;
+        }
 
         if (!input.id) {
             const saved = await addThesis(input);
             return saved;
         } else {
+            if (!isAdmin) {
+                throw new Error('Brak uprawnień');
+            }
             const saved = await updateThesis(input);
             return saved;
         }
