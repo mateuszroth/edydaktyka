@@ -393,26 +393,32 @@ class MyApp extends App<AppProps> {
                                                     {/* only for admins */}
 
                                                     {/* tylko dla zalogowanych */}
-                                                    {auth.isInitialized && auth.isLoggedIn && auth.user && (
-                                                        <Menu.Item key="12">
-                                                            <Link href="/schedule">
-                                                                <a>
-                                                                    <Icon type="schedule" />
-                                                                    Obecności
-                                                                </a>
-                                                            </Link>
-                                                        </Menu.Item>
-                                                    )}
-                                                    {auth.isInitialized && auth.isLoggedIn && auth.user && (
-                                                        <Menu.Item key="13">
-                                                            <Link href="/reports">
-                                                                <a>
-                                                                    <Icon type="file-text" />
-                                                                    Sprawozdania
-                                                                </a>
-                                                            </Link>
-                                                        </Menu.Item>
-                                                    )}
+                                                    {auth.isInitialized &&
+                                                        auth.isLoggedIn &&
+                                                        auth.user &&
+                                                        !auth.user.isAdmin && (
+                                                            <Menu.Item key="12">
+                                                                <Link href="/schedule">
+                                                                    <a>
+                                                                        <Icon type="schedule" />
+                                                                        Obecności
+                                                                    </a>
+                                                                </Link>
+                                                            </Menu.Item>
+                                                        )}
+                                                    {auth.isInitialized &&
+                                                        auth.isLoggedIn &&
+                                                        auth.user &&
+                                                        !auth.user.isAdmin && (
+                                                            <Menu.Item key="13">
+                                                                <Link href="/reports">
+                                                                    <a>
+                                                                        <Icon type="file-text" />
+                                                                        Sprawozdania
+                                                                    </a>
+                                                                </Link>
+                                                            </Menu.Item>
+                                                        )}
                                                     {auth.isInitialized && auth.isLoggedIn && auth.user && (
                                                         <Menu.Item key="14">
                                                             <Link href="/account">
@@ -437,7 +443,7 @@ class MyApp extends App<AppProps> {
                                                                         Hej {auth.user.firstName} (
                                                                         <strong>{auth.user.album}</strong>)!{' '}
                                                                     </span>
-                                                                    {currentGroup && (
+                                                                    {currentGroup && !auth.user.isAdmin && (
                                                                         <div
                                                                             onClick={this.showChangeGroupModal}
                                                                             style={{
@@ -455,6 +461,12 @@ class MyApp extends App<AppProps> {
                                                                             >
                                                                                 (zmień)
                                                                             </Button>
+                                                                        </div>
+                                                                    )}
+                                                                    {auth.user.isAdmin && (
+                                                                        <div style={{ display: 'inline-block' }}>
+                                                                            Jesteś{' '}
+                                                                            <strong>administratorem systemu</strong>.
                                                                         </div>
                                                                     )}
                                                                 </span>
