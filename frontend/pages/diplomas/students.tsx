@@ -14,7 +14,7 @@ interface StudentsDiplomasPageProps {}
 const StudentsDiplomasPage: React.FC<StudentsDiplomasPageProps> = () => {
     useNotAdminRedirection();
     const { state: authState } = useContext(AuthContext);
-    const { user, isInitialized } = authState;
+    const { user } = authState;
 
     return (
         <Layout>
@@ -35,6 +35,6 @@ const StudentsDiplomasPage: React.FC<StudentsDiplomasPageProps> = () => {
             </Layout>
         </Layout>
     );
-}
+};
 
 export default StudentsDiplomasPage;

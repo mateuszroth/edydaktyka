@@ -1,10 +1,11 @@
-import { Alert, Table, Spin, Button, Modal } from 'antd';
+import { Alert, Table, Spin, Button, Modal, notification } from 'antd';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../stores/AuthContext';
 import gql from 'graphql-tag';
 import { useLazyQuery, useMutation } from 'react-apollo';
 import usePutThesisForm from '../../hocs/usePutThesisForm';
+import useSendEmailForm from '../../hocs/useSendEmailForm';
 
 export const GET_THESES = gql`
     {
@@ -93,7 +94,7 @@ const DETAILS_COLUMNS = [
 const USER_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
     {
         title: 'Rezerwacje',
-        dataIndex: 'id',
+        dataIndex: 'volunteers',
         key: 'actions',
         render: (val, entry: any) => {
             if (isLoading) {
@@ -101,22 +102,27 @@ const USER_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
             }
             if (entry.volunteers.length) {
                 return (
-                    <a onClick={() => handlers.onRemoveVolunteer(entry.volunteers[0].id)}>
+                    <a onClick={() => handlers.onVolunteerRemove(entry.volunteers[0].id)}>
                         usuń zainteresowanie tematem
                     </a>
                 );
             }
-            return <a onClick={() => handlers.onAddVolunteer(entry)}>zgłoś zainteresowanie tematem</a>;
+            return <a onClick={() => handlers.onVolunteerAdd(entry)}>zgłoś zainteresowanie tematem</a>;
         },
     },
 ];
 
 const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
     {
+        title: 'Indeks dyplomanta',
+        dataIndex: 'graduateId',
+        key: 'graduateId',
+    },
+    {
         title: 'Akcje',
-        dataIndex: 'id',
+        dataIndex: 'volunteers',
         key: 'actions',
-        render: (val, thesis) => {
+        render: (volunteers, thesis) => {
             if (isLoading) {
                 return <Spin size="small"></Spin>;
             }
@@ -128,7 +134,40 @@ const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
                         icon="delete"
                         shape="circle"
                         onClick={() => handlers.onRemove(thesis)}
+                        style={{ marginLeft: 5 }}
                     ></Button>
+                    {thesis.graduateId && (
+                        <Button
+                            type="default"
+                            icon="mail"
+                            shape="circle"
+                            onClick={() => handlers.onEmailSend(thesis.graduateId)}
+                            style={{ marginLeft: 5 }}
+                        />
+                    )}
+                    {volunteers.length > 0 && (
+                        <div style={{ marginTop: 10 }}>
+                            <span>
+                                Zaakceptuj kandydata i zmień
+                                <br />
+                                status tematu na realizowany:
+                            </span>
+                            <ul>
+                                {volunteers.map(v => (
+                                    <li>
+                                        <a onClick={() => handlers.onVolunteerAccept(v.id)}>Album {v.userId}</a>
+                                        <Button
+                                            type="default"
+                                            icon="mail"
+                                            shape="circle"
+                                            onClick={() => handlers.onEmailSend(v.userId)}
+                                            style={{ marginLeft: 5 }}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </>
             );
         },
@@ -138,9 +177,10 @@ const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
 interface Handlers {
     onEdit?: (thesis: any) => void;
     onRemove?: (thesis: any) => void;
-    onAddVolunteer?: (thesis: any) => void;
-    onRemoveVolunteer?: (thesis: any) => void;
-    onAcceptVolunteer?: (thesis: any) => void;
+    onVolunteerAdd?: (thesis: any) => void;
+    onVolunteerRemove?: (thesis: any) => void;
+    onVolunteerAccept?: (thesis: any) => void;
+    onEmailSend?: (album: number) => void;
 }
 
 const getColumns = (type, isUser, isAdmin, handlers: Handlers, isLoading = false) => {
@@ -183,6 +223,12 @@ const RESERVE_THESIS = gql`
     }
 `;
 
+const ACCEPT_THESIS_VOLUNTEER = gql`
+    mutation AcceptThesisVolunteer($id: ID!) {
+        acceptThesisVolunteer(id: $id)
+    }
+`;
+
 export default ({ type = null, favourites = false }) => {
     const { state } = useContext(AuthContext);
     const { user, isInitialized } = state;
@@ -197,7 +243,16 @@ export default ({ type = null, favourites = false }) => {
     const [removeThesis] = useMutation(REMOVE_THESIS, {
         refetchQueries: () => [{ query: GET_THESES }],
     });
+    const [acceptThesisVolunteer] = useMutation(ACCEPT_THESIS_VOLUNTEER, {
+        refetchQueries: () => [{ query: GET_THESES }],
+        onCompleted: () => {
+            notification.success({
+                message: 'Zaakceptowano kandydata na temat pracy i zmieniono status na realizowany',
+            });
+        },
+    });
     const { renderPutThesisForm, showPutThesisModal } = usePutThesisForm();
+    const { renderEmailModal, showEmailModal } = useSendEmailForm();
 
     useEffect(() => {
         if (!loading) {
@@ -260,6 +315,19 @@ export default ({ type = null, favourites = false }) => {
         });
     };
 
+    const handleThesisVolunteerAccept = id => {
+        setIsActionLoading(true);
+        acceptThesisVolunteer({
+            variables: {
+                id,
+            },
+        });
+    };
+
+    const handleEmailSendClick = album => {
+        showEmailModal(album, 'user');
+    };
+
     const filteredTheses =
         data &&
         data.theses &&
@@ -269,6 +337,7 @@ export default ({ type = null, favourites = false }) => {
         <>
             <div>
                 {renderPutThesisForm()}
+                {renderEmailModal()}
                 {state && state.isInitialized && !state.isLoggedIn && (
                     <Alert
                         message="Zaloguj się"
@@ -313,8 +382,10 @@ export default ({ type = null, favourites = false }) => {
                         {
                             onEdit: handlePutThesis,
                             onRemove: handleThesisRemove,
-                            onAddVolunteer: handleThesisReserve,
-                            onRemoveVolunteer: handleThesisUnreserve,
+                            onVolunteerAdd: handleThesisReserve,
+                            onVolunteerRemove: handleThesisUnreserve,
+                            onVolunteerAccept: handleThesisVolunteerAccept,
+                            onEmailSend: handleEmailSendClick,
                         },
                         isActionLoading,
                     )}
