@@ -3,9 +3,8 @@ import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../stores/AuthContext';
 import gql from 'graphql-tag';
-import { useLazyQuery, useMutation, useApolloClient } from 'react-apollo';
+import { useLazyQuery, useMutation } from 'react-apollo';
 import usePutThesisForm from '../../hocs/usePutThesisForm';
-import { DataProxy } from 'apollo-cache';
 
 export const GET_THESES = gql`
     {
@@ -91,25 +90,48 @@ const DETAILS_COLUMNS = [
     },
 ];
 
-const USER_ACTIONS_COLUMNS = () => [
+const USER_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
     {
         title: 'Rezerwacje',
         dataIndex: 'id',
         key: 'actions',
+        render: (val, entry: any) => {
+            if (isLoading) {
+                return <Spin size="small"></Spin>;
+            }
+            if (entry.volunteers.length) {
+                return (
+                    <a onClick={() => handlers.onRemoveVolunteer(entry.volunteers[0].id)}>
+                        usuń zainteresowanie tematem
+                    </a>
+                );
+            }
+            return <a onClick={() => handlers.onAddVolunteer(entry)}>zgłoś zainteresowanie tematem</a>;
+        },
     },
 ];
 
-const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers) => [
+const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers, isLoading) => [
     {
         title: 'Akcje',
         dataIndex: 'id',
         key: 'actions',
-        render: (val, thesis) => (
-            <>
-                <Button type="default" icon="edit" shape="circle" onClick={() => handlers.onEdit(thesis)}></Button>
-                <Button type="default" icon="delete" shape="circle" onClick={() => handlers.onRemove(thesis)}></Button>
-            </>
-        ),
+        render: (val, thesis) => {
+            if (isLoading) {
+                return <Spin size="small"></Spin>;
+            }
+            return (
+                <>
+                    <Button type="default" icon="edit" shape="circle" onClick={() => handlers.onEdit(thesis)}></Button>
+                    <Button
+                        type="default"
+                        icon="delete"
+                        shape="circle"
+                        onClick={() => handlers.onRemove(thesis)}
+                    ></Button>
+                </>
+            );
+        },
     },
 ];
 
@@ -121,9 +143,9 @@ interface Handlers {
     onAcceptVolunteer?: (thesis: any) => void;
 }
 
-const getColumns = (type, isUser, isAdmin, handlers: Handlers) => {
-    const adminColumns = ADMIN_ACTIONS_COLUMNS(handlers);
-    const userColumns = USER_ACTIONS_COLUMNS();
+const getColumns = (type, isUser, isAdmin, handlers: Handlers, isLoading = false) => {
+    const adminColumns = ADMIN_ACTIONS_COLUMNS(handlers, isLoading);
+    const userColumns = USER_ACTIONS_COLUMNS(handlers, isLoading);
     const columns = {
         obroniona: [...BASE_COLUMNS, ...DEFENDED_COLUMNS, ...(isAdmin ? adminColumns : [])],
         realizowany: [...BASE_COLUMNS, ...DETAILS_COLUMNS, ...(isAdmin ? adminColumns : [])],
@@ -144,14 +166,44 @@ const REMOVE_THESIS = gql`
     }
 `;
 
+const UNRESERVE_THESIS = gql`
+    mutation RemoveThesisVolunteer($id: ID!) {
+        removeThesisVolunteer(id: $id)
+    }
+`;
+
+const RESERVE_THESIS = gql`
+    mutation AddThesisVolunteer($input: InputThesisVolunteer!) {
+        addThesisVolunteer(input: $input) {
+            id
+            userId
+            thesisId
+            createdOn
+        }
+    }
+`;
+
 export default ({ type = null, favourites = false }) => {
     const { state } = useContext(AuthContext);
     const { user, isInitialized } = state;
+    const [isActionLoading, setIsActionLoading] = useState(false);
     const [getTheses, { data, loading }] = useLazyQuery(GET_THESES);
+    const [reserveThesis] = useMutation(RESERVE_THESIS, {
+        refetchQueries: () => [{ query: GET_THESES }],
+    });
+    const [unreserveThesis] = useMutation(UNRESERVE_THESIS, {
+        refetchQueries: () => [{ query: GET_THESES }],
+    });
     const [removeThesis] = useMutation(REMOVE_THESIS, {
         refetchQueries: () => [{ query: GET_THESES }],
     });
     const { renderPutThesisForm, showPutThesisModal } = usePutThesisForm();
+
+    useEffect(() => {
+        if (!loading) {
+            setIsActionLoading(false);
+        }
+    }, [data]);
 
     useEffect(() => {
         if (isInitialized) {
@@ -177,6 +229,7 @@ export default ({ type = null, favourites = false }) => {
             okText: 'Tak, usuń',
             cancelText: 'Anuluj',
             onOk: () => {
+                setIsActionLoading(true);
                 removeThesis({
                     variables: {
                         id: thesis.id,
@@ -187,8 +240,25 @@ export default ({ type = null, favourites = false }) => {
     };
 
     const handleThesisReserve = thesis => {
+        setIsActionLoading(true);
+        reserveThesis({
+            variables: {
+                input: {
+                    userId: user.album,
+                    thesisId: Number(thesis.id),
+                },
+            },
+        });
+    };
 
-    }
+    const handleThesisUnreserve = id => {
+        setIsActionLoading(true);
+        unreserveThesis({
+            variables: {
+                id,
+            },
+        });
+    };
 
     const filteredTheses =
         data &&
@@ -236,11 +306,18 @@ export default ({ type = null, favourites = false }) => {
             {filteredTheses && !loading && (
                 <Table
                     style={{ marginTop: 10 }}
-                    columns={getColumns(type, !!user, user && user.isAdmin, {
-                        onEdit: handlePutThesis,
-                        onRemove: handleThesisRemove,
-                        onAddVolunteer: handleThesisReserve,
-                    })}
+                    columns={getColumns(
+                        type,
+                        !!user,
+                        user && user.isAdmin,
+                        {
+                            onEdit: handlePutThesis,
+                            onRemove: handleThesisRemove,
+                            onAddVolunteer: handleThesisReserve,
+                            onRemoveVolunteer: handleThesisUnreserve,
+                        },
+                        isActionLoading,
+                    )}
                     dataSource={filteredTheses}
                     pagination={false}
                     rowKey="id"

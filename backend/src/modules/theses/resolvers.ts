@@ -142,7 +142,7 @@ export default {
         }
         const entity = await getRepository(ThesisVolunteer).findOne(id, { relations: ['user'] });
 
-        if (!isAdmin && entity.user && entity.user.album !== user.album) {
+        if (!isAdmin && entity && entity.user && entity.user.album !== user.album) {
             throw new Error('Brak uprawnień');
         }
 
