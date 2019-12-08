@@ -23,6 +23,11 @@ export const GET_THESES = gql`
             sketch
             link
             isFavourite
+            volunteers {
+                id
+                userId
+                thesisId
+            }
         }
     }
 `;
@@ -181,6 +186,10 @@ export default ({ type = null, favourites = false }) => {
         });
     };
 
+    const handleThesisReserve = thesis => {
+
+    }
+
     const filteredTheses =
         data &&
         data.theses &&
@@ -230,6 +239,7 @@ export default ({ type = null, favourites = false }) => {
                     columns={getColumns(type, !!user, user && user.isAdmin, {
                         onEdit: handlePutThesis,
                         onRemove: handleThesisRemove,
+                        onAddVolunteer: handleThesisReserve,
                     })}
                     dataSource={filteredTheses}
                     pagination={false}

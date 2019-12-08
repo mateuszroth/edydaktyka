@@ -107,7 +107,7 @@ type Thesis {
   link: String
   isFavourite: Boolean
   user: User
-  volunteers: ThesisVolunteer
+  volunteers: [ThesisVolunteer]
 }
 type Questionnaire {
   id: ID!

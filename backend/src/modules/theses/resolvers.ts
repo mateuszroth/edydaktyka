@@ -67,9 +67,14 @@ async function updateThesis(thesis): Promise<Thesis> {
 }
 
 export default {
-    theses: async (_, __, { auth, user }): Promise<Thesis[] | Error> => {
-        const theses = await getRepository(Thesis).find();
+    theses: async (_, __, { auth, user, isAdmin }): Promise<Thesis[] | Error> => {
+        const theses = await getRepository(Thesis).find({
+            relations: isAdmin ? ['volunteers'] : [],
+        });
         if (!auth || !user || !user.isAdmin) {
+            theses.forEach(async t => {
+                t.volunteers = Promise.resolve((await t.volunteers).filter(v => v.userId === (user && user.album)));
+            });
             return theses.filter(
                 t =>
                     t.type !== ThesisState.SUBMITTED ||
