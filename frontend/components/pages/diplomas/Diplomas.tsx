@@ -1,12 +1,12 @@
-import { Alert, Table, Spin } from 'antd';
+import { Alert, Table, Spin, Button, Modal } from 'antd';
 import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AuthContext from '../../stores/AuthContext';
 import gql from 'graphql-tag';
-import { useLazyQuery } from 'react-apollo';
-import { Button } from 'antd/lib/radio';
+import { useLazyQuery, useMutation } from 'react-apollo';
+import usePutThesisForm from '../../hocs/usePutThesisForm';
 
-const GET_THESES = gql`
+export const GET_THESES = gql`
     {
         theses {
             id
@@ -93,23 +93,30 @@ const USER_ACTIONS_COLUMNS = () => [
     },
 ];
 
-const ADMIN_ACTIONS_COLUMNS = () => [
+const ADMIN_ACTIONS_COLUMNS = (handlers: Handlers) => [
     {
         title: 'Akcje',
         dataIndex: 'id',
         key: 'actions',
+        render: (val, thesis) => (
+            <>
+                <Button type="default" icon="edit" shape="circle" onClick={() => handlers.onEdit(thesis)}></Button>
+                <Button type="default" icon="delete" shape="circle" onClick={() => handlers.onRemove(thesis)}></Button>
+            </>
+        ),
     },
 ];
 
 interface Handlers {
     onEdit?: (thesis: any) => void;
+    onRemove?: (thesis: any) => void;
     onAddVolunteer?: (thesis: any) => void;
     onRemoveVolunteer?: (thesis: any) => void;
     onAcceptVolunteer?: (thesis: any) => void;
 }
 
 const getColumns = (type, isUser, isAdmin, handlers: Handlers) => {
-    const adminColumns = ADMIN_ACTIONS_COLUMNS();
+    const adminColumns = ADMIN_ACTIONS_COLUMNS(handlers);
     const userColumns = USER_ACTIONS_COLUMNS();
     const columns = {
         obroniona: [...BASE_COLUMNS, ...DEFENDED_COLUMNS, ...(isAdmin ? adminColumns : [])],
@@ -125,11 +132,20 @@ const getColumns = (type, isUser, isAdmin, handlers: Handlers) => {
     return columns[type];
 };
 
+const REMOVE_THESIS = gql`
+    mutation RemoveThesis($id: ID!) {
+        removeThesis(id: $id)
+    }
+`;
+
 export default ({ type = null, favourites = false }) => {
     const { state } = useContext(AuthContext);
     const { user, isInitialized } = state;
     const [getTheses, { data, loading }] = useLazyQuery(GET_THESES);
-    const [theses, setTheses] = useState();
+    const [removeThesis] = useMutation(REMOVE_THESIS, {
+        refetchQueries: () => [{ query: GET_THESES }],
+    });
+    const { renderPutThesisForm, showPutThesisModal } = usePutThesisForm();
 
     useEffect(() => {
         if (isInitialized) {
@@ -137,19 +153,34 @@ export default ({ type = null, favourites = false }) => {
         }
     }, [user, isInitialized]);
 
-    useEffect(() => {
-        if (data && data.theses) {
-            const theses = data.theses.filter(thesis => thesis.type === type);
-            if (favourites) {
-                return setTheses(theses.filter(thesis => thesis.isFavourite));
-            }
-            return setTheses(theses);
-        }
-    }, [data]);
+    const handlePutThesis = (thesis = null) => {
+        showPutThesisModal(thesis, user && user.isAdmin);
+    };
+
+    const handleThesisRemove = thesis => {
+        Modal.confirm({
+            title: 'Czy na pewno chcesz usunąć?',
+            content: 'Tej operacji nie można cofnąć!',
+            okText: 'Tak, usuń',
+            cancelText: 'Anuluj',
+            onOk: () =>
+                removeThesis({
+                    variables: {
+                        id: thesis.id,
+                    },
+                }),
+        });
+    };
+
+    const filteredTheses =
+        data &&
+        data.theses &&
+        data.theses.filter(thesis => thesis.type === type && (!favourites || (favourites && thesis.isFavourite)));
 
     return (
         <>
             <div>
+                {renderPutThesisForm()}
                 {state && state.isInitialized && !state.isLoggedIn && (
                     <Alert
                         message="Zaloguj się"
@@ -174,21 +205,26 @@ export default ({ type = null, favourites = false }) => {
                 )}
             </div>
             {!data && loading && <Spin />}
-            {theses && user && !user.isAdmin && !loading && (
-                <Button name="primary" onClick={() => {}}>
+            {filteredTheses && user && !user.isAdmin && !loading && (
+                <Button name="primary" onClick={() => handlePutThesis()}>
                     Zaproponuj własny temat
                 </Button>
             )}
-            {theses && user && user.isAdmin && !loading && (
-                <Button name="primary" onClick={() => {}}>
+            {filteredTheses && user && user.isAdmin && !loading && (
+                <Button name="primary" onClick={() => handlePutThesis()}>
                     Dodaj nowy temat
                 </Button>
             )}
-            {theses && !loading && (
+            {filteredTheses && !loading && (
                 <Table
-                    columns={getColumns(type, !!user, user && user.isAdmin, {})}
-                    dataSource={theses}
+                    style={{ marginTop: 10 }}
+                    columns={getColumns(type, !!user, user && user.isAdmin, {
+                        onEdit: handlePutThesis,
+                        onRemove: handleThesisRemove,
+                    })}
+                    dataSource={filteredTheses}
                     pagination={false}
+                    rowKey="id"
                 />
             )}
         </>
