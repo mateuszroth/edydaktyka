@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const { Sider } = Layout;
 
-export default () => (
+export default ({ isAdmin = false }) => (
     <Sider width={300} collapsedWidth="0" breakpoint="lg" style={{ background: '#fff' }}>
         <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} style={{ height: '100%' }}>
             <Menu.SubMenu
@@ -33,6 +33,13 @@ export default () => (
                         <a>Proponowane</a>
                     </Link>
                 </Menu.Item>
+                {isAdmin && (
+                    <Menu.Item key="3-33">
+                        <Link href="/diplomas/students">
+                            <a>Tematy studentów</a>
+                        </Link>
+                    </Menu.Item>
+                )}
                 <Menu.Item key="3-4">
                     <Link href="/diplomas/favourites">
                         <a>Najciekawsze</a>

@@ -1,10 +1,11 @@
 import { Alert, Table, Spin, Button, Modal } from 'antd';
 import Link from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../stores/AuthContext';
 import gql from 'graphql-tag';
-import { useLazyQuery, useMutation } from 'react-apollo';
+import { useLazyQuery, useMutation, useApolloClient } from 'react-apollo';
 import usePutThesisForm from '../../hocs/usePutThesisForm';
+import { DataProxy } from 'apollo-cache';
 
 export const GET_THESES = gql`
     {
@@ -154,7 +155,14 @@ export default ({ type = null, favourites = false }) => {
     }, [user, isInitialized]);
 
     const handlePutThesis = (thesis = null) => {
-        showPutThesisModal(thesis, user && user.isAdmin);
+        const thesisObj = Object.assign({}, thesis) || {};
+        const isAdmin = user && user.isAdmin;
+        if (!thesis && !isAdmin) {
+            thesisObj.graduateId = user && user.album;
+            thesisObj.graduateName = user && `${user.firstName} ${user.lastName}`;
+            thesisObj.type = 'zgłoszona';
+        }
+        showPutThesisModal(thesisObj, isAdmin);
     };
 
     const handleThesisRemove = thesis => {
@@ -163,12 +171,13 @@ export default ({ type = null, favourites = false }) => {
             content: 'Tej operacji nie można cofnąć!',
             okText: 'Tak, usuń',
             cancelText: 'Anuluj',
-            onOk: () =>
+            onOk: () => {
                 removeThesis({
                     variables: {
                         id: thesis.id,
                     },
-                }),
+                });
+            },
         });
     };
 

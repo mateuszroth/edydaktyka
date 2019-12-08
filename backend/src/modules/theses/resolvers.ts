@@ -15,7 +15,7 @@ async function addThesis(thesis): Promise<Thesis> {
     newThesis.goal = thesis.goal;
     newThesis.sketch = thesis.sketch;
     newThesis.link = thesis.link;
-    newThesis.isFavourite = thesis.isFavourite;
+    newThesis.isFavourite = !!thesis.isFavourite;
 
     return await getRepository(Thesis).save(newThesis);
 }
@@ -60,7 +60,7 @@ async function updateThesis(thesis): Promise<Thesis> {
         thesis.isFavourite !== null &&
         editedThesis.isFavourite !== thesis.isFavourite
     ) {
-        editedThesis.isFavourite = thesis.isFavourite;
+        editedThesis.isFavourite = !!thesis.isFavourite;
     }
 
     return await getRepository(Thesis).save(editedThesis);
@@ -68,11 +68,8 @@ async function updateThesis(thesis): Promise<Thesis> {
 
 export default {
     theses: async (_, __, { auth, user }): Promise<Thesis[] | Error> => {
-        if (!auth) {
-            throw new Error('Brak uprawnień');
-        }
         const theses = await getRepository(Thesis).find();
-        if (!user || !user.isAdmin) {
+        if (!auth || !user || !user.isAdmin) {
             return theses.filter(
                 t =>
                     t.type !== ThesisState.SUBMITTED ||

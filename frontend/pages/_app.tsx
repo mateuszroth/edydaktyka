@@ -226,6 +226,16 @@ class MyApp extends App<AppProps> {
                                                                 <a>Proponowane</a>
                                                             </Link>
                                                         </Menu.Item>
+                                                        {auth.isInitialized &&
+                                                            auth.isLoggedIn &&
+                                                            auth.user &&
+                                                            auth.user.isAdmin && (
+                                                                <Menu.Item key="3-33">
+                                                                    <Link href="/diplomas/students">
+                                                                        <a>Tematy studentów</a>
+                                                                    </Link>
+                                                                </Menu.Item>
+                                                            )}
                                                         <Menu.Item key="3-4">
                                                             <Link href="/diplomas/favourites">
                                                                 <a>Najciekawsze</a>
