@@ -12,6 +12,9 @@ export default class ConsultationSlot extends BaseEntity {
     date: Date;
 
     @Column({ type: 'int' })
+    userId?: number;
+
+    @Column({ type: 'int' })
     slot: number;
 
     @ManyToOne(() => User, user => user.consultations)

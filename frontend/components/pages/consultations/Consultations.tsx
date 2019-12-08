@@ -53,7 +53,7 @@ const getColumns = (onSlotReserve, onSlotRemove, isLoggedIn: boolean, isAdmin: b
                 if ((isCurrentUser || isAdmin) && obj.id) {
                     element = (
                         <>
-                            <span style={{ color: 'green' }}>{obj.userName || 'Twoja rezerwacja'}</span>
+                            <div style={{ color: 'green' }}>{obj.userName || 'Twoja rezerwacja'}</div>
                             <Tooltip title="Odwołaj">
                                 <Button shape="circle" type="danger" icon="delete" onClick={() => onSlotRemove(obj)} />
                             </Tooltip>

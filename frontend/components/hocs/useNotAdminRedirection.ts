@@ -11,7 +11,7 @@ const useNotAdminRedirection = () => {
         if (isInitialized && (!isLoggedIn || (user && !user.isAdmin))) {
             Router.push('/login');
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, isInitialized, user]);
 };
 
 export default useNotAdminRedirection;

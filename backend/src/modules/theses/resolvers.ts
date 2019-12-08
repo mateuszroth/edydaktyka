@@ -1,6 +1,8 @@
 import { getRepository } from 'typeorm';
 import Thesis, { ThesisState } from 'entities/Thesis';
 import ThesisVolunteer from 'entities/ThesisVolunteer';
+import { createTransport } from 'nodemailer';
+import mailConfig from 'config/mail';
 
 async function addThesis(thesis): Promise<Thesis> {
     const newThesis = new Thesis();
@@ -108,6 +110,27 @@ export default {
 
         if (!input.id) {
             const saved = await addThesis(input);
+
+            if (!isAdmin) {
+                const transporter = createTransport(mailConfig.smtpConfig);
+                const mailOptions = {
+                    from: mailConfig.from,
+                    to: `mateusz.roth@gmail.com`,
+                    subject: 'Zgłoszono nowy temat pracy dyplomowej',
+                    text: `
+                    Witaj!
+        
+                    W systemie ${mailConfig.systemName} zgłoszono nowy temat pracy dyplomowej:
+                    
+                    ${saved.title}
+                    
+                    Sprawdź szczegóły w systemie na stronie propozycji tematów studentów po zalogowaniu.
+        
+                    Pozdrawiamy`,
+                };
+                await transporter.sendMail(mailOptions);
+            }
+
             return saved;
         } else {
             if (!isAdmin) {
@@ -125,7 +148,7 @@ export default {
 
         return 'Usunięto pracę dyplomową';
     },
-    addThesisVolunteer: async (_, { input }, { auth, user }): Promise<ThesisVolunteer | Error> => {
+    addThesisVolunteer: async (_, { input }, { auth, user, isAdmin }): Promise<ThesisVolunteer | Error> => {
         if (!auth || !user) {
             throw new Error('Brak uprawnień');
         }
@@ -165,6 +188,21 @@ export default {
             await getRepository(Thesis).save(thesis),
             await getRepository(ThesisVolunteer).delete({ thesisId: thesis.id }),
         ]);
+
+        const transporter = createTransport(mailConfig.smtpConfig);
+        const mailOptions = {
+            from: mailConfig.from,
+            to: volunteer.user.email,
+            subject: 'Zostałeś dyplomantem!',
+            text: `
+            Witaj!
+
+            Zostałeś przypisany do tematu pracy dyplomowej ${thesis.title} i jej status jest obecnie w realizacji.
+
+            Powodzenia!
+            Pozdrawiamy`,
+        };
+        await transporter.sendMail(mailOptions);
 
         return 'Zaakceptowano pracę dyplomową dla dyplomanta';
     },

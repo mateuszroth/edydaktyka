@@ -36,4 +36,5 @@ export default {
     resetPasswordText,
     resetPasswordHtml,
     defaultTitle,
+    systemName: SYSTEM_NAME,
 };

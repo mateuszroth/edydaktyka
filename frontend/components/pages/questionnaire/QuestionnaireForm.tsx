@@ -38,7 +38,6 @@ const BaseQuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ form }) => {
                     groupId: values.groupId ? parseInt(values.groupId, 10) : null,
                     comments: values.comments ? values.comments : null,
                 };
-                console.log('Przesłano wartości: ', variables);
                 addQuestionnaire({ variables });
             }
         });

@@ -25,7 +25,7 @@ export default {
             relations: ['user'],
         });
 
-        if (!auth || !user.isAdmin) {
+        if (!auth || !user) {
             return slots.map(slot => {
                 slot.user = null;
                 return slot;
@@ -40,7 +40,7 @@ export default {
             });
         }
 
-        if (auth && !user.isAdmin) {
+        if (auth && user && !user.isAdmin) {
             return slots.map(slot => {
                 slot.userId = slot.user.album === user.album ? user.album : null;
                 slot.user = null;
@@ -59,7 +59,7 @@ export default {
 
         const slot = await getRepository(ConsultationSlot).findOne(id);
 
-        if (!user.isAdmin && user.album !== slot.userId) {
+        if (!user.isAdmin && user && user.album !== slot.userId) {
             throw new Error('Brak uprawnień');
         }
 

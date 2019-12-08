@@ -88,7 +88,7 @@ const StudentPage: NextPage<StudentPage> = () => {
     const [
         getGroupAttendances,
         { loading: attendancesLoading, error: attendancesError, data: attendancesData },
-    ] = useLazyQuery(GET_GROUP_ATTENDANCES);
+    ] = useLazyQuery(GET_GROUP_ATTENDANCES, { fetchPolicy: 'network-only' });
     const [putUserGrade, { data: putUserGradeData, error: putUserGradeError }] = useMutation(PUT_USER_GRADE);
     const loading = groupLoading || attendancesLoading;
     const error = groupError || attendancesError || putUserGradeError;
