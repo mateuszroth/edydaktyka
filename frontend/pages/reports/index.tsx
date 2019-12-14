@@ -166,6 +166,7 @@ const ReportsPage: React.FC<ReportsPageProps> = () => {
                     <>
                         <Typography.Title level={3}>{data.group.courseName}</Typography.Title>
                         <Typography.Paragraph>{getLongGroupName(data.group)}</Typography.Paragraph>
+                        <Typography.Paragraph><strong>Link do materiałów:</strong> {data.group.link ? <a href={data.group.link}>{data.group.link}</a> : 'brak'}</Typography.Paragraph>
                         <Typography.Title level={4}>Sprawozdania</Typography.Title>
                         {classes.length > 0 && (
                             <Table

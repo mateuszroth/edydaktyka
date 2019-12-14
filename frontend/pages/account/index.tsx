@@ -23,7 +23,7 @@ const AccountPage: React.FC<AccountPageProps> = () => {
         Router.push('/');
         logOut();
         notification.success({
-            message: `Do zobaczenia ${user.firstName ? user.firstName : ''}`,
+            message: `Do zobaczenia ${user && user.firstName ? user.firstName : ''}`,
             description: 'Pomyślnie wylogowano',
         });
     };

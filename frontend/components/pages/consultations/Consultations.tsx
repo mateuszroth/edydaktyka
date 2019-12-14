@@ -55,7 +55,7 @@ const getColumns = (onSlotReserve, onSlotRemove, isLoggedIn: boolean, isAdmin: b
                         <>
                             <div style={{ color: 'green' }}>{obj.userName || 'Twoja rezerwacja'}</div>
                             <Tooltip title="Odwołaj">
-                                <Button shape="circle" type="danger" icon="delete" onClick={() => onSlotRemove(obj)} />
+                                <Button shape="circle" type="danger" icon="delete" onClick={() => onSlotRemove(obj)} size={obj.row > 1 ? 'small' : 'default'} />
                             </Tooltip>
                         </>
                     );
@@ -63,14 +63,14 @@ const getColumns = (onSlotReserve, onSlotRemove, isLoggedIn: boolean, isAdmin: b
                 if (!isAdmin && !isCurrentUser && obj.id) {
                     element = (
                         <Tooltip title="Już zostało zarezerwowane">
-                            <Button shape="circle" icon="minus-circle" />
+                            <Button shape="circle" icon="minus-circle" size={obj.row > 1 ? 'small' : 'default'} />
                         </Tooltip>
                     );
                 }
                 if (!obj.id) {
                     element = (
                         <Tooltip title={isLoggedIn ? 'Zarezerwuj' : 'Musisz się zalogować'}>
-                            <Button shape="circle" type="primary" icon="calendar" onClick={isLoggedIn ? () => onSlotReserve(obj) : () => null} />
+                            <Button shape="circle" type="primary" icon="calendar" onClick={isLoggedIn ? () => onSlotReserve(obj) : () => null} size={obj.row > 1 ? 'small' : 'default'} />
                         </Tooltip>
                     );
                 }
@@ -101,6 +101,7 @@ const getRows = (reservedSlots: Map<string, any>) => {
         const row: any = {
             date: now.toISOString(),
             key: now.toISOString(),
+            id: i,
         };
 
         const dateSlots = reservedSlots.get(now.format('YYYY-MM-DD')) || {};
@@ -109,6 +110,7 @@ const getRows = (reservedSlots: Map<string, any>) => {
                 ...dateSlots[slot],
                 date: now.toISOString(),
                 slot: slot,
+                row: i,
             };
         });
 

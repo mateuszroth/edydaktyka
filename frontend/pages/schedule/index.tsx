@@ -93,6 +93,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                     <>
                         <Typography.Title level={3}>{data.group.courseName}</Typography.Title>
                         <Typography.Paragraph>{getLongGroupName(data.group)}</Typography.Paragraph>
+                        <Typography.Paragraph><strong>Link do materiałów:</strong> {data.group.link ? <a href={data.group.link}>{data.group.link}</a> : 'brak'}</Typography.Paragraph>
                         <Typography.Paragraph>
                             <strong>Ocena końcowa:</strong>{' '}
                             {grade.grade ? (
@@ -109,7 +110,7 @@ const SchedulePage: React.FC<SchedulePageProps> = () => {
                                 pagination={false}
                                 columns={[
                                     {
-                                        title: 'Numer',
+                                        title: '#',
                                         dataIndex: 'classNumber',
                                         key: 'classNumber',
                                     },

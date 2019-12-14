@@ -7,7 +7,6 @@ import { FormComponentProps } from 'antd/lib/form/Form';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { AuthContext } from '../../stores/AuthContext';
-import useLoggedInRedirection from '../../hocs/useLoggedInRedirection';
 import styles from './LoginForm.module.scss';
 
 const LOGIN = gql`
@@ -22,7 +21,6 @@ interface LoginFormProps extends FormComponentProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ form, onRedirect = noop }) => {
-    useLoggedInRedirection();
     const { getFieldDecorator, validateFields } = form;
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
     const [login, { loading, data, error }] = useMutation(LOGIN);
@@ -31,7 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ form, onRedirect = noop }) => {
     useEffect(() => {
         if (data) {
             setAuthToken(data.login);
-            Router.push('/account');
+            Router.push('/reports');
             onRedirect();
             notification.success({
                 message: `Witaj ${authState && authState.user ? authState.user.firstName : ''}`,
