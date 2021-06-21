@@ -21,8 +21,8 @@
     "url": "https://github.com/mateuszroth/edydaktyka/issues"
   },
   "homepage": "https://github.com/mateuszroth/edydaktyka#readme",
-  "dependencies": {},
   "devDependencies": {
-    "concurrently": "^4.1.0"
+    "concurrently": "^4.1.0",
+    "typescript": "^4.3.4"
   }
 }

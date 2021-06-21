@@ -22,7 +22,7 @@ Domyślnie baza danych utworzy konto o loginie `admin` i haśle `password`. Aby 
 Zapytania SQL inicjalizujące bazę znajdują się w pliku `./database/init_schema.sql`. Te query można uruchomić na przykład poprzez system Adminer czy z poziomu kontenera Docker:
 ```
 docker exec -it <CONTAINER_ID> /bin/bash
-mysql -u admin -ppassword edydaktyka < /tmp/database/init_schema.sql
+mysql -u admin -ppassword edydaktyka < ./database/init_schema.sql
 ```
 
 ## Skrypty
@@ -56,7 +56,7 @@ Projekt używa frameworka do React.js nazwanego [Next.js](https://nextjs.org/doc
 
 Jako framework UI wykorzystano [Ant Design](https://ant.design/docs/react/introduce).
 
-### Instrukcje dla administrator
+### Instrukcje dla administratora
 
 #### Dodawanie nowej strony
 
